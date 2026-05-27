@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>UniGames — Me avise sobre promoções</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFfklEQVR4nO1WW29cVxX+1tr7XObM2GNPJnYcx0lIbJw6qI0jUahQuako3CVSBAXxAxDqW9VKfegbEo9IFW+VEA+oKIgiQKIkBVSJRr0AygW1IaTNrbhJHZd4PJ45Z+bM3mv14diOJ+5Q6AsSyvcwmj2z9lp7f+tbay/gDu7gfwy67zNfPSKjc0+niGor5/945M1zJ58jYqgKiAiqinK5jE9+89HXLl1vzQU2wjCtHHvxNz966L8N9sBDj//2UsN8dmd9CO2Lf7jv9Eu/P2PzbYeOLzSsK5ci9NzgzZmzaPZiBBojNFn/LYgAEIgALb5BoYAqVHXDztloX2Zt/GaaIEb1ywDO2OVUYA07q2JBNPAAYhTCCjUKwaaTrrEEKNZjKTb/TRuHaF0582g55V2UGNNdvngSACwDsNqG5wqEeOABjBKMAEYUzP3Oh4eHqTY2NbJrz+zBTk9MEodYun7l/L8Wry7duLEoBTWKy/945TkBsSXvl24s9gDAKhhCClIDQAbnAAyQwLPCwRY3VcX+2fmx6U9848S1hhxaUcCD0aUewtl7MHt3cH731ee/9deTvztjjMGhLzz88pUVzI+UA0wtvPj5U3/61Qm7dhfQFvL6UeSUwMKwgY8AYM/+uVp97ujl0wu9RKjVCTWMiRJ47+Goky4wDuybfOD0R++nw3954dnTWadzs5U6532ZTdsdAHBiMOe3gdY+GQzJ824URdh7+Cs/eTvLEsOS1sNqvDdOj89U3v7BXaPu+YmkloSMzluNdxzV7vpxqVQCJO9ZQ9ZwyOLRBrDG5X8IJYUwweVYHR0dMSta+lIvJ5dElIyZa99/+dmnnsjzHKVSCdPznztart77TEu6aWqSj8x8+OCoy/N3GFWoEkBqAYB5XcFQkA6uApaCAWVAvW9NTM1s9xqL015aKhMaixd+nuc52ATIsgz/fP3U8ShWEDy6wrbZyUtk1EMJYEXmXbZtW42Z1vKuAAQ0WARYr3GFQpQ4CNkElsgLYBEF5YCo6ABEhCBMAoBhFPA9j6yTi6FiNwHwQDb1odmJPg2YwAaDggsYG/yIivdeFIJ1daiKrte7qkJVisVGk7rFLqvCiGq1vnOKDbMAxL1ejn0HDn+xMLxFxPq62U7BzFARlEpJaIzhDbMBmaMBjU1JIaTotlcbXB+tsYhadSI2Gvl6rVYjVQURA8RQVWwf31XxaqdVkQpB2OdXRZ0rMjaokBQFQ1uzqhAExibnzr5ygZG+9UsmCAKXL9yk8f33Pvjw+Pg4qwpUPCandgX7P/bgTxstE4Lgkjjm5uLfT7TSdk7GrvnfGoSgABUp2qIsBQKKSs3mitilyy88Vp/+2tFrzbYTbrnlaOeTuz/13Ud2N24cc7nzNFz/zpXVaCpnn0JcpaYr11+9dOq1yX3zk/AMIveeOdBCETK4vReCsRfO/vniXDz57e1jH396tbWMNM/TBoV7wnDiMWMYedYR4nYe+Eqyd9sUll8/9unWakttEEQizolXJ6JOtZ+GMLAGKuycOGFyqgpR8iJwIsVDCQBWRPDqS8/87P4jQbM6Pv/DRtvPKBO8KpQUiUk48KWwqsu/uHb219974/ypJQAwxiMpeVuJbL0cWxjLmyqIIL1sdU89OScum2MmdA1zFNBIOSYbRgG61iaF5QZ9ilq9zkMjO2o7JmcOttIcbBjl2OZX3/jb2esLF9N154CiMjTMcaU65HperbXU67RaK42bfmMuUMWOiUkDE1U63S46reVmeagaC0wIssg7q1navJn3yeb9QP/muf6g6Iu6Ptls/pVQyEW1/6l+rxrfPP30+UMxGW3sWZsPavUxa7c60L6qGtSbbw822EZvW98aZKYP3DP/vk7u4A7+7/EuYRe2ivVZAUYAAAAASUVORK5CYII=">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#e11d48;--red-dark:#be123c;
+  --text:#111827;--text2:#4b5563;--text3:#9ca3af;
+  --border:#e5e7eb;--surface:#fff;--bg:#f3f4f6;
+  --green:#059669;--radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 8px 32px rgba(0,0,0,.10);
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:2rem;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.header{background:#111827;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.header-inner{max-width:520px;margin:0 auto;padding:.875rem 1.25rem;display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:900;flex-shrink:0;box-shadow:0 2px 8px rgba(225,29,72,.4)}
+.logo-text{color:#fff;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.logo-text span{color:var(--red)}
+
+/* CONTAINER */
+.container{max-width:520px;margin:0 auto;padding:1.5rem 1.25rem 0}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#111827 0%,#1f2937 100%);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;border:1px solid #374151;position:relative;overflow:hidden}
+.hero::before{content:'🎮';position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:64px;opacity:.07;pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(225,29,72,.15);border:1px solid rgba(225,29,72,.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--red);margin-bottom:.625rem}
+.hero h1{font-size:19px;font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.25;margin-bottom:.375rem}
+.hero p{font-size:13px;color:#9ca3af;line-height:1.55}
+
+/* SECTION */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:1rem;display:flex;align-items:center;gap:7px;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.section-icon{width:24px;height:24px;border-radius:6px;background:#111827;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+
+/* FORM */
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:.875rem}
+.form-group:last-child{margin-bottom:0}
+.form-label{font-size:11.5px;font-weight:600;color:var(--text2)}
+.form-label .req{color:var(--red);margin-left:2px}
+.form-label .opt{font-weight:400;color:var(--text3);font-size:10.5px}
+.form-input,.form-select,.form-textarea{border:1.5px solid var(--border);border-radius:var(--radius);padding:.625rem .875rem;font-size:14px;color:var(--text);font-family:inherit;background:var(--surface);outline:none;transition:all .15s;width:100%}
+.form-input{height:46px}
+.form-select{height:46px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .875rem center;padding-right:2.25rem;cursor:pointer}
+.form-textarea{resize:none;height:80px;line-height:1.55}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(225,29,72,.1)}
+.form-hint{font-size:11.5px;color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:400px){.form-row{grid-template-columns:1fr}}
+
+/* Produto chips */
+.prod-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.375rem}
+.prod-chip{border:1.5px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12.5px;cursor:pointer;transition:all .12s;color:var(--text2);font-weight:500;user-select:none}
+.prod-chip:hover{border-color:#d1d5db}
+.prod-chip.sel{border-color:var(--red);background:var(--red);color:#fff;font-weight:700}
+
+/* SUBMIT */
+.submit-box{background:#111827;border-radius:14px;padding:1.25rem;margin-bottom:1rem;border:1px solid #374151}
+.submit-info{display:flex;gap:.75rem;margin-bottom:1rem;align-items:flex-start}
+.submit-info p{font-size:12.5px;color:#9ca3af;line-height:1.55}
+.submit-info p strong{color:#e5e7eb}
+.btn-submit{width:100%;height:50px;background:var(--red);border:none;border-radius:12px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-submit:hover{background:var(--red-dark);transform:translateY(-1px);box-shadow:0 4px 16px rgba(225,29,72,.35)}
+.btn-submit:disabled{background:#9ca3af;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+.btn-submit.loading .btn-spinner{display:block}
+.btn-submit.loading .btn-label{display:none}
+
+/* SUCESSO */
+.success-screen{display:none;text-align:center;padding:2.5rem 1.25rem}
+.suc-icon{width:68px;height:68px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 1.25rem}
+.success-screen h2{font-size:21px;font-weight:800;color:var(--text);margin-bottom:.625rem;letter-spacing:-.03em}
+.success-screen p{font-size:13.5px;color:var(--text2);line-height:1.7;max-width:340px;margin:0 auto 1.25rem}
+.suc-badge{display:inline-flex;align-items:center;gap:6px;background:#111827;color:#e5e7eb;padding:.5rem 1rem;border-radius:8px;font-size:12px;font-weight:600}
+
+/* BÔNUS GAMIFICATION */
+.bonus-bar{background:linear-gradient(135deg,rgba(225,29,72,.1),rgba(124,58,237,.08));border:1px solid rgba(225,29,72,.2);border-radius:12px;padding:.875rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:10px}
+.bonus-bar-icon{font-size:20px;flex-shrink:0}
+.bonus-bar-text{font-size:12.5px;color:var(--text2);line-height:1.5}
+.bonus-bar-text strong{color:var(--red)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-mark">U</div>
+    <div class="logo-text">Uni<span>Games</span></div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">🎮 Me avise sobre promoções</div>
+    <h1>Deixe seu contato e<br>a gente te avisa!</h1>
+    <p>Quando esse produto entrar em promoção, você será o primeiro a saber.</p>
+  </div>
+
+  <!-- BÔNUS -->
+  <div class="bonus-bar">
+    <div class="bonus-bar-icon">🎁</div>
+    <div class="bonus-bar-text">Clientes cadastrados recebem <strong>ofertas exclusivas</strong> antes de qualquer um. Não perca!</div>
+  </div>
+
+  <div id="form-screen">
+
+    <!-- DADOS -->
+    <div class="section">
+      <div class="section-title"><div class="section-icon">👤</div> Seus dados</div>
+      <div class="form-group" id="fg-nome">
+        <label class="form-label">Nome <span class="req">*</span></label>
+        <input class="form-input" id="f-nome" type="text" placeholder="Como podemos te chamar?" autocomplete="given-name">
+      </div>
+      <div class="form-group" id="fg-whatsapp">
+        <label class="form-label">WhatsApp <span class="req">*</span></label>
+        <input class="form-input" id="f-whatsapp" type="tel" placeholder="(81) 99999-9999" maxlength="15" oninput="maskPhone(this)" autocomplete="tel">
+        <span class="form-hint">Só enviaremos mensagem quando tiver promoção do seu produto 😉</span>
+      </div>
+    </div>
+
+    <!-- PRODUTO -->
+    <div class="section">
+      <div class="section-title"><div class="section-icon">🎮</div> Produto de interesse</div>
+      <div class="form-group" id="fg-produto">
+        <label class="form-label">Qual produto você quer? <span class="req">*</span></label>
+        <input class="form-input" id="f-produto" type="text" placeholder="Ex: PlayStation 5 Slim, Controle PS5...">
+        <div class="prod-chips">
+          <div class="prod-chip" onclick="selChip(this,'PlayStation 5 Slim')">PS5 Slim</div>
+          <div class="prod-chip" onclick="selChip(this,'PlayStation 5 Digital')">PS5 Digital</div>
+          <div class="prod-chip" onclick="selChip(this,'PlayStation 4 Slim')">PS4 Slim</div>
+          <div class="prod-chip" onclick="selChip(this,'Xbox Series S')">Xbox Series S</div>
+          <div class="prod-chip" onclick="selChip(this,'Xbox Series X')">Xbox Series X</div>
+          <div class="prod-chip" onclick="selChip(this,'Nintendo Switch OLED')">Switch OLED</div>
+          <div class="prod-chip" onclick="selChip(this,'Controle PS5')">Controle PS5</div>
+          <div class="prod-chip" onclick="selChip(this,'Notebook Gamer')">Notebook Gamer</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Valor que você encontrou <span class="opt">(opcional)</span></label>
+          <input class="form-input" id="f-valor" type="text" placeholder="Ex: R$ 3.200,00">
+        </div>
+        <div class="form-group" id="fg-loja">
+          <label class="form-label">Loja onde está <span class="req">*</span></label>
+          <select class="form-select" id="f-loja">
+            <option value="">Selecione...</option>
+            <option>Guararapes</option><option>North Way</option><option>Patteo</option>
+            <option>Recife</option><option>Riomar</option><option>Tacaruna</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Observação <span class="opt">(opcional)</span></label>
+        <textarea class="form-textarea" id="f-obs" placeholder="Cor preferida, configuração, dúvidas..."></textarea>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-box">
+      <div class="submit-info">
+        <span style="font-size:18px">🔒</span>
+        <p>Seus dados ficam <strong>seguros</strong> com a UniGames. Só entraremos em contato quando tiver uma promoção do seu produto.</p>
+      </div>
+      <button class="btn-submit" id="btn-submit" onclick="submitForm()">
+        <div class="btn-spinner"></div>
+        <span class="btn-label">Me avise sobre promoções 🎮</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- SUCESSO -->
+  <div class="success-screen" id="success-screen">
+    <div class="suc-icon">✓</div>
+    <h2>Cadastro feito!</h2>
+    <p>Assim que <strong id="suc-produto"></strong> entrar em promoção na UniGames, você receberá uma mensagem no <strong id="suc-wpp"></strong>.</p>
+    <div class="suc-badge">🎮 UniGames — Obrigado!</div>
+    <p style="margin-top:1.25rem;font-size:11.5px;color:var(--text3)">Pode fechar esta página.</p>
+  </div>
+
+</div>
+
+<script>
+const SUPA_URL = 'https://ipjlmpelgikewnhnfbbt.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwamxtcGVsZ2lrZXduaG5mYmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDcyMjYsImV4cCI6MjA5MzQ4MzIyNn0.9ZF7v0tprywrEyTua_5iTKWKNPKJ5Oto2f2Q_YNx_Po';
+const HEADERS = { 'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'return=minimal' };
+
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 11) v = v.slice(0,11);
+  if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+  else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
+  el.value = v;
+}
+
+function selChip(el, val) {
+  document.querySelectorAll('.prod-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('f-produto').value = val;
+}
+
+function setErr(id) { document.getElementById('fg-'+id)?.classList.add('has-error'); }
+function clrErr(id) { document.getElementById('fg-'+id)?.classList.remove('has-error'); }
+
+function validate() {
+  let ok = true;
+  const nome = document.getElementById('f-nome').value.trim();
+  const wpp  = document.getElementById('f-whatsapp').value.replace(/\D/g,'');
+  const prod = document.getElementById('f-produto').value.trim();
+  const loja = document.getElementById('f-loja').value;
+  if (nome.length < 2) { setErr('nome'); ok=false; } else clrErr('nome');
+  if (wpp.length < 10) { setErr('whatsapp'); ok=false; } else clrErr('whatsapp');
+  if (!prod)           { setErr('produto'); ok=false; } else clrErr('produto');
+  if (!loja)           { setErr('loja'); ok=false; } else clrErr('loja');
+  return ok;
+}
+
+async function submitForm() {
+  if (!validate()) return;
+  const btn = document.getElementById('btn-submit');
+  btn.classList.add('loading'); btn.disabled = true;
+  const payload = {
+    nome:            document.getElementById('f-nome').value.trim(),
+    whatsapp:        document.getElementById('f-whatsapp').value.trim(),
+    produto:         document.getElementById('f-produto').value.trim(),
+    valor_encontrado:document.getElementById('f-valor').value.trim(),
+    loja:            document.getElementById('f-loja').value,
+    obs:             document.getElementById('f-obs').value.trim(),
+    status:          'novo',
+  };
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/clientes_interessados`, {
+      method: 'POST', headers: HEADERS, body: JSON.stringify(payload)
+    });
+    if (!res.ok) { const err = await res.text(); alert(`Erro ${res.status}: ${err}`); btn.classList.remove('loading'); btn.disabled=false; return; }
+    document.getElementById('form-screen').style.display = 'none';
+    document.getElementById('suc-produto').textContent = payload.produto;
+    document.getElementById('suc-wpp').textContent = payload.whatsapp;
+    document.getElementById('success-screen').style.display = 'block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch(e) {
+    alert('Erro de conexão. Tente novamente.');
+    btn.classList.remove('loading'); btn.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
