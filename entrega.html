@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniGames — Solicitação de Entrega</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFfklEQVR4nO1WW29cVxX+1tr7XObM2GNPJnYcx0lIbJw6qI0jUahQuako3CVSBAXxAxDqW9VKfegbEo9IFW+VEA+oKIgiQKIkBVSJRr0AygW1IaTNrbhJHZd4PJ45Z+bM3mv14diOJ+5Q6AsSyvcwmj2z9lp7f+tbay/gDu7gfwy67zNfPSKjc0+niGor5/945M1zJ58jYqgKiAiqinK5jE9+89HXLl1vzQU2wjCtHHvxNz966L8N9sBDj//2UsN8dmd9CO2Lf7jv9Eu/P2PzbYeOLzSsK5ci9NzgzZmzaPZiBBojNFn/LYgAEIgALb5BoYAqVHXDztloX2Zt/GaaIEb1ywDO2OVUYA07q2JBNPAAYhTCCjUKwaaTrrEEKNZjKTb/TRuHaF0582g55V2UGNNdvngSACwDsNqG5wqEeOABjBKMAEYUzP3Oh4eHqTY2NbJrz+zBTk9MEodYun7l/L8Wry7duLEoBTWKy/945TkBsSXvl24s9gDAKhhCClIDQAbnAAyQwLPCwRY3VcX+2fmx6U9848S1hhxaUcCD0aUewtl7MHt3cH731ee/9deTvztjjMGhLzz88pUVzI+UA0wtvPj5U3/61Qm7dhfQFvL6UeSUwMKwgY8AYM/+uVp97ujl0wu9RKjVCTWMiRJ47+Goky4wDuybfOD0R++nw3954dnTWadzs5U6532ZTdsdAHBiMOe3gdY+GQzJ824URdh7+Cs/eTvLEsOS1sNqvDdOj89U3v7BXaPu+YmkloSMzluNdxzV7vpxqVQCJO9ZQ9ZwyOLRBrDG5X8IJYUwweVYHR0dMSta+lIvJ5dElIyZa99/+dmnnsjzHKVSCdPznztart77TEu6aWqSj8x8+OCoy/N3GFWoEkBqAYB5XcFQkA6uApaCAWVAvW9NTM1s9xqL015aKhMaixd+nuc52ATIsgz/fP3U8ShWEDy6wrbZyUtk1EMJYEXmXbZtW42Z1vKuAAQ0WARYr3GFQpQ4CNkElsgLYBEF5YCo6ABEhCBMAoBhFPA9j6yTi6FiNwHwQDb1odmJPg2YwAaDggsYG/yIivdeFIJ1daiKrte7qkJVisVGk7rFLqvCiGq1vnOKDbMAxL1ejn0HDn+xMLxFxPq62U7BzFARlEpJaIzhDbMBmaMBjU1JIaTotlcbXB+tsYhadSI2Gvl6rVYjVQURA8RQVWwf31XxaqdVkQpB2OdXRZ0rMjaokBQFQ1uzqhAExibnzr5ygZG+9UsmCAKXL9yk8f33Pvjw+Pg4qwpUPCandgX7P/bgTxstE4Lgkjjm5uLfT7TSdk7GrvnfGoSgABUp2qIsBQKKSs3mitilyy88Vp/+2tFrzbYTbrnlaOeTuz/13Ud2N24cc7nzNFz/zpXVaCpnn0JcpaYr11+9dOq1yX3zk/AMIveeOdBCETK4vReCsRfO/vniXDz57e1jH396tbWMNM/TBoV7wnDiMWMYedYR4nYe+Eqyd9sUll8/9unWakttEEQizolXJ6JOtZ+GMLAGKuycOGFyqgpR8iJwIsVDCQBWRPDqS8/87P4jQbM6Pv/DRtvPKBO8KpQUiUk48KWwqsu/uHb219974/ypJQAwxiMpeVuJbL0cWxjLmyqIIL1sdU89OScum2MmdA1zFNBIOSYbRgG61iaF5QZ9ilq9zkMjO2o7JmcOttIcbBjl2OZX3/jb2esLF9N154CiMjTMcaU65HperbXU67RaK42bfmMuUMWOiUkDE1U63S46reVmeagaC0wIssg7q1navJn3yeb9QP/muf6g6Iu6Ptls/pVQyEW1/6l+rxrfPP30+UMxGW3sWZsPavUxa7c60L6qGtSbbw822EZvW98aZKYP3DP/vk7u4A7+7/EuYRe2ivVZAUYAAAAASUVORK5CYII=">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#e11d48;--red-dark:#be123c;--red-bg:#fff1f2;
+  --green:#16a34a;--green-bg:#f0fdf4;
+  --text:#111827;--text2:#4b5563;--text3:#9ca3af;
+  --border:#e5e7eb;--surface:#fff;--bg:#f3f4f6;
+  --radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:3rem}
+
+/* HEADER */
+.header{background:#111827;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.header-inner{max-width:600px;margin:0 auto;padding:.875rem 1.5rem;display:flex;align-items:center;gap:12px}
+.logo-mark{width:36px;height:36px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{color:#fff;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.logo-text span{color:var(--red)}
+.header-sub{margin-left:auto;font-size:11px;color:#6b7280;text-align:right;line-height:1.4}
+
+/* CONTAINER */
+.container{max-width:600px;margin:0 auto;padding:1.75rem 1.25rem 0}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#111827 0%,#1f2937 100%);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;border:1px solid #374151;position:relative;overflow:hidden}
+.hero::before{content:'📦';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:72px;opacity:.08}
+.hero-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(225,29,72,.15);border:1px solid rgba(225,29,72,.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--red);margin-bottom:.75rem}
+.hero h1{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.25;margin-bottom:.4rem}
+.hero p{font-size:13px;color:#9ca3af;line-height:1.6}
+
+/* SECTION */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.section-title{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:1rem;display:flex;align-items:center;gap:7px;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.section-title-icon{width:24px;height:24px;border-radius:6px;background:#111827;display:flex;align-items:center;justify-content:center;font-size:12px}
+
+/* FORM */
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:.875rem}
+.form-group:last-child{margin-bottom:0}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
+.form-label{font-size:11.5px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:5px}
+.form-label .req{color:var(--red)}
+.form-label .opt{font-weight:400;color:var(--text3);font-size:10.5px}
+.form-input,.form-select,.form-textarea{
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:.625rem .875rem;font-size:13.5px;color:var(--text);font-family:inherit;
+  background:var(--surface);outline:none;transition:border-color .15s,box-shadow .15s;width:100%;
+}
+.form-input{height:42px}
+.form-select{height:42px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .875rem center;padding-right:2rem;cursor:pointer}
+.form-textarea{resize:vertical;min-height:80px;padding:.625rem .875rem}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(225,29,72,.1)}
+.form-input.error,.form-select.error,.form-textarea.error{border-color:var(--red);background:#fff8f8}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3)}
+.form-hint{font-size:11px;color:var(--text3)}
+.form-error-msg{font-size:11px;color:var(--red);display:none}
+.has-error .form-error-msg{display:block}
+.has-error .form-input,.has-error .form-select,.has-error .form-textarea{border-color:var(--red)}
+
+/* CEP */
+.cep-wrap{position:relative}
+.cep-spinner{position:absolute;right:.875rem;top:50%;transform:translateY(-50%);width:15px;height:15px;border:2px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .6s linear infinite;display:none}
+.cep-wrap.loading .cep-spinner{display:block}
+.cep-ok{position:absolute;right:.875rem;top:50%;transform:translateY(-50%);color:var(--green);font-weight:700;display:none;font-size:14px}
+.cep-wrap.done .cep-ok{display:block}
+
+/* PAGAMENTO CHIPS */
+.pgto-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.375rem}
+.pgto-chip{border:1.5px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12.5px;cursor:pointer;transition:all .12s;color:var(--text2);font-weight:500;user-select:none}
+.pgto-chip:hover{border-color:#d1d5db}
+.pgto-chip.sel{border-color:var(--red);background:var(--red);color:#fff;font-weight:700}
+
+/* DISPONIBILIDADE CHIPS */
+.disp-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.375rem}
+.disp-chip{border:1.5px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .12s;color:var(--text2);font-weight:500}
+.disp-chip:hover{border-color:#d1d5db}
+.disp-chip.sel{border-color:var(--red);background:rgba(225,29,72,.08);color:var(--red);font-weight:700;border-color:var(--red)}
+
+/* SUBMIT */
+.submit-box{background:#111827;border-radius:14px;padding:1.25rem;margin-bottom:1rem;border:1px solid #374151}
+.submit-info{display:flex;gap:.75rem;margin-bottom:1.1rem;align-items:flex-start}
+.submit-info p{font-size:12.5px;color:#9ca3af;line-height:1.6}
+.submit-info p strong{color:#e5e7eb}
+.btn-submit{width:100%;height:50px;background:var(--red);border:none;border-radius:12px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-submit:hover{background:var(--red-dark);transform:translateY(-1px);box-shadow:0 4px 16px rgba(225,29,72,.35)}
+.btn-submit:disabled{background:#6b7280;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+.btn-submit.loading .btn-spinner{display:block}
+.btn-submit.loading .btn-label{display:none}
+
+/* SUCESSO */
+.success-screen{display:none;text-align:center;padding:2.5rem 1.25rem}
+.suc-icon{width:68px;height:68px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 1.25rem}
+.success-screen h2{font-size:21px;font-weight:800;color:var(--text);margin-bottom:.625rem;letter-spacing:-.03em}
+.success-screen p{font-size:13.5px;color:var(--text2);line-height:1.7;max-width:380px;margin:0 auto 1.25rem}
+.suc-badge{display:inline-flex;align-items:center;gap:6px;background:#111827;color:#e5e7eb;padding:.5rem 1rem;border-radius:8px;font-size:12px;font-weight:600}
+
+/* RESUMO CARD */
+.resumo-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;text-align:left;box-shadow:var(--shadow)}
+.resumo-card-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.75rem}
+.resumo-row{display:flex;gap:.5rem;font-size:12.5px;padding:4px 0;border-bottom:1px solid var(--border)}
+.resumo-row:last-child{border-bottom:none}
+.resumo-key{font-weight:600;color:var(--text2);min-width:100px;flex-shrink:0}
+.resumo-val{color:var(--text)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{animation:fadeIn .3s ease forwards}
+
+.copy-actions{margin:1rem 0 1.25rem;display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn-copy{min-height:44px;border:none;border-radius:12px;background:#111827;color:#fff;font-weight:800;font-size:13.5px;font-family:inherit;padding:0 1rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
+.btn-copy:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(17,24,39,.25)}
+.map-row{display:none;border:1px solid var(--border);border-radius:12px;padding:.75rem;margin-top:.75rem;background:#f9fafb}
+.map-preview{height:150px;border-radius:10px;background:#e5e7eb;margin-top:.625rem;overflow:hidden}
+.map-hint{font-size:11.5px;color:var(--green);font-weight:700}
+
+/* Google Maps autocomplete */
+.pac-container { z-index: 99999 !important; border-radius: 12px !important; border: 1px solid var(--border) !important; box-shadow: 0 8px 32px rgba(30,60,120,.12) !important; font-family: inherit !important; }
+.pac-item { padding: 8px 14px !important; font-size: 13px !important; cursor: pointer !important; }
+.pac-item:hover { background: #fff1f2 !important; }
+.pac-item-query { font-weight: 600 !important; }
+.pac-matched { color: var(--red) !important; }
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIYI4xJ_m8UkeE_DCkhPPBA2q9vq5dxgQ&libraries=places&language=pt-BR" async defer onload="initMaps()"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-mark">U</div>
+    <div class="logo-text">Uni<span>Games</span></div>
+    <div class="header-sub">Solicitação de entrega<br>Rápido e seguro</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="hero animate-in">
+    <div class="hero-tag">🚚 UniGames — Entrega</div>
+    <h1>Preencha os dados<br>para receber seu pedido</h1>
+    <p>Informe seus dados de entrega e nossa equipe vai organizar tudo para você.</p>
+  </div>
+
+  <div id="form-screen">
+
+    <!-- DADOS PESSOAIS -->
+    <div class="section animate-in">
+      <div class="section-title"><div class="section-title-icon">👤</div>Dados Pessoais</div>
+
+      <div class="form-group" id="fg-nome">
+        <label class="form-label">Nome completo <span class="req">*</span></label>
+        <input class="form-input" id="f-nome" type="text" placeholder="Ex: Kleber Lucas" autocomplete="name">
+        <span class="form-error-msg">Campo obrigatório</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" id="fg-cpf">
+          <label class="form-label">CPF <span class="req">*</span></label>
+          <input class="form-input" id="f-cpf" type="text" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)">
+          <span class="form-error-msg">CPF inválido</span>
+        </div>
+        <div class="form-group" id="fg-telefone">
+          <label class="form-label">Número para contato <span class="req">*</span></label>
+          <input class="form-input" id="f-telefone" type="tel" placeholder="(81) 99999-9999" maxlength="15" oninput="maskPhone(this)" autocomplete="tel">
+          <span class="form-error-msg">Telefone inválido</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENDEREÇO -->
+    <div class="section animate-in">
+      <div class="section-title"><div class="section-title-icon">📍</div>Endereço de Entrega</div>
+
+      <div class="form-row" style="margin-bottom:.875rem">
+        <div class="form-group" id="fg-cep">
+          <label class="form-label">CEP <span class="req">*</span></label>
+          <div class="cep-wrap" id="cep-wrap">
+            <input class="form-input" id="f-cep" type="text" placeholder="00000-000" maxlength="9" oninput="maskCEP(this)" autocomplete="postal-code">
+            <div class="cep-spinner"></div>
+            <span class="cep-ok">✓</span>
+          </div>
+          <span class="form-hint">Preenchimento automático ao digitar o CEP</span>
+          <span class="form-error-msg">CEP inválido</span>
+        </div>
+        <div class="form-group" id="fg-bairro">
+          <label class="form-label">Bairro <span class="req">*</span></label>
+          <input class="form-input" id="f-bairro" type="text" placeholder="Ex: Boa Viagem">
+          <span class="form-error-msg">Campo obrigatório</span>
+        </div>
+      </div>
+
+      <div class="form-group" id="fg-endereco">
+        <label class="form-label">Endereço completo <span class="req">*</span></label>
+        <input class="form-input" id="f-endereco" type="text" placeholder="Rua, avenida, bairro, cidade — UF" autocomplete="street-address">
+        <span class="form-hint">Ex: Avenida Boa Viagem, Boa Viagem, Recife - PE</span>
+        <span class="form-error-msg">Campo obrigatório</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" id="fg-numero">
+          <label class="form-label">Número <span class="req">*</span></label>
+          <input class="form-input" id="f-numero" type="text" placeholder="Ex: 00">
+          <span class="form-error-msg">Campo obrigatório</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Link do mapa <span class="opt">(opcional)</span></label>
+          <input class="form-input" id="f-mapa" type="url" placeholder="Cole aqui o link do Google Maps">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Ponto de referência <span class="opt">(opcional)</span></label>
+        <input class="form-input" id="f-referencia" type="text" placeholder="Ex: Edf. Sirius 3854, portão preto...">
+      </div>
+
+      <div class="map-row" id="map-row">
+        <div class="map-hint" id="maps-hint">Endereço localizado no mapa</div>
+        <div id="maps-coords" style="display:none"></div>
+        <div class="map-preview" id="maps-preview"></div>
+      </div>
+    </div>
+
+    <!-- PRODUTO -->
+    <div class="section animate-in">
+      <div class="section-title"><div class="section-title-icon">🎮</div>Produto e Venda</div>
+
+      <div class="form-group" id="fg-produto">
+        <label class="form-label">Produto <span class="req">*</span></label>
+        <textarea class="form-textarea" id="f-produto" placeholder="Ex: 01 - MONITOR GAMER ALIENWARE NVIDIA G-SYNC 25 POLEGADAS 320hz"></textarea>
+        <span class="form-error-msg">Informe o produto</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" id="fg-localizacao-produto">
+          <label class="form-label">Localização do produto <span class="req">*</span></label>
+          <input class="form-input" id="f-localizacao-produto" type="text" placeholder="Ex: RIOMAR">
+          <span class="form-error-msg">Campo obrigatório</span>
+        </div>
+        <div class="form-group" id="fg-valor">
+          <label class="form-label">Valor <span class="req">*</span></label>
+          <input class="form-input" id="f-valor" type="text" placeholder="Ex: R$ 3.090,00">
+          <span class="form-error-msg">Campo obrigatório</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGAMENTO -->
+    <div class="section animate-in">
+      <div class="section-title"><div class="section-title-icon">💳</div>Forma de Pagamento</div>
+
+      <div class="form-group" id="fg-pgto">
+        <label class="form-label">Forma de pagamento <span class="req">*</span></label>
+        <div class="pgto-chips">
+          <div class="pgto-chip" onclick="selPgto(this,'PIX')">💸 PIX</div>
+          <div class="pgto-chip" onclick="selPgto(this,'Cartão de Crédito')">💳 Crédito</div>
+          <div class="pgto-chip" onclick="selPgto(this,'Cartão de Débito')">💳 Débito</div>
+          <div class="pgto-chip" onclick="selPgto(this,'Dinheiro')">💵 Dinheiro</div>
+        </div>
+        <input class="form-input" id="f-pgto" type="text" placeholder="Ex: Cartão de Crédito 12x" style="margin-top:.625rem">
+        <span class="form-error-msg" id="pgto-error">Informe a forma de pagamento</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Pagamento <span class="opt">(opcional)</span></label>
+          <select class="form-select" id="f-pagamento-status">
+            <option value="">Selecione...</option>
+            <option>Pagamento na entrega</option>
+            <option>Já pago</option>
+            <option>Parcialmente pago</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Frete <span class="opt">(opcional)</span></label>
+          <select class="form-select" id="f-frete-status">
+            <option value="">Selecione...</option>
+            <option>Frete já pago</option>
+            <option>Frete na entrega</option>
+            <option>Frete grátis</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISPONIBILIDADE -->
+    <div class="section animate-in">
+      <div class="section-title"><div class="section-title-icon">🕐</div>Disponibilidade para Receber</div>
+
+      <div class="form-group" id="fg-disp">
+        <label class="form-label">Quando você pode receber? <span class="req">*</span></label>
+        <div class="disp-chips">
+          <div class="disp-chip" onclick="selDisp(this,'Manhã (8h–12h)')">🌅 Manhã</div>
+          <div class="disp-chip" onclick="selDisp(this,'Tarde (12h–18h)')">☀️ Tarde</div>
+          <div class="disp-chip" onclick="selDisp(this,'Noite (18h–21h)')">🌙 Noite</div>
+          <div class="disp-chip" onclick="selDisp(this,'Qualquer horário')">🕐 Qualquer horário</div>
+        </div>
+        <input class="form-input" id="f-disp" type="text" placeholder="Ou informe data e horário específico... Ex: Até as 17h, Sábado a tarde" style="margin-top:.625rem">
+        <span class="form-error-msg" id="disp-error">Informe sua disponibilidade</span>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-box animate-in">
+      <div class="submit-info">
+        <span style="font-size:18px">🔒</span>
+        <p>Seus dados são enviados de forma <strong>segura</strong> apenas para a equipe UniGames. Entraremos em contato para confirmar a entrega.</p>
+      </div>
+      <button class="btn-submit" id="btn-submit" onclick="submitForm()">
+        <div class="btn-spinner"></div>
+        <span class="btn-label">Confirmar solicitação de entrega 🚚</span>
+      </button>
+    </div>
+
+  </div><!-- /form-screen -->
+
+  <!-- SUCESSO -->
+  <div class="success-screen" id="success-screen">
+    <div class="suc-icon">✓</div>
+    <h2>Solicitação enviada!</h2>
+
+    <div class="resumo-card" id="resumo-card"></div>
+
+    <div class="copy-actions">
+      <button class="btn-copy" onclick="copiarFichaCompleta()">📋 Copiar ficha completa</button>
+    </div>
+
+    <p>Nossa equipe vai entrar em contato pelo <strong id="suc-tel"></strong> para confirmar a entrega. Fique atento ao WhatsApp!</p>
+    <div class="suc-badge">🎮 UniGames — Obrigado!</div>
+    <p style="margin-top:1.25rem;font-size:11.5px;color:var(--text3)">Você pode fechar esta página.</p>
+  </div>
+
+</div>
+
+<script>
+const SUPA_URL = 'https://ipjlmpelgikewnhnfbbt.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwamxtcGVsZ2lrZXduaG5mYmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDcyMjYsImV4cCI6MjA5MzQ4MzIyNn0.9ZF7v0tprywrEyTua_5iTKWKNPKJ5Oto2f2Q_YNx_Po';
+const HEADERS = {
+  'Content-Type': 'application/json',
+  'apikey': SUPA_KEY,
+  'Authorization': `Bearer ${SUPA_KEY}`,
+  'Prefer': 'return=minimal'
+};
+
+// ── Máscaras ──────────────────────────────────────────────────────
+function maskCPF(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 11) v = v.slice(0,11);
+  v = v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  el.value = v;
+}
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 11) v = v.slice(0,11);
+  if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+  else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
+  el.value = v;
+}
+function maskCEP(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 8) v = v.slice(0,8);
+  v = v.replace(/(\d{5})(\d)/,'$1-$2');
+  el.value = v;
+  if (v.replace(/\D/g,'').length === 8) fetchCEP(v.replace(/\D/g,''));
+}
+
+// ── CEP ───────────────────────────────────────────────────────────
+async function fetchCEP(cep) {
+  const wrap = document.getElementById('cep-wrap');
+  wrap.className = 'cep-wrap loading';
+  try {
+    const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const d = await r.json();
+    if (d.erro) { wrap.className = 'cep-wrap'; return; }
+    if (!document.getElementById('f-endereco').value) {
+      const end = [d.logradouro, d.bairro, d.localidade + ' - ' + d.uf].filter(Boolean).join(', ');
+      document.getElementById('f-endereco').value = end;
+    }
+    document.getElementById('f-bairro').value = d.bairro || '';
+    wrap.className = 'cep-wrap done';
+  } catch(e) { wrap.className = 'cep-wrap'; }
+}
+
+// ── Google Maps Autocomplete ──────────────────────────────────────
+let mapsMap = null, mapsMarker = null;
+
+function initMaps() {
+  const input = document.getElementById('f-endereco');
+  if (!input || !window.google) return;
+  const ac = new google.maps.places.Autocomplete(input, {
+    componentRestrictions: { country: 'br' },
+    fields: ['address_components','geometry','formatted_address'],
+    types: ['address'],
+  });
+  ac.addListener('place_changed', () => {
+    const place = ac.getPlace();
+    if (!place.geometry) return;
+    const comp = {};
+    (place.address_components || []).forEach(a => a.types.forEach(t => comp[t] = a));
+    const bairro = comp.sublocality_level_1?.long_name || comp.neighborhood?.long_name || '';
+    const cep    = (comp.postal_code?.long_name || '').replace(/\D/g,'');
+    if (bairro) document.getElementById('f-bairro').value = bairro;
+    if (cep) {
+      const cepFmt = cep.slice(0,5) + '-' + cep.slice(5,8);
+      document.getElementById('f-cep').value = cepFmt;
+      document.getElementById('cep-wrap').className = 'cep-wrap done';
+    }
+    const loc = place.geometry.location;
+    document.getElementById('map-row').style.display = '';
+    document.getElementById('maps-coords').textContent = loc.lat() + ',' + loc.lng();
+    if (!mapsMap) {
+      mapsMap = new google.maps.Map(document.getElementById('maps-preview'), {
+        zoom: 17, center: loc,
+        mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
+      });
+      mapsMarker = new google.maps.Marker({ map: mapsMap, position: loc, animation: google.maps.Animation.DROP });
+    } else {
+      mapsMap.setCenter(loc);
+      mapsMarker.setPosition(loc);
+    }
+    document.getElementById('maps-hint').textContent = '✅ Endereço confirmado no mapa';
+  });
+}
+
+// ── Pagamento ─────────────────────────────────────────────────────
+function selPgto(el, val) {
+  document.querySelectorAll('.pgto-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('f-pgto').value = val;
+  document.getElementById('pgto-error').style.display = 'none';
+}
+
+// ── Disponibilidade ───────────────────────────────────────────────
+function selDisp(el, val) {
+  document.querySelectorAll('.disp-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('f-disp').value = val;
+  document.getElementById('disp-error').style.display = 'none';
+}
+
+// ── Validação ─────────────────────────────────────────────────────
+function setErr(id) { document.getElementById('fg-'+id)?.classList.add('has-error'); }
+function clrErr(id) { document.getElementById('fg-'+id)?.classList.remove('has-error'); }
+
+function validate() {
+  let ok = true;
+
+  if (document.getElementById('f-nome').value.trim().length < 2) { setErr('nome'); ok=false; } else clrErr('nome');
+  if (document.getElementById('f-cpf').value.replace(/\D/g,'').length < 11) { setErr('cpf'); ok=false; } else clrErr('cpf');
+  if (document.getElementById('f-telefone').value.replace(/\D/g,'').length < 10) { setErr('telefone'); ok=false; } else clrErr('telefone');
+  if (document.getElementById('f-cep').value.replace(/\D/g,'').length < 8) { setErr('cep'); ok=false; } else clrErr('cep');
+  if (document.getElementById('f-bairro').value.trim().length < 2) { setErr('bairro'); ok=false; } else clrErr('bairro');
+  if (document.getElementById('f-endereco').value.trim().length < 5) { setErr('endereco'); ok=false; } else clrErr('endereco');
+  if (document.getElementById('f-numero').value.trim().length < 1) { setErr('numero'); ok=false; } else clrErr('numero');
+  if (document.getElementById('f-produto').value.trim().length < 3) { setErr('produto'); ok=false; } else clrErr('produto');
+  if (document.getElementById('f-localizacao-produto').value.trim().length < 2) { setErr('localizacao-produto'); ok=false; } else clrErr('localizacao-produto');
+  if (document.getElementById('f-valor').value.trim().length < 1) { setErr('valor'); ok=false; } else clrErr('valor');
+
+  if (!document.getElementById('f-pgto').value.trim()) {
+    document.getElementById('pgto-error').style.display = 'block'; ok=false;
+  } else {
+    document.getElementById('pgto-error').style.display = 'none';
+  }
+  if (!document.getElementById('f-disp').value.trim()) {
+    document.getElementById('disp-error').style.display = 'block'; ok=false;
+  }
+
+  return ok;
+}
+
+let ultimaFichaCompleta = '';
+
+function montarLinkMapa(payload) {
+  if (payload.link_mapa) return payload.link_mapa;
+  if (payload.coords) return `https://www.google.com/maps?q=${encodeURIComponent(payload.coords)}`;
+  return '';
+}
+
+function montarFichaCompleta(payload) {
+  const linkMapa = montarLinkMapa(payload);
+  return `NOME: ${payload.nome || ''}\n\nCPF: ${payload.cpf || ''}\n\nNUMERO P/ CONTATO: ${payload.telefone || ''}\n\nENDEREÇO: ${payload.endereco || ''}\nNº: ${payload.numero || ''}\n\nCEP: ${payload.cep || ''}\n\nBAIRRO: ${payload.bairro || ''}\n\nPONTO REFERÊNCIA: ${payload.ponto_referencia || ''}\n\nPRODUTO: \n${payload.produto || ''}\n\nLOCALIZAÇÃO DO PRODUTO: ${payload.localizacao_produto || ''}\n\nFORMA DE PAGAMENTO: ${payload.forma_pagamento || ''}\n\nVALOR: ${payload.valor || ''}\n\nPAGAMENTO NA ENTREGA OU JÁ PAGO: ${payload.pagamento_status || ''}\n\nFRETE JÁ PAGO OU NA ENTREGA: ${payload.frete_status || ''}\n\nDISPONIBILIDADE DE RECEBIMENTO DATA OU HORÁRIO: ${payload.disponibilidade || ''}\n\nLINK DO MAPA: ${linkMapa}`;
+}
+
+async function copiarFichaCompleta() {
+  if (!ultimaFichaCompleta) return;
+  try {
+    await navigator.clipboard.writeText(ultimaFichaCompleta);
+    alert('Ficha completa copiada!');
+  } catch(e) {
+    const area = document.createElement('textarea');
+    area.value = ultimaFichaCompleta;
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+    alert('Ficha completa copiada!');
+  }
+}
+
+// ── Submit ────────────────────────────────────────────────────────
+async function submitForm() {
+  if (!validate()) {
+    document.querySelector('.has-error')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const btn = document.getElementById('btn-submit');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  const payload = {
+    nome:             document.getElementById('f-nome').value.trim(),
+    cpf:              document.getElementById('f-cpf').value.trim(),
+    telefone:         document.getElementById('f-telefone').value.trim(),
+    cep:              document.getElementById('f-cep').value.trim(),
+    bairro:           document.getElementById('f-bairro').value.trim(),
+    endereco:         document.getElementById('f-endereco').value.trim(),
+    numero:           document.getElementById('f-numero').value.trim(),
+    ponto_referencia: document.getElementById('f-referencia').value.trim(),
+    coords:           document.getElementById('maps-coords')?.textContent || '',
+    link_mapa:        document.getElementById('f-mapa').value.trim(),
+    produto:          document.getElementById('f-produto').value.trim(),
+    localizacao_produto: document.getElementById('f-localizacao-produto').value.trim(),
+    forma_pagamento:  document.getElementById('f-pgto').value.trim(),
+    valor:            document.getElementById('f-valor').value.trim(),
+    pagamento_status: document.getElementById('f-pagamento-status').value,
+    frete_status:     document.getElementById('f-frete-status').value,
+    disponibilidade:  document.getElementById('f-disp').value.trim(),
+    status:           'pendente',
+  };
+
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/entregas`, {
+      method: 'POST', headers: HEADERS, body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('Erro Supabase:', res.status, err);
+      alert(`Erro ${res.status}: ${err}`);
+      btn.classList.remove('loading'); btn.disabled = false;
+      return;
+    }
+
+    // Sucesso — mostra resumo
+    document.getElementById('form-screen').style.display = 'none';
+    document.getElementById('suc-tel').textContent = payload.telefone;
+
+    ultimaFichaCompleta = montarFichaCompleta(payload);
+
+    const resumo = document.getElementById('resumo-card');
+    const linhas = [
+      ['Nome',               payload.nome],
+      ['CPF',                payload.cpf],
+      ['Contato',            payload.telefone],
+      ['Endereço',           `${payload.endereco}, Nº ${payload.numero}`],
+      ['CEP',                payload.cep],
+      ['Bairro',             payload.bairro],
+      ['Ponto referência',   payload.ponto_referencia || '—'],
+      ['Produto',            payload.produto],
+      ['Localização',        payload.localizacao_produto],
+      ['Pagamento',          payload.forma_pagamento],
+      ['Valor',              payload.valor],
+      ['Status pagamento',   payload.pagamento_status || '—'],
+      ['Frete',              payload.frete_status || '—'],
+      ['Disponibilidade',    payload.disponibilidade],
+      ['Link do mapa',       montarLinkMapa(payload) || '—'],
+    ];
+    resumo.innerHTML = `<div class="resumo-card-title">📋 Resumo do seu pedido</div>` +
+      linhas.map(([k,v]) => `<div class="resumo-row"><span class="resumo-key">${k}</span><span class="resumo-val">${String(v).replace(/\n/g,'<br>')}</span></div>`).join('');
+
+    const suc = document.getElementById('success-screen');
+    suc.style.display = 'block';
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  } catch(e) {
+    console.error('Fetch error:', e);
+    alert(`Erro de conexão: ${e.message}`);
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
