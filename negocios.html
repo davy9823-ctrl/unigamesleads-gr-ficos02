@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniGames — Negócios Futuros</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1220;--surface:#151b2e;--surface2:#1b2236;--border:#262f47;
+  --text:#e2e8f0;--text2:#a7b1c5;--text3:#64748b;
+  --accent:#4d8ef7;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--purple:#a78bfa;
+  --radius:12px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:.625rem .8rem;font-size:14px;color:var(--text);outline:none;transition:.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px}
+.fg{margin-bottom:.875rem}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:.8rem 1rem}
+.header-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:9px}
+.brand-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:15px}
+.brand-name{font-size:14px;font-weight:800;letter-spacing:-.02em}
+.brand-sub{font-size:10.5px;color:var(--text3)}
+.btn{border:1px solid var(--border);background:var(--surface2);color:var(--text2);border-radius:9px;padding:.5rem .85rem;font-size:12.5px;font-weight:600;transition:.15s}
+.btn:hover{border-color:var(--accent);color:var(--text)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{filter:brightness(1.1);color:#fff}
+.btn-green{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:var(--green)}
+.btn-red{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);color:var(--red)}
+
+.container{max-width:760px;margin:0 auto;padding:1.25rem 1rem 4rem}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:2rem;width:100%;max-width:380px;box-shadow:0 12px 48px rgba(0,0,0,.4)}
+.login-logo{width:52px;height:52px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;margin:0 auto 1rem}
+.login-title{text-align:center;font-size:18px;font-weight:800;margin-bottom:.25rem}
+.login-sub{text-align:center;font-size:12.5px;color:var(--text3);margin-bottom:1.5rem}
+.login-err{color:var(--red);font-size:12px;text-align:center;margin-top:.75rem;display:none}
+
+/* TABS */
+.tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:5px;margin-bottom:1.25rem}
+.tab-btn{flex:1;border:none;background:transparent;color:var(--text3);font-size:13px;font-weight:700;padding:.6rem;border-radius:8px;transition:.15s}
+.tab-btn.active{background:var(--accent);color:#fff}
+
+/* CARDS NF */
+.toolbar{display:flex;gap:8px;margin-bottom:1rem;align-items:center}
+.toolbar input{flex:1}
+.fcard{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem;margin-bottom:.75rem}
+.fcard.done{border-left-color:var(--green);opacity:.85}
+.fcard.quit{border-left-color:var(--red);opacity:.8}
+.fcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.fcard-name{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.fcard-row{font-size:12.5px;color:var(--text2);margin-top:3px;line-height:1.5}
+.fcard-row b{color:var(--text)}
+.fcard-badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.b-pend{background:rgba(77,142,247,.13);color:var(--accent)}
+.b-done{background:rgba(74,222,128,.13);color:var(--green)}
+.b-quit{background:rgba(248,113,113,.12);color:var(--red)}
+.fcard-actions{display:flex;gap:6px;margin-top:.75rem;flex-wrap:wrap}
+.fcard-actions .btn{padding:.4rem .7rem;font-size:11.5px}
+.sec-head{display:flex;align-items:center;gap:8px;margin:1.25rem 0 .75rem;cursor:pointer;user-select:none}
+.sec-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--text3)}
+.sec-count{font-size:10.5px;font-weight:800;background:var(--surface2);border:1px solid var(--border);padding:1px 8px;border-radius:10px;color:var(--text2)}
+.empty{background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius);padding:2rem;text-align:center;color:var(--text3);font-size:13px}
+
+/* COMISSÕES */
+.comm-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:1rem}
+.comm-mes{font-size:15px;font-weight:800;min-width:150px;text-align:center}
+.comm-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.comm-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem}
+.comm-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px}
+.comm-value{font-size:19px;font-weight:900;letter-spacing:-.03em}
+.comm-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.comm-table th{text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:8px 10px;border-bottom:1px solid var(--border)}
+.comm-table td{padding:10px;border-bottom:1px solid var(--border);color:var(--text2)}
+.comm-table td b{color:var(--text)}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:440px;box-shadow:0 12px 48px rgba(0,0,0,.5)}
+.modal-title{font-size:15px;font-weight:800;margin-bottom:1.25rem}
+
+/* TOAST */
+#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#fff;color:#111;border-radius:10px;padding:.75rem 1.25rem;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:9999;display:none}
+
+/* KANBAN INTERESSADOS */
+.kanban{display:grid;grid-template-columns:repeat(4,minmax(230px,1fr));gap:10px;overflow-x:auto;padding-bottom:.5rem;align-items:start}
+.kb-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;min-width:230px}
+.kb-col-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;padding-bottom:.5rem;border-bottom:2px solid var(--kb-cor,var(--border))}
+.kb-col-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--text2)}
+.kb-count{font-size:10px;font-weight:800;background:var(--surface2);padding:1px 7px;border-radius:9px;color:var(--text3)}
+.kb-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.7rem .8rem;margin-bottom:.55rem}
+.kb-name{font-size:13px;font-weight:800}
+.kb-info{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.5}
+.kb-info b{color:var(--text)}
+.kb-acts{display:flex;gap:5px;margin-top:.6rem;flex-wrap:wrap}
+.kb-acts .btn{padding:.32rem .55rem;font-size:10.5px}
+.kb-status-sel{margin-top:.55rem;font-size:11px;padding:.35rem .5rem;height:auto}
+.kb-empty{font-size:11px;color:var(--text3);text-align:center;padding:.75rem 0}
+
+@media(max-width:560px){
+  .comm-cards{grid-template-columns:1fr}
+  .comm-table{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="login-screen" class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">U</div>
+    <div class="login-title">Negócios Futuros</div>
+    <div class="login-sub" id="login-pagina-nome">Acesso restrito — faça login para continuar</div>
+    <div class="fg">
+      <label>Usuário</label>
+      <input id="login-user" type="text" autocomplete="username" placeholder="Seu usuário">
+    </div>
+    <div class="fg">
+      <label>Senha</label>
+      <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••" onkeydown="if(event.key==='Enter')fazerLogin()">
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:.75rem;font-size:14px" onclick="fazerLogin()">Entrar</button>
+    <div class="login-err" id="login-err">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="app" style="display:none">
+  <div class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">U</div>
+        <div>
+          <div class="brand-name" id="hdr-pagina">Negócios Futuros</div>
+          <div class="brand-sub" id="hdr-vendedor"></div>
+        </div>
+      </div>
+      <button class="btn" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" id="tabbtn-nf" onclick="setAba('nf')">📅 Negócios</button>
+      <button class="tab-btn" id="tabbtn-int" onclick="setAba('int')">⭐ Interessados</button>
+      <button class="tab-btn" id="tabbtn-comm" onclick="setAba('comm')">💰 Comissões</button>
+    </div>
+
+    <!-- ABA NEGÓCIOS -->
+    <div id="aba-nf">
+      <div class="toolbar">
+        <input id="busca" type="text" placeholder="🔍 Buscar cliente, produto, loja..." oninput="render()">
+        <button class="btn btn-primary" onclick="abrirForm()">＋ Novo</button>
+      </div>
+      <div id="lista-pendentes"></div>
+      <div class="sec-head" onclick="toggleSec('done')">
+        <span class="sec-title">✅ Concluídos</span><span class="sec-count" id="count-done">0</span>
+        <span style="font-size:11px;color:var(--text3)" id="arrow-done">▼ mostrar</span>
+      </div>
+      <div id="lista-done" style="display:none"></div>
+      <div class="sec-head" onclick="toggleSec('quit')">
+        <span class="sec-title">🚫 Desistências</span><span class="sec-count" id="count-quit">0</span>
+        <span style="font-size:11px;color:var(--text3)" id="arrow-quit">▼ mostrar</span>
+      </div>
+      <div id="lista-quit" style="display:none"></div>
+    </div>
+
+    <!-- ABA INTERESSADOS -->
+    <div id="aba-int" style="display:none">
+      <div class="toolbar">
+        <input id="int-busca" type="text" placeholder="🔍 Buscar nome, produto..." oninput="renderInt()">
+        <button class="btn btn-primary" onclick="abrirFormInt()">＋ Novo</button>
+      </div>
+      <div class="kanban" id="int-kanban"></div>
+    </div>
+
+    <!-- ABA COMISSÕES -->
+    <div id="aba-comm" style="display:none">
+      <div class="comm-nav">
+        <button class="btn" onclick="mudarMes(-1)">‹</button>
+        <span class="comm-mes" id="comm-mes-label"></span>
+        <button class="btn" onclick="mudarMes(1)">›</button>
+      </div>
+      <div class="comm-cards" id="comm-cards"></div>
+      <div class="table-wrap">
+        <table class="comm-table">
+          <thead><tr><th>Cliente</th><th>Produto</th><th>Concluído</th><th>Valor</th><th>Comissão</th></tr></thead>
+          <tbody id="comm-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL FORM ═══════════ -->
+<div class="modal-ov" id="modal-form">
+  <div class="modal">
+    <div class="modal-title" id="form-title">Novo Negócio Futuro</div>
+    <div class="fg"><label>Cliente *</label><input id="f-cliente"></div>
+    <div class="fg"><label>WhatsApp</label><input id="f-whatsapp" placeholder="(81) 9 0000-0000"></div>
+    <div class="fg"><label>Produto *</label><input id="f-produto"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>Valor (R$)</label><input id="f-valor" type="number" step="0.01"></div>
+      <div class="fg"><label>Data prevista</label><input id="f-data" type="date"></div>
+    </div>
+    <div class="fg"><label>Pagamento</label><input id="f-pagamento" placeholder="Ex: Cartão 10x R$499,90"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>Loja</label>
+        <select id="f-loja">
+          <option value="">Selecione...</option>
+          <option>Guararapes</option><option>North Way</option><option>Patteo</option>
+          <option>Recife</option><option>Riomar</option><option>Tacaruna</option>
+          <option>PA Loja</option><option>Quiosque P.A</option>
+        </select>
+      </div>
+      <div class="fg"><label>Canal</label>
+        <select id="f-canal">
+          <option value="">Selecione...</option>
+          <option>WhatsApp</option><option>Instagram</option><option>Loja física</option><option>Indicação</option><option>Outro</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label>Tipo de comissão</label>
+      <select id="f-tipo-comissao">
+        <option value="Venda direta">Venda direta (4%)</option>
+        <option value="Suporte do consultor">Suporte do consultor (2%)</option>
+      </select>
+    </div>
+    <div class="fg"><label>Observações</label><textarea id="f-obs" rows="3"></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:1rem">
+      <button class="btn" style="flex:1" onclick="fecharForm()">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1" onclick="salvarForm()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL INTERESSADO ═══════════ -->
+<div class="modal-ov" id="modal-int">
+  <div class="modal">
+    <div class="modal-title" id="int-form-title">Novo Cliente Interessado</div>
+    <div class="fg"><label>Nome *</label><input id="i-nome"></div>
+    <div class="fg"><label>WhatsApp *</label><input id="i-whatsapp" placeholder="819 0000-0000"></div>
+    <div class="fg"><label>Produto pesquisado *</label><input id="i-produto" placeholder="Ex: PlayStation 5 Slim"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>Valor encontrado</label><input id="i-valor" placeholder="Ex: R$ 3.499"></div>
+      <div class="fg"><label>Loja</label>
+        <select id="i-loja">
+          <option value="">Selecione...</option>
+          <option>Guararapes</option><option>North Way</option><option>Patteo</option>
+          <option>Recife</option><option>Riomar</option><option>Tacaruna</option>
+          <option>PA Loja</option><option>Quiosque P.A</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label>Preferências / Observações</label><textarea id="i-obs" rows="3" placeholder="Preferências do cliente, cor, modelo, condições..."></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:1rem">
+      <button class="btn" style="flex:1" onclick="fecharFormInt()">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1" onclick="salvarInt()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SUPA_URL = 'https://ipjlmpelgikewnhnfbbt.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwamxtcGVsZ2lrZXduaG5mYmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDcyMjYsImV4cCI6MjA5MzQ4MzIyNn0.9ZF7v0tprywrEyTua_5iTKWKNPKJ5Oto2f2Q_YNx_Po';
+const HEADERS = { 'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'return=representation' };
+
+const MESES_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+let pagina = null;       // registro de nf_paginas após login
+let negocios = [];       // registros futuros_ext da página
+let editId = null;
+let commAno = new Date().getFullYear();
+let commMes = new Date().getMonth();
+
+// ─── UTILS ────────────────────────────────────────────────────────────
+const esc = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtBRL = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fmtDate = d => { if(!d) return '—'; const p=String(d).split('T')[0].split('-'); return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d; };
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2600); }
+
+async function sha256(txt){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function getToken(){
+  return new URLSearchParams(location.search).get('p') || '';
+}
+
+// ─── LOGIN ────────────────────────────────────────────────────────────
+async function fazerLogin(){
+  const user = (document.getElementById('login-user').value||'').trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value||'';
+  const err  = document.getElementById('login-err');
+  err.style.display='none';
+  if(!user || !pass){ err.textContent='Preencha usuário e senha.'; err.style.display='block'; return; }
+
+  const token = getToken();
+  if(!token){ err.textContent='Link inválido — token ausente.'; err.style.display='block'; return; }
+
+  try {
+    const hash = await sha256(user + ':' + pass);
+    const res = await fetch(`${SUPA_URL}/rest/v1/nf_paginas?token=eq.${encodeURIComponent(token)}&usuario=eq.${encodeURIComponent(user)}&senha_hash=eq.${hash}&ativo=eq.true`, { headers: HEADERS });
+    const rows = res.ok ? await res.json() : [];
+    if(rows.length === 1){
+      pagina = rows[0];
+      sessionStorage.setItem('nf_sessao', JSON.stringify({ token, usuario:user, hash }));
+      entrarApp();
+    } else {
+      err.textContent='Usuário ou senha incorretos, ou página desativada.'; err.style.display='block';
+    }
+  } catch(e){
+    err.textContent='Erro de conexão. Tente novamente.'; err.style.display='block';
+  }
+}
+
+async function tentarSessao(){
+  const s = sessionStorage.getItem('nf_sessao');
+  if(!s) return false;
+  try {
+    const { token, usuario, hash } = JSON.parse(s);
+    if(token !== getToken()) return false;
+    const res = await fetch(`${SUPA_URL}/rest/v1/nf_paginas?token=eq.${encodeURIComponent(token)}&usuario=eq.${encodeURIComponent(usuario)}&senha_hash=eq.${hash}&ativo=eq.true`, { headers: HEADERS });
+    const rows = res.ok ? await res.json() : [];
+    if(rows.length === 1){ pagina = rows[0]; entrarApp(); return true; }
+  } catch(e){}
+  return false;
+}
+
+function sair(){
+  sessionStorage.removeItem('nf_sessao');
+  location.reload();
+}
+
+async function entrarApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='';
+  document.getElementById('hdr-pagina').textContent = pagina.nome;
+  document.getElementById('hdr-vendedor').textContent = `${pagina.vendedor} · @${pagina.usuario}`;
+  await carregar();
+}
+
+// ─── DADOS ────────────────────────────────────────────────────────────
+async function carregar(){
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/futuros_ext?pagina_token=eq.${encodeURIComponent(pagina.token)}&order=id.desc`, { headers: HEADERS });
+    negocios = res.ok ? await res.json() : [];
+    render(); renderComm();
+    carregarInt();
+  } catch(e){ toast('Erro ao carregar dados.'); }
+}
+
+// ─── RENDER NEGÓCIOS ──────────────────────────────────────────────────
+function cardHtml(f, tipo){
+  const badge = tipo==='pend' ? '<span class="fcard-badge b-pend">Pendente</span>'
+              : tipo==='done' ? '<span class="fcard-badge b-done">✅ Concluído</span>'
+              : '<span class="fcard-badge b-quit">🚫 Desistiu</span>';
+  const acts = tipo==='pend' ? `
+      <button class="btn btn-green" onclick="concluir(${f.id})">✅ Concluir</button>
+      <button class="btn btn-red" onclick="desistir(${f.id})">🚫 Desistiu</button>
+      <button class="btn" onclick="abrirForm(${f.id})">✏️ Editar</button>
+      <button class="btn" onclick="excluir(${f.id})">🗑️</button>`
+    : `<button class="btn" onclick="reativar(${f.id})">↩️ Reativar</button>
+       <button class="btn" onclick="excluir(${f.id})">🗑️</button>`;
+  return `<div class="fcard ${tipo==='done'?'done':tipo==='quit'?'quit':''}">
+    <div class="fcard-top">
+      <div class="fcard-name">${esc(f.cliente)||'—'}</div>${badge}
+    </div>
+    <div class="fcard-row">🛒 <b>${esc(f.produto)||'—'}</b>${f.valor?` · <b style="color:var(--green)">${fmtBRL(f.valor)}</b>`:''}</div>
+    ${f.pagamento?`<div class="fcard-row">💳 ${esc(f.pagamento)}</div>`:''}
+    <div class="fcard-row">${f.loja?`🏬 ${esc(f.loja)} · `:''}${f.canal?`📱 ${esc(f.canal)} · `:''}${f.whatsapp?`📞 ${esc(f.whatsapp)} · `:''}📅 ${fmtDate(f.data)}</div>
+    ${f.tipo_comissao?`<div class="fcard-row">💰 ${esc(f.tipo_comissao)} (${f.tipo_comissao==='Suporte do consultor'?'2%':'4%'})</div>`:''}
+    ${f.obs?`<div class="fcard-row" style="color:var(--text3)">📝 ${esc(f.obs)}</div>`:''}
+    <div class="fcard-actions">${acts}</div>
+  </div>`;
+}
+
+function render(){
+  const q = (document.getElementById('busca').value||'').trim().toLowerCase();
+  const match = f => !q || [f.cliente,f.produto,f.loja,f.canal,f.whatsapp,f.pagamento,f.obs,String(f.valor||'')].some(c=>(c||'').toLowerCase().includes(q));
+
+  const pend = negocios.filter(f=>!f.concluido && !f.desistiu && match(f));
+  const done = negocios.filter(f=> f.concluido && !f.desistiu && match(f));
+  const quit = negocios.filter(f=> f.desistiu && match(f));
+
+  document.getElementById('lista-pendentes').innerHTML = pend.length
+    ? pend.map(f=>cardHtml(f,'pend')).join('')
+    : '<div class="empty">Nenhum negócio pendente.</div>';
+  document.getElementById('lista-done').innerHTML = done.length ? done.map(f=>cardHtml(f,'done')).join('') : '<div class="empty">Nenhum concluído.</div>';
+  document.getElementById('lista-quit').innerHTML = quit.length ? quit.map(f=>cardHtml(f,'quit')).join('') : '<div class="empty">Nenhuma desistência.</div>';
+  document.getElementById('count-done').textContent = done.length;
+  document.getElementById('count-quit').textContent = quit.length;
+}
+
+function toggleSec(sec){
+  const el = document.getElementById('lista-'+sec);
+  const ar = document.getElementById('arrow-'+sec);
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : '';
+  ar.textContent = open ? '▼ mostrar' : '▲ ocultar';
+}
+
+// ─── CRUD ─────────────────────────────────────────────────────────────
+function abrirForm(id){
+  editId = id || null;
+  document.getElementById('form-title').textContent = id ? 'Editar Negócio' : 'Novo Negócio Futuro';
+  const f = id ? negocios.find(x=>String(x.id)===String(id)) : {};
+  document.getElementById('f-cliente').value   = f?.cliente||'';
+  document.getElementById('f-whatsapp').value  = f?.whatsapp||'';
+  document.getElementById('f-produto').value   = f?.produto||'';
+  document.getElementById('f-valor').value     = f?.valor||'';
+  document.getElementById('f-data').value      = f?.data ? String(f.data).split('T')[0] : '';
+  document.getElementById('f-pagamento').value = f?.pagamento||'';
+  document.getElementById('f-loja').value      = f?.loja||'';
+  document.getElementById('f-canal').value     = f?.canal||'';
+  document.getElementById('f-tipo-comissao').value = f?.tipo_comissao||'Venda direta';
+  document.getElementById('f-obs').value       = f?.obs||'';
+  document.getElementById('modal-form').style.display='flex';
+}
+function fecharForm(){ document.getElementById('modal-form').style.display='none'; editId=null; }
+
+async function salvarForm(){
+  const dados = {
+    pagina_token: pagina.token,
+    cliente:   document.getElementById('f-cliente').value.trim(),
+    whatsapp:  document.getElementById('f-whatsapp').value.trim(),
+    produto:   document.getElementById('f-produto').value.trim(),
+    valor:     parseFloat(document.getElementById('f-valor').value)||null,
+    data:      document.getElementById('f-data').value||null,
+    pagamento: document.getElementById('f-pagamento').value.trim(),
+    loja:      document.getElementById('f-loja').value,
+    canal:     document.getElementById('f-canal').value,
+    tipo_comissao: document.getElementById('f-tipo-comissao').value,
+    obs:       document.getElementById('f-obs').value.trim()
+  };
+  if(!dados.cliente || !dados.produto){ toast('Preencha cliente e produto.'); return; }
+  try {
+    if(editId){
+      await fetch(`${SUPA_URL}/rest/v1/futuros_ext?id=eq.${editId}`, { method:'PATCH', headers:HEADERS, body:JSON.stringify(dados) });
+      toast('Negócio atualizado!');
+    } else {
+      await fetch(`${SUPA_URL}/rest/v1/futuros_ext`, { method:'POST', headers:HEADERS, body:JSON.stringify(dados) });
+      toast('Negócio adicionado!');
+    }
+    fecharForm();
+    await carregar();
+  } catch(e){ toast('Erro ao salvar.'); }
+}
+
+async function concluir(id){
+  if(!confirm('Marcar como concluído?')) return;
+  await fetch(`${SUPA_URL}/rest/v1/futuros_ext?id=eq.${id}`, { method:'PATCH', headers:HEADERS, body:JSON.stringify({ concluido:true, concluido_em:new Date().toISOString() }) });
+  toast('✅ Concluído!'); await carregar();
+}
+async function desistir(id){
+  if(!confirm('Marcar como desistência?')) return;
+  await fetch(`${SUPA_URL}/rest/v1/futuros_ext?id=eq.${id}`, { method:'PATCH', headers:HEADERS, body:JSON.stringify({ desistiu:true, desistiu_em:new Date().toISOString() }) });
+  toast('🚫 Desistência registrada.'); await carregar();
+}
+async function reativar(id){
+  if(!confirm('Reativar para pendentes?')) return;
+  await fetch(`${SUPA_URL}/rest/v1/futuros_ext?id=eq.${id}`, { method:'PATCH', headers:HEADERS, body:JSON.stringify({ concluido:false, concluido_em:null, desistiu:false, desistiu_em:null }) });
+  toast('↩️ Reativado!'); await carregar();
+}
+async function excluir(id){
+  if(!confirm('Excluir definitivamente este negócio?')) return;
+  await fetch(`${SUPA_URL}/rest/v1/futuros_ext?id=eq.${id}`, { method:'DELETE', headers:HEADERS });
+  toast('🗑️ Excluído.'); await carregar();
+}
+
+
+// ─── CLIENTES INTERESSADOS — kanban com retroalimentação ao painel ────
+let interessados = [];
+let intEditId = null;
+const INT_STATUS = [
+  { key:'novo',          label:'⭐ Novo',          cor:'#fbbf24' },
+  { key:'contatado',     label:'📞 Contatado',     cor:'#4d8ef7' },
+  { key:'convertido',    label:'✅ Convertido',    cor:'#4ade80' },
+  { key:'sem_interesse', label:'❌ Sem interesse', cor:'#f87171' }
+];
+
+async function carregarInt(){
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/clientes_interessados?pagina_token=eq.${encodeURIComponent(pagina.token)}&order=id.desc`, { headers: HEADERS });
+    interessados = res.ok ? await res.json() : [];
+    renderInt();
+  } catch(e){ toast('Erro ao carregar interessados.'); }
+}
+
+function fmtDataCurta(d){
+  if(!d) return '—';
+  const p = String(d).split('T')[0].split('-');
+  return p.length===3 ? `${p[2]}/${p[1]}/${p[0].slice(2)}` : d;
+}
+
+function intLinhaCopia(c){
+  // Formato: Contato - Nome - Produto - Loja - Consultor - data
+  return [
+    c.whatsapp || '—',
+    c.nome || '—',
+    c.produto || '—',
+    c.loja || '—',
+    c.consultor || pagina.vendedor,
+    fmtDataCurta(c.created_at)
+  ].join(' - ');
+}
+
+function copiarInt(id){
+  const c = interessados.find(x=>String(x.id)===String(id));
+  if(!c) return;
+  const txt = intLinhaCopia(c);
+  navigator.clipboard.writeText(txt).then(()=>toast('📋 Copiado: ' + txt)).catch(()=>prompt('Copie:', txt));
+}
+
+function wppInt(id){
+  const c = interessados.find(x=>String(x.id)===String(id));
+  if(!c || !c.whatsapp){ toast('Sem WhatsApp cadastrado.'); return; }
+  const num = String(c.whatsapp).replace(/\D/g,'');
+  const full = num.length<=11 ? '55'+num : num;
+  const msg = encodeURIComponent(`Olá ${c.nome||''}! Aqui é ${pagina.vendedor} da UniGames. Sobre o ${c.produto||'produto'} que você pesquisou — tenho novidades!`);
+  window.open(`https://wa.me/${full}?text=${msg}`, '_blank');
+}
+
+function renderInt(){
+  const q = (document.getElementById('int-busca').value||'').trim().toLowerCase();
+  const match = c => !q || [c.nome,c.produto,c.loja,c.whatsapp,c.obs].some(v=>(v||'').toLowerCase().includes(q));
+
+  const kb = document.getElementById('int-kanban');
+  kb.innerHTML = INT_STATUS.map(st=>{
+    const items = interessados.filter(c=>(c.status||'novo')===st.key && match(c));
+    return `<div class="kb-col" style="--kb-cor:${st.cor}">
+      <div class="kb-col-head">
+        <span class="kb-col-title">${st.label}</span>
+        <span class="kb-count">${items.length}</span>
+      </div>
+      ${items.length ? items.map(c=>`
+        <div class="kb-card">
+          <div class="kb-name">${esc(c.nome)||'—'}</div>
+          <div class="kb-info">🛒 <b>${esc(c.produto)||'—'}</b>${c.valor_encontrado?` · ${esc(c.valor_encontrado)}`:''}</div>
+          <div class="kb-info">${c.loja?`🏬 ${esc(c.loja)} · `:''}📞 ${esc(c.whatsapp)||'—'} · 📅 ${fmtDataCurta(c.created_at)}</div>
+          ${c.obs?`<div class="kb-info" style="color:var(--text3)">📝 ${esc(c.obs)}</div>`:''}
+          <div class="kb-acts">
+            <button class="btn btn-green" onclick="wppInt(${c.id})">💬 WhatsApp</button>
+            <button class="btn" onclick="copiarInt(${c.id})">📋 Copiar</button>
+            <button class="btn" onclick="abrirFormInt(${c.id})">✏️</button>
+            <button class="btn" style="color:var(--red)" onclick="excluirInt(${c.id})">🗑️</button>
+          </div>
+          <select class="kb-status-sel" onchange="moverInt(${c.id}, this.value)">
+            ${INT_STATUS.map(s=>`<option value="${s.key}" ${s.key===(c.status||'novo')?'selected':''}>${s.label}</option>`).join('')}
+          </select>
+        </div>`).join('') : '<div class="kb-empty">Vazio</div>'}
+    </div>`;
+  }).join('');
+}
+
+function abrirFormInt(id){
+  intEditId = id || null;
+  document.getElementById('int-form-title').textContent = id ? 'Editar Interessado' : 'Novo Cliente Interessado';
+  const c = id ? interessados.find(x=>String(x.id)===String(id)) : {};
+  document.getElementById('i-nome').value     = c?.nome||'';
+  document.getElementById('i-whatsapp').value = c?.whatsapp||'';
+  document.getElementById('i-produto').value  = c?.produto||'';
+  document.getElementById('i-valor').value    = c?.valor_encontrado||'';
+  document.getElementById('i-loja').value     = c?.loja||'';
+  document.getElementById('i-obs').value      = c?.obs||'';
+  document.getElementById('modal-int').style.display='flex';
+}
+function fecharFormInt(){ document.getElementById('modal-int').style.display='none'; intEditId=null; }
+
+async function salvarInt(){
+  const dados = {
+    nome:             document.getElementById('i-nome').value.trim(),
+    whatsapp:         document.getElementById('i-whatsapp').value.trim(),
+    produto:          document.getElementById('i-produto').value.trim(),
+    valor_encontrado: document.getElementById('i-valor').value.trim(),
+    loja:             document.getElementById('i-loja').value,
+    obs:              document.getElementById('i-obs').value.trim(),
+    consultor:        pagina.vendedor,
+    pagina_token:     pagina.token
+  };
+  if(!dados.nome || !dados.whatsapp || !dados.produto){ toast('Preencha nome, WhatsApp e produto.'); return; }
+  try {
+    if(intEditId){
+      await fetch(`${SUPA_URL}/rest/v1/clientes_interessados?id=eq.${intEditId}`, { method:'PATCH', headers:HEADERS, body:JSON.stringify(dados) });
+      toast('Interessado atualizado!');
+    } else {
+      dados.status = 'novo';
+      await fetch(`${SUPA_URL}/rest/v1/clientes_interessados`, { method:'POST', headers:HEADERS, body:JSON.stringify(dados) });
+      toast('⭐ Interessado salvo!');
+    }
+    fecharFormInt();
+    await carregarInt();
+  } catch(e){ toast('Erro ao salvar.'); }
+}
+
+async function moverInt(id, status){
+  await fetch(`${SUPA_URL}/rest/v1/clientes_interessados?id=eq.${id}`, { method:'PATCH', headers:HEADERS, body:JSON.stringify({ status }) });
+  const c = interessados.find(x=>String(x.id)===String(id));
+  if(c) c.status = status;
+  renderInt();
+  toast('Status atualizado!');
+}
+
+async function excluirInt(id){
+  if(!confirm('Excluir este interessado?')) return;
+  await fetch(`${SUPA_URL}/rest/v1/clientes_interessados?id=eq.${id}`, { method:'DELETE', headers:HEADERS });
+  toast('🗑️ Excluído.');
+  await carregarInt();
+}
+
+// ─── ABAS ─────────────────────────────────────────────────────────────
+function setAba(aba){
+  document.getElementById('aba-nf').style.display   = aba==='nf' ? '' : 'none';
+  document.getElementById('aba-int').style.display  = aba==='int' ? '' : 'none';
+  document.getElementById('aba-comm').style.display = aba==='comm' ? '' : 'none';
+  document.getElementById('tabbtn-nf').classList.toggle('active', aba==='nf');
+  document.getElementById('tabbtn-int').classList.toggle('active', aba==='int');
+  document.getElementById('tabbtn-comm').classList.toggle('active', aba==='comm');
+  if(aba==='comm') renderComm();
+  if(aba==='int') carregarInt();
+}
+
+// ─── COMISSÕES — mesma lógica do painel: 4% padrão / 2% consultor ─────
+function isNoMes(dataStr, ano, mes){
+  if(!dataStr) return false;
+  const d = String(dataStr).split('T')[0].split('-');
+  return Number(d[0])===ano && Number(d[1])===mes+1;
+}
+
+function mudarMes(dir){
+  commMes += dir;
+  if(commMes<0){ commMes=11; commAno--; }
+  if(commMes>11){ commMes=0; commAno++; }
+  renderComm();
+}
+
+function renderComm(){
+  document.getElementById('comm-mes-label').textContent = `${MESES_PT[commMes]} ${commAno}`;
+
+  const conv = negocios.filter(f=>{
+    if(!f.concluido || f.desistiu || !parseFloat(f.valor)) return false;
+    return isNoMes(f.concluido_em || f.data || '', commAno, commMes);
+  });
+
+  const tv = conv.reduce((a,f)=>a+(parseFloat(f.valor)||0),0);
+  const tvConsultor = conv.filter(f=>f.tipo_comissao==='Suporte do consultor').reduce((a,f)=>a+(parseFloat(f.valor)||0),0);
+  const tvPadrao = tv - tvConsultor;
+  const totalComm = (tvPadrao*0.04) + (tvConsultor*0.02);
+
+  document.getElementById('comm-cards').innerHTML = `
+    <div class="comm-card"><div class="comm-label">Vendas no mês</div><div class="comm-value">${conv.length}</div></div>
+    <div class="comm-card"><div class="comm-label">Total em vendas</div><div class="comm-value" style="color:var(--green)">${fmtBRL(tv)}</div></div>
+    <div class="comm-card"><div class="comm-label">Comissão total</div><div class="comm-value" style="color:var(--accent)">${fmtBRL(totalComm)}</div></div>`;
+
+  const tb = document.getElementById('comm-body');
+  if(!conv.length){
+    tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text3)">Nenhuma venda concluída neste mês.</td></tr>';
+  } else {
+    tb.innerHTML = conv.map(f=>{
+      const isCons = f.tipo_comissao==='Suporte do consultor';
+      const taxa = isCons ? 0.02 : 0.04;
+      const comm = (parseFloat(f.valor)||0)*taxa;
+      return `<tr>
+        <td><b>${esc(f.cliente)||'—'}</b></td>
+        <td>${esc(f.produto)||'—'}</td>
+        <td>${fmtDate(f.concluido_em)}</td>
+        <td><b>${fmtBRL(f.valor)}</b></td>
+        <td style="color:${isCons?'var(--amber)':'var(--accent)'};font-weight:800">${fmtBRL(comm)} <span style="font-size:10px;opacity:.7">(${isCons?'2%':'4%'})</span></td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────
+(async function(){
+  const token = getToken();
+  if(!token){
+    document.querySelector('.login-card').innerHTML = '<div style="text-align:center;padding:1rem"><div style="font-size:40px;margin-bottom:.75rem">🔗</div><div style="font-weight:800;font-size:16px;margin-bottom:.5rem">Página não encontrada</div><div style="font-size:13px;color:var(--text3)">Este link é inválido ou está incompleto. Solicite um novo link ao administrador.</div></div>';
+    return;
+  }
+  // Mostra nome da página no login (sem expor dados sensíveis)
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/nf_paginas?token=eq.${encodeURIComponent(token)}&select=nome,ativo`, { headers: HEADERS });
+    const rows = res.ok ? await res.json() : [];
+    if(rows.length===1){
+      if(!rows[0].ativo){
+        document.querySelector('.login-card').innerHTML = '<div style="text-align:center;padding:1rem"><div style="font-size:40px;margin-bottom:.75rem">⛔</div><div style="font-weight:800;font-size:16px;margin-bottom:.5rem">Página desativada</div><div style="font-size:13px;color:var(--text3)">Esta página foi desativada pelo administrador.</div></div>';
+        return;
+      }
+      document.getElementById('login-pagina-nome').textContent = rows[0].nome + ' — faça login para continuar';
+    }
+  } catch(e){}
+  await tentarSessao();
+})();
+</script>
+</body>
+</html>
