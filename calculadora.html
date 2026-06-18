@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comunidade UNI — Calculadora de Descontos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1220;--surface:#151b2e;--surface2:#1b2236;--border:#262f47;
+  --text:#e2e8f0;--text2:#a7b1c5;--text3:#64748b;
+  --accent:#4d8ef7;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--purple:#a78bfa;--gold:#fbbf24;
+  --radius:12px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:.65rem .8rem;font-size:14px;color:var(--text);outline:none;transition:.15s}
+input:focus,select:focus{border-color:var(--accent)}
+label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px}
+.fg{margin-bottom:.875rem}
+.header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:.8rem 1rem}
+.header-inner{max-width:820px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:16px}
+.brand-name{font-size:14.5px;font-weight:800;letter-spacing:-.02em}
+.brand-sub{font-size:10.5px;color:var(--text3)}
+.container{max-width:820px;margin:0 auto;padding:1.25rem 1rem 4rem}
+.btn{border:1px solid var(--border);background:var(--surface2);color:var(--text2);border-radius:9px;padding:.55rem .85rem;font-size:12.5px;font-weight:700;transition:.15s}
+.btn:hover{border-color:var(--accent);color:var(--text)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-green{background:rgba(74,222,128,.13);border-color:rgba(74,222,128,.35);color:var(--green)}
+.btn-red{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);color:var(--red)}
+.btn-sm{padding:.4rem .6rem;font-size:11.5px}
+.tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:5px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:90px;border:none;background:transparent;color:var(--text3);font-size:12.5px;font-weight:700;padding:.6rem .4rem;border-radius:8px;transition:.15s}
+.tab-btn.active{background:var(--accent);color:#fff}
+.tab-btn.locked::after{content:' 🔒';font-size:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:1rem}
+.empty{background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius);padding:2rem;text-align:center;color:var(--text3);font-size:13px}
+/* SALDO */
+.saldo-box{background:linear-gradient(135deg,rgba(77,142,247,.15),rgba(167,139,250,.12));border:1px solid var(--border);border-radius:16px;padding:1.25rem;text-align:center;margin-bottom:1.25rem}
+.saldo-nome{font-size:15px;font-weight:800}
+.saldo-cod{font-family:monospace;font-size:12px;color:var(--text3);margin-top:2px;letter-spacing:.06em}
+.saldo-pts{font-size:40px;font-weight:900;color:var(--gold);line-height:1.1;margin:.5rem 0 0}
+.saldo-pts-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+.saldo-vale{font-size:12.5px;color:var(--green);font-weight:700;margin-top:6px}
+/* PRODUTO */
+.cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.cat-chip{border:1px solid var(--border);background:var(--surface2);color:var(--text2);border-radius:20px;padding:.35rem .8rem;font-size:12px;font-weight:700}
+.cat-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.prod-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem}
+.prod-cat{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--purple)}
+.prod-nome{font-size:14px;font-weight:800;margin:3px 0 8px}
+.prod-de{font-size:12px;color:var(--text3);text-decoration:line-through}
+.prod-desc{font-size:12.5px;color:var(--green);font-weight:700}
+.prod-final{font-size:22px;font-weight:900;letter-spacing:-.02em;margin-top:2px}
+.prod-admin-acts{display:flex;gap:6px;margin-top:.7rem}
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:9px 10px;border-bottom:1px solid var(--border)}
+td{padding:10px;border-bottom:1px solid var(--border);color:var(--text2)}
+td b{color:var(--text)}
+.codpill{font-family:monospace;font-size:11.5px;background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;color:var(--text)}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:440px}
+.modal-title{font-size:15px;font-weight:800;margin-bottom:1.25rem}
+#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#fff;color:#111;border-radius:10px;padding:.75rem 1.25rem;font-size:13px;font-weight:700;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:9999;display:none;max-width:90%}
+.hint{font-size:11.5px;color:var(--text3);margin-top:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">U</div>
+      <div>
+        <div class="brand-name">Comunidade UNI</div>
+        <div class="brand-sub">Indique amigos · acumule pontos · troque por descontos</div>
+      </div>
+    </div>
+    <button class="btn" id="lock-btn" onclick="toggleAdmin()">🔓 Equipe</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" id="tb-calc"  onclick="setAba('calc')">🧮 Calcular desconto</button>
+    <button class="tab-btn locked"  id="tb-valid" onclick="setAba('valid')">🎁 Validar indicação</button>
+    <button class="tab-btn locked"  id="tb-prod"  onclick="setAba('prod')">📦 Produtos</button>
+    <button class="tab-btn locked"  id="tb-memb"  onclick="setAba('memb')">👥 Membros</button>
+    <button class="tab-btn locked"  id="tb-cfg"   onclick="setAba('cfg')">⚙️ Regras</button>
+  </div>
+
+  <!-- ABA CALCULAR -->
+  <div id="aba-calc">
+    <div class="card">
+      <label>Código de indicação do cliente</label>
+      <div style="display:flex;gap:8px">
+        <input id="calc-cod" placeholder="Ex: UNI7K2Q9" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')buscarSaldo()">
+        <button class="btn btn-primary" style="white-space:nowrap" onclick="buscarSaldo()">Consultar</button>
+      </div>
+      <div class="hint">O cliente ganha pontos a cada amigo indicado que comprar na loja. Use o código dele para calcular descontos.</div>
+    </div>
+    <div id="calc-result"></div>
+  </div>
+
+  <!-- ABA VALIDAR -->
+  <div id="aba-valid" style="display:none">
+    <div class="card">
+      <div class="modal-title">🎁 Validar indicação (compra confirmada)</div>
+      <div class="fg"><label>Código de quem indicou *</label><input id="v-cod" placeholder="Ex: UNI7K2Q9" style="text-transform:uppercase"></div>
+      <div class="grid2">
+        <div class="fg"><label>Nome do amigo (que comprou)</label><input id="v-amigo"></div>
+        <div class="fg"><label>WhatsApp do amigo</label><input id="v-wpp" placeholder="(81) 9 0000-0000"></div>
+      </div>
+      <div class="grid2">
+        <div class="fg"><label>Valor da compra (opcional)</label><input id="v-valor" type="number" step="0.01"></div>
+        <div class="fg"><label>Loja</label>
+          <select id="v-loja"><option value="">Selecione...</option>
+            <option>Guararapes</option><option>North Way</option><option>Patteo</option><option>Recife</option>
+            <option>Riomar</option><option>Tacaruna</option><option>PA Loja</option><option>Quiosque P.A</option></select></div>
+      </div>
+      <div class="fg"><label>Consultor que validou *</label><input id="v-consultor"></div>
+      <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:13px;color:var(--text2);font-weight:600;cursor:pointer">
+        <input type="checkbox" id="v-enroll" checked style="width:16px;height:16px;accent-color:var(--accent)"> Cadastrar o amigo como novo membro (gera o código dele)
+      </label>
+      <button class="btn btn-primary" style="width:100%;margin-top:1rem;padding:.75rem" onclick="validarIndicacao()">✅ Confirmar e creditar pontos</button>
+    </div>
+    <div class="card">
+      <div class="modal-title" style="font-size:13px">Últimas indicações validadas</div>
+      <div id="valid-hist"></div>
+    </div>
+  </div>
+
+  <!-- ABA PRODUTOS -->
+  <div id="aba-prod" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div style="font-size:13px;color:var(--text3)">Catálogo da calculadora — visível para os clientes.</div>
+      <button class="btn btn-primary btn-sm" onclick="abrirProd()">＋ Novo produto</button>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Produto</th><th>Categoria</th><th>Valor</th><th>Status</th><th></th></tr></thead>
+        <tbody id="prod-body"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ABA MEMBROS -->
+  <div id="aba-memb" style="display:none">
+    <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center">
+      <input id="memb-busca" placeholder="🔍 Buscar nome, código, whatsapp..." oninput="renderMembros()" style="flex:1">
+      <button class="btn btn-primary btn-sm" style="white-space:nowrap" onclick="abrirMembro()">＋ Novo membro</button>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Membro</th><th>Código</th><th>Pontos</th><th>Indicado por</th><th></th></tr></thead>
+        <tbody id="memb-body"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ABA REGRAS -->
+  <div id="aba-cfg" style="display:none">
+    <div class="card">
+      <div class="modal-title">⚙️ Regras de pontos & desconto</div>
+      <div class="grid2">
+        <div class="fg"><label>Pontos por indicação validada</label><input id="cfg-ppi" type="number"></div>
+        <div class="fg"><label>Valor de cada ponto (R$)</label><input id="cfg-rpp" type="number" step="0.01"></div>
+      </div>
+      <div class="fg"><label>Desconto máximo por produto (%)</label><input id="cfg-max" type="number"><div class="hint">Teto de segurança para proteger a margem (ex: 50 = desconto nunca passa de 50% do valor do produto).</div></div>
+      <button class="btn btn-primary" style="width:100%;padding:.7rem" onclick="salvarConfig()">Salvar regras</button>
+    </div>
+    <div class="card">
+      <div class="modal-title" style="font-size:13px">🔑 PIN de acesso da equipe</div>
+      <div class="grid2">
+        <div class="fg"><label>Novo PIN</label><input id="cfg-pin" type="password" placeholder="Mín. 4 dígitos"></div>
+        <div class="fg"><label>Confirmar PIN</label><input id="cfg-pin2" type="password"></div>
+      </div>
+      <button class="btn" style="width:100%" onclick="salvarPin()">Alterar PIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PRODUTO -->
+<div class="modal-ov" id="modal-prod"><div class="modal">
+  <div class="modal-title" id="prod-title">Novo produto</div>
+  <div class="fg"><label>Nome do produto *</label><input id="p-nome" placeholder="Ex: Headset Gamer XYZ"></div>
+  <div class="grid2">
+    <div class="fg"><label>Valor (R$) *</label><input id="p-valor" type="number" step="0.01"></div>
+    <div class="fg"><label>Categoria</label>
+      <select id="p-cat"><option>Game</option><option>Informática</option><option>Telefonia</option><option>Geek</option><option>Acessórios</option></select></div>
+  </div>
+  <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:13px;color:var(--text2);font-weight:600;cursor:pointer">
+    <input type="checkbox" id="p-ativo" checked style="width:16px;height:16px;accent-color:var(--accent)"> Ativo (visível na calculadora)
+  </label>
+  <div style="display:flex;gap:8px;margin-top:1.2rem">
+    <button class="btn" style="flex:1" onclick="fecharProd()">Cancelar</button>
+    <button class="btn btn-primary" style="flex:1" onclick="salvarProd()">Salvar</button>
+  </div>
+</div></div>
+
+<!-- MODAL MEMBRO -->
+<div class="modal-ov" id="modal-memb"><div class="modal">
+  <div class="modal-title" id="memb-title">Novo membro</div>
+  <div class="fg"><label>Nome *</label><input id="m-nome"></div>
+  <div class="fg"><label>WhatsApp</label><input id="m-wpp" placeholder="(81) 9 0000-0000"></div>
+  <div class="grid2">
+    <div class="fg"><label>Pontos</label><input id="m-pts" type="number" value="0"></div>
+    <div class="fg"><label>Indicado por (código)</label><input id="m-ind" placeholder="opcional" style="text-transform:uppercase"></div>
+  </div>
+  <div id="m-cod-wrap" class="hint" style="display:none"></div>
+  <div style="display:flex;gap:8px;margin-top:1.2rem">
+    <button class="btn" style="flex:1" onclick="fecharMembro()">Cancelar</button>
+    <button class="btn btn-primary" style="flex:1" onclick="salvarMembro()">Salvar</button>
+  </div>
+</div></div>
+
+<!-- MODAL PIN LOGIN -->
+<div class="modal-ov" id="modal-pin"><div class="modal" style="max-width:340px">
+  <div class="modal-title">🔒 Acesso da equipe</div>
+  <div class="fg"><label>PIN</label><input id="pin-in" type="password" placeholder="••••" onkeydown="if(event.key==='Enter')entrarAdmin()"></div>
+  <div id="pin-err" style="color:var(--red);font-size:12px;display:none;margin-bottom:.5rem">PIN incorreto.</div>
+  <div style="display:flex;gap:8px">
+    <button class="btn" style="flex:1" onclick="document.getElementById('modal-pin').style.display='none'">Cancelar</button>
+    <button class="btn btn-primary" style="flex:1" onclick="entrarAdmin()">Entrar</button>
+  </div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+const SUPA_URL = 'https://ipjlmpelgikewnhnfbbt.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwamxtcGVsZ2lrZXduaG5mYmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDcyMjYsImV4cCI6MjA5MzQ4MzIyNn0.9ZF7v0tprywrEyTua_5iTKWKNPKJ5Oto2f2Q_YNx_Po';
+const HEADERS = { 'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'return=representation' };
+
+let produtos = [], membros = [], indicacoes = [], config = null, isAdmin = false, catFiltro = 'Todos', prodEditId = null, membEditId = null;
+
+const esc = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtBRL = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2800); }
+async function sha256(t){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+async function api(path, opts){ const r=await fetch(`${SUPA_URL}/rest/v1/${path}`,{headers:HEADERS,...opts}); if(!r.ok) throw new Error(await r.text()); const t=await r.text(); return t?JSON.parse(t):[]; }
+
+function gerarCodigo(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c='UNI';
+  const r=crypto.getRandomValues(new Uint8Array(5)); for(let i=0;i<5;i++) c+=chars[r[i]%chars.length];
+  return c;
+}
+
+// ─── CONFIG ───────────────────────────────────────────────────────────
+const CFG_DEFAULT = { pontos_por_indicacao:50, reais_por_ponto:1, desconto_max_pct:50 };
+function cfgVal(k){ return (config && config[k]!=null) ? Number(config[k]) : CFG_DEFAULT[k]; }
+
+async function carregarConfig(){
+  try { const rows = await api('uni_config?id=eq.1'); config = rows[0] || null; } catch(e){ config = null; }
+}
+
+// ─── CALCULAR DESCONTO ────────────────────────────────────────────────
+async function buscarSaldo(){
+  const cod = (document.getElementById('calc-cod').value||'').trim().toUpperCase();
+  const out = document.getElementById('calc-result');
+  if(!cod){ out.innerHTML=''; return; }
+  out.innerHTML = '<div class="empty">Consultando...</div>';
+  try {
+    const rows = await api(`uni_membros?codigo=eq.${encodeURIComponent(cod)}`);
+    if(!rows.length){ out.innerHTML='<div class="empty">Código não encontrado. Confira com o cliente.</div>'; return; }
+    const m = rows[0];
+    if(!produtos.length) await carregarProdutos();
+    renderDescontos(m);
+  } catch(e){ out.innerHTML='<div class="empty">Erro ao consultar. Tente novamente.</div>'; }
+}
+
+function calcDesconto(pontos, valor){
+  const teto = valor * cfgVal('desconto_max_pct')/100;
+  const desc = Math.min(pontos * cfgVal('reais_por_ponto'), teto);
+  return { desc, final: Math.max(0, valor - desc) };
+}
+
+function renderDescontos(m){
+  const out = document.getElementById('calc-result');
+  const ativos = produtos.filter(p=>p.ativo!==false);
+  const cats = ['Todos', ...Array.from(new Set(ativos.map(p=>p.categoria||'Outros')))];
+  const valePontos = fmtBRL(m.pontos * cfgVal('reais_por_ponto'));
+  let html = `<div class="saldo-box">
+    <div class="saldo-nome">${esc(m.nome)}</div>
+    <div class="saldo-cod">${esc(m.codigo)}</div>
+    <div class="saldo-pts">${m.pontos||0}</div>
+    <div class="saldo-pts-label">pontos acumulados</div>
+    <div class="saldo-vale">💰 Vale até ${valePontos} em desconto</div>
+  </div>`;
+  html += `<div class="cat-row">${cats.map(c=>`<button class="cat-chip ${c===catFiltro?'active':''}" onclick="setCat('${esc(c)}', ${m.id})">${esc(c)}</button>`).join('')}</div>`;
+  const lista = ativos.filter(p=> catFiltro==='Todos' || (p.categoria||'Outros')===catFiltro);
+  if(!lista.length){ html+='<div class="empty">Nenhum produto cadastrado nesta categoria.</div>'; out.innerHTML=html; return; }
+  html += `<div class="prod-grid">${lista.map(p=>{
+    const r = calcDesconto(m.pontos||0, Number(p.valor)||0);
+    return `<div class="prod-card">
+      <div class="prod-cat">${esc(p.categoria||'Outros')}</div>
+      <div class="prod-nome">${esc(p.nome)}</div>
+      <div class="prod-de">de ${fmtBRL(p.valor)}</div>
+      <div class="prod-desc">− ${fmtBRL(r.desc)} em pontos</div>
+      <div class="prod-final">${fmtBRL(r.final)}</div>
+    </div>`;
+  }).join('')}</div>`;
+  out.innerHTML = html;
+}
+function setCat(c, mid){ catFiltro=c; const m=membros.find(x=>x.id===mid) || {id:mid}; if(m.nome){ renderDescontos(m); } else { buscarSaldo(); } }
+
+// ─── PRODUTOS ─────────────────────────────────────────────────────────
+async function carregarProdutos(){ try{ produtos = await api('uni_produtos?order=categoria.asc,nome.asc'); }catch(e){ produtos=[]; } }
+function renderProdutos(){
+  const tb=document.getElementById('prod-body');
+  if(!produtos.length){ tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text3)">Nenhum produto. Clique em “Novo produto”.</td></tr>'; return; }
+  tb.innerHTML = produtos.map(p=>`<tr>
+    <td><b>${esc(p.nome)}</b></td>
+    <td>${esc(p.categoria||'—')}</td>
+    <td><b>${fmtBRL(p.valor)}</b></td>
+    <td>${p.ativo!==false?'<span style="color:var(--green)">● Ativo</span>':'<span style="color:var(--text3)">○ Oculto</span>'}</td>
+    <td style="white-space:nowrap"><button class="btn btn-sm" onclick="abrirProd(${p.id})">✏️</button> <button class="btn btn-sm btn-red" onclick="excluirProd(${p.id})">🗑️</button></td>
+  </tr>`).join('');
+}
+function abrirProd(id){
+  prodEditId = id||null;
+  const p = id ? produtos.find(x=>x.id===id) : {};
+  document.getElementById('prod-title').textContent = id?'Editar produto':'Novo produto';
+  document.getElementById('p-nome').value = p?.nome||'';
+  document.getElementById('p-valor').value = p?.valor||'';
+  document.getElementById('p-cat').value = p?.categoria||'Game';
+  document.getElementById('p-ativo').checked = p?.ativo!==false;
+  document.getElementById('modal-prod').style.display='flex';
+}
+function fecharProd(){ document.getElementById('modal-prod').style.display='none'; prodEditId=null; }
+async function salvarProd(){
+  const dados = { nome:document.getElementById('p-nome').value.trim(), valor:parseFloat(document.getElementById('p-valor').value)||0,
+    categoria:document.getElementById('p-cat').value, ativo:document.getElementById('p-ativo').checked };
+  if(!dados.nome || !dados.valor){ toast('Preencha nome e valor.'); return; }
+  try {
+    if(prodEditId) await api(`uni_produtos?id=eq.${prodEditId}`,{method:'PATCH',body:JSON.stringify(dados)});
+    else await api('uni_produtos',{method:'POST',body:JSON.stringify(dados)});
+    fecharProd(); await carregarProdutos(); renderProdutos(); toast('Produto salvo!');
+  } catch(e){ toast('Erro ao salvar produto.'); }
+}
+async function excluirProd(id){ if(!confirm('Excluir este produto?'))return; try{ await api(`uni_produtos?id=eq.${id}`,{method:'DELETE'}); await carregarProdutos(); renderProdutos(); toast('🗑️ Excluído.'); }catch(e){ toast('Erro.'); } }
+
+// ─── MEMBROS ──────────────────────────────────────────────────────────
+async function carregarMembros(){ try{ membros = await api('uni_membros?order=id.desc'); }catch(e){ membros=[]; } }
+function renderMembros(){
+  const q=(document.getElementById('memb-busca').value||'').trim().toLowerCase();
+  const tb=document.getElementById('memb-body');
+  const lista = membros.filter(m=>!q || [m.nome,m.codigo,m.whatsapp].some(v=>(v||'').toLowerCase().includes(q)));
+  if(!lista.length){ tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text3)">Nenhum membro.</td></tr>'; return; }
+  tb.innerHTML = lista.map(m=>`<tr>
+    <td><b>${esc(m.nome)}</b><div style="font-size:11px;color:var(--text3)">${esc(m.whatsapp||'')}</div></td>
+    <td><span class="codpill">${esc(m.codigo)}</span></td>
+    <td><b style="color:var(--gold)">${m.pontos||0}</b></td>
+    <td style="font-size:11px">${esc(m.indicado_por||'—')}</td>
+    <td style="white-space:nowrap"><button class="btn btn-sm" onclick="abrirMembro(${m.id})">✏️</button> <button class="btn btn-sm btn-red" onclick="excluirMembro(${m.id})">🗑️</button></td>
+  </tr>`).join('');
+}
+function abrirMembro(id){
+  membEditId = id||null;
+  const m = id ? membros.find(x=>x.id===id) : {};
+  document.getElementById('memb-title').textContent = id?'Editar membro':'Novo membro';
+  document.getElementById('m-nome').value = m?.nome||'';
+  document.getElementById('m-wpp').value = m?.whatsapp||'';
+  document.getElementById('m-pts').value = m?.pontos||0;
+  document.getElementById('m-ind').value = m?.indicado_por||'';
+  const cw=document.getElementById('m-cod-wrap');
+  if(id && m?.codigo){ cw.style.display='block'; cw.innerHTML=`Código de indicação: <span class="codpill">${esc(m.codigo)}</span>`; }
+  else { cw.style.display='block'; cw.innerHTML='O código de indicação será gerado automaticamente ao salvar.'; }
+  document.getElementById('modal-memb').style.display='flex';
+}
+function fecharMembro(){ document.getElementById('modal-memb').style.display='none'; membEditId=null; }
+async function gerarCodigoUnico(){
+  for(let i=0;i<8;i++){ const c=gerarCodigo(); const ex=await api(`uni_membros?codigo=eq.${c}&select=id`); if(!ex.length) return c; }
+  return gerarCodigo()+Date.now().toString(36).slice(-2).toUpperCase();
+}
+async function salvarMembro(){
+  const dados = { nome:document.getElementById('m-nome').value.trim(), whatsapp:document.getElementById('m-wpp').value.trim(),
+    pontos:parseInt(document.getElementById('m-pts').value)||0, indicado_por:(document.getElementById('m-ind').value.trim().toUpperCase()||null) };
+  if(!dados.nome){ toast('Informe o nome.'); return; }
+  try {
+    if(membEditId) await api(`uni_membros?id=eq.${membEditId}`,{method:'PATCH',body:JSON.stringify(dados)});
+    else { dados.codigo = await gerarCodigoUnico(); await api('uni_membros',{method:'POST',body:JSON.stringify(dados)}); }
+    fecharMembro(); await carregarMembros(); renderMembros(); toast('Membro salvo!');
+  } catch(e){ toast('Erro ao salvar membro.'); }
+}
+async function excluirMembro(id){ if(!confirm('Excluir este membro?'))return; try{ await api(`uni_membros?id=eq.${id}`,{method:'DELETE'}); await carregarMembros(); renderMembros(); toast('🗑️ Excluído.'); }catch(e){ toast('Erro.'); } }
+
+// ─── VALIDAR INDICAÇÃO ────────────────────────────────────────────────
+async function validarIndicacao(){
+  const cod = (document.getElementById('v-cod').value||'').trim().toUpperCase();
+  const consultor = document.getElementById('v-consultor').value.trim();
+  if(!cod || !consultor){ toast('Informe o código e o consultor.'); return; }
+  try {
+    const rows = await api(`uni_membros?codigo=eq.${encodeURIComponent(cod)}`);
+    if(!rows.length){ toast('Código de indicação não encontrado.'); return; }
+    const indicador = rows[0];
+    const pts = cfgVal('pontos_por_indicacao');
+    const amigoNome = document.getElementById('v-amigo').value.trim();
+    const amigoWpp = document.getElementById('v-wpp').value.trim();
+    const valor = parseFloat(document.getElementById('v-valor').value)||null;
+    const loja = document.getElementById('v-loja').value;
+
+    // credita pontos ao indicador
+    await api(`uni_membros?id=eq.${indicador.id}`,{method:'PATCH',body:JSON.stringify({ pontos:(indicador.pontos||0)+pts })});
+    // registra no ledger
+    await api('uni_indicacoes',{method:'POST',body:JSON.stringify({ codigo_indicador:cod, amigo_nome:amigoNome||null, amigo_whatsapp:amigoWpp||null, valor_compra:valor, pontos_creditados:pts, consultor, loja:loja||null })});
+    // cadastra amigo como novo membro (opcional)
+    let extra='';
+    if(document.getElementById('v-enroll').checked && amigoNome){
+      const novoCod = await gerarCodigoUnico();
+      await api('uni_membros',{method:'POST',body:JSON.stringify({ nome:amigoNome, whatsapp:amigoWpp||null, pontos:0, indicado_por:cod, codigo:novoCod })});
+      extra = ` · Amigo cadastrado: ${novoCod}`;
+    }
+    document.getElementById('v-cod').value=''; document.getElementById('v-amigo').value=''; document.getElementById('v-wpp').value=''; document.getElementById('v-valor').value='';
+    await carregarMembros(); await carregarIndicacoes(); renderValidHist();
+    toast(`✅ +${pts} pts para ${indicador.nome}${extra}`);
+  } catch(e){ toast('Erro ao validar.'); }
+}
+async function carregarIndicacoes(){ try{ indicacoes = await api('uni_indicacoes?order=id.desc&limit=30'); }catch(e){ indicacoes=[]; } }
+function renderValidHist(){
+  const el=document.getElementById('valid-hist');
+  if(!indicacoes.length){ el.innerHTML='<div class="empty">Nenhuma indicação validada ainda.</div>'; return; }
+  el.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Indicador</th><th>Amigo</th><th>Pontos</th><th>Consultor</th></tr></thead><tbody>${
+    indicacoes.map(i=>`<tr><td><span class="codpill">${esc(i.codigo_indicador)}</span></td><td>${esc(i.amigo_nome||'—')}</td><td><b style="color:var(--gold)">+${i.pontos_creditados}</b></td><td>${esc(i.consultor||'—')}</td></tr>`).join('')
+  }</tbody></table></div>`;
+}
+
+// ─── CONFIG (REGRAS) ──────────────────────────────────────────────────
+function preencherConfig(){
+  document.getElementById('cfg-ppi').value = cfgVal('pontos_por_indicacao');
+  document.getElementById('cfg-rpp').value = cfgVal('reais_por_ponto');
+  document.getElementById('cfg-max').value = cfgVal('desconto_max_pct');
+}
+async function salvarConfig(){
+  const dados = { id:1, pontos_por_indicacao:parseInt(document.getElementById('cfg-ppi').value)||0,
+    reais_por_ponto:parseFloat(document.getElementById('cfg-rpp').value)||0, desconto_max_pct:parseFloat(document.getElementById('cfg-max').value)||0 };
+  if(config) dados.pin_hash = config.pin_hash;
+  try { await api('uni_config',{method:'POST',headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(dados)}); config={...config,...dados}; toast('Regras salvas!'); }
+  catch(e){ toast('Erro ao salvar regras.'); }
+}
+async function salvarPin(){
+  const a=document.getElementById('cfg-pin').value, b=document.getElementById('cfg-pin2').value;
+  if(a.length<4){ toast('PIN deve ter no mínimo 4 dígitos.'); return; }
+  if(a!==b){ toast('Os PINs não coincidem.'); return; }
+  try { const h=await sha256(a); const dados={id:1,pin_hash:h,pontos_por_indicacao:cfgVal('pontos_por_indicacao'),reais_por_ponto:cfgVal('reais_por_ponto'),desconto_max_pct:cfgVal('desconto_max_pct')};
+    await api('uni_config',{method:'POST',headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(dados)}); config={...config,...dados};
+    document.getElementById('cfg-pin').value=''; document.getElementById('cfg-pin2').value=''; toast('🔑 PIN alterado!');
+  } catch(e){ toast('Erro ao alterar PIN.'); }
+}
+
+// ─── ADMIN GATE ───────────────────────────────────────────────────────
+function toggleAdmin(){
+  if(isAdmin){ isAdmin=false; document.getElementById('lock-btn').textContent='🔓 Equipe'; document.querySelectorAll('.tab-btn.locked').forEach(b=>b.classList.add('locked')); setAba('calc'); toast('Modo equipe encerrado.'); return; }
+  document.getElementById('modal-pin').style.display='flex';
+  setTimeout(()=>document.getElementById('pin-in')?.focus(),80);
+}
+async function entrarAdmin(){
+  const pin=document.getElementById('pin-in').value; const err=document.getElementById('pin-err'); err.style.display='none';
+  const h=await sha256(pin);
+  const ok = config?.pin_hash ? (h===config.pin_hash) : (pin==='1234'); // PIN inicial: 1234
+  if(!ok){ err.style.display='block'; return; }
+  isAdmin=true; document.getElementById('modal-pin').style.display='none'; document.getElementById('pin-in').value='';
+  document.getElementById('lock-btn').textContent='🔒 Sair da equipe';
+  document.querySelectorAll('.tab-btn.locked').forEach(b=>b.classList.remove('locked'));
+  await Promise.all([carregarProdutos(), carregarMembros(), carregarIndicacoes()]);
+  preencherConfig();
+  setAba('valid');
+  if(!config?.pin_hash) toast('PIN inicial é 1234 — altere em ⚙️ Regras.');
+}
+
+// ─── ABAS ─────────────────────────────────────────────────────────────
+function setAba(a){
+  const locked=['valid','prod','memb','cfg'];
+  if(locked.includes(a) && !isAdmin){ toggleAdmin(); return; }
+  ['calc','valid','prod','memb','cfg'].forEach(x=>{ document.getElementById('aba-'+x).style.display = x===a?'':'none'; document.getElementById('tb-'+x).classList.toggle('active', x===a); });
+  if(a==='prod') renderProdutos();
+  if(a==='memb') renderMembros();
+  if(a==='valid') renderValidHist();
+  if(a==='cfg') preencherConfig();
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────
+(async function(){
+  await carregarConfig();
+  await carregarProdutos();
+  // pré-preenche código se vier por URL (?cod=UNI...)
+  const c = new URLSearchParams(location.search).get('cod');
+  if(c){ document.getElementById('calc-cod').value=c.toUpperCase(); buscarSaldo(); }
+})();
+</script>
+</body>
+</html>
