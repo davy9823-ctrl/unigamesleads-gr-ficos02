@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>UniGames — Negócios Futuros da Loja</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#07142b;color:#eaf1fb;-webkit-text-size-adjust:100%}
+  input,select,button,textarea{font-size:16px;font-family:inherit}
+  .wrap{max-width:900px;margin:0 auto;padding:1rem}
+  .login-box{max-width:360px;margin:12vh auto;background:#0e1d38;border:1px solid #243b63;border-radius:16px;padding:1.75rem}
+  .login-box h1{font-size:18px;margin:0 0 .25rem}
+  .login-box p{font-size:13px;color:#9fb3d4;margin:0 0 1.25rem}
+  .field{margin-bottom:.9rem}
+  .field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6b80a6;margin-bottom:5px}
+  .field input{width:100%;padding:.65rem .8rem;border-radius:9px;border:1px solid #243b63;background:#13284a;color:#eaf1fb}
+  .btn{width:100%;padding:.75rem;border-radius:9px;border:none;background:#7bbcff;color:#07142b;font-weight:700;cursor:pointer;margin-top:.5rem}
+  .err{color:#f87171;font-size:12.5px;margin-top:.5rem;display:none}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;flex-wrap:wrap;gap:8px}
+  .topbar h1{font-size:16px;margin:0}
+  .topbar .loja-tag{font-size:12px;color:#9fb3d4}
+  .logout{background:none;border:1px solid #243b63;color:#9fb3d4;border-radius:8px;padding:.4rem .8rem;font-size:12px;cursor:pointer}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+  .filters input,.filters select{padding:.5rem .7rem;border-radius:8px;border:1px solid #243b63;background:#13284a;color:#eaf1fb}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  .card{background:#0e1d38;border:1px solid #243b63;border-radius:14px;padding:1rem;border-left:4px solid #8a9bb5}
+  .card.today{border-left-color:#2f9e6e}
+  .card.overdue{border-left-color:#c56767}
+  .card .name{font-weight:700;font-size:14.5px}
+  .card .sub{font-size:12px;color:#6b80a6;margin-top:2px}
+  .row{display:flex;gap:6px;font-size:12.5px;margin-top:8px}
+  .row .lbl{color:#6b80a6;min-width:70px;flex-shrink:0}
+  .badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;background:rgba(123,188,255,.14);color:#7bbcff;margin-top:6px}
+  .obs{margin-top:8px;font-size:12px;color:#9fb3d4;background:#13284a;border-radius:8px;padding:8px}
+  .empty{text-align:center;color:#6b80a6;padding:3rem 1rem;font-size:13.5px}
+  .code{margin-top:10px;border:1.5px dashed #7bbcff;background:rgba(123,188,255,.14);border-radius:10px;padding:8px 10px;text-align:center}
+  .code .lb{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7bbcff}
+  .code .cd{font-family:monospace;font-size:17px;font-weight:900;color:#eaf1fb;margin-top:2px}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <h1>🔗 UniGames — Loja</h1>
+    <p>Acompanhamento dos negócios futuros da sua loja.</p>
+    <div class="field"><label>Usuário</label><input id="lg-usuario" autocomplete="username"></div>
+    <div class="field"><label>Senha</label><input id="lg-senha" type="password" autocomplete="current-password"></div>
+    <button class="btn" onclick="fazerLogin()">Entrar</button>
+    <div class="err" id="lg-erro"></div>
+  </div>
+</div>
+
+<div id="app-screen" style="display:none">
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <h1 id="pagina-nome">—</h1>
+        <div class="loja-tag" id="pagina-loja">—</div>
+      </div>
+      <button class="logout" onclick="sair()">Sair</button>
+    </div>
+    <div class="filters">
+      <input id="f-busca" placeholder="Buscar cliente, produto..." oninput="renderCards()" style="flex:1;min-width:180px">
+      <select id="f-status" onchange="renderCards()">
+        <option value="pendentes">Pendentes</option>
+        <option value="concluidos">Concluídos</option>
+        <option value="todos">Todos</option>
+      </select>
+    </div>
+    <div id="cards" class="cards"></div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://ipjlmpelgikewnhnfbbt.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwamxtcGVsZ2lrZXduaG5mYmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDcyMjYsImV4cCI6MjA5MzQ4MzIyNn0.9ZF7v0tprywrEyTua_5iTKWKNPKJ5Oto2f2Q_YNx_Po';
+const HEADERS = { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
+
+const params = new URLSearchParams(location.search);
+const token = params.get('p');
+let pagina = null;
+let negocios = [];
+
+async function sha256(txt){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(d){ if(!d) return '—'; const p=String(d).split('T')[0].split('-'); return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d; }
+function daysUntil(d){ if(!d) return null; const hoje=new Date(); hoje.setHours(0,0,0,0); const dt=new Date(String(d).slice(0,10)+'T00:00:00'); if(isNaN(dt)) return null; return Math.round((dt-hoje)/86400000); }
+
+if(!token){
+  document.getElementById('lg-erro').textContent = 'Link inválido — token ausente.';
+  document.getElementById('lg-erro').style.display = 'block';
+}
+
+async function fazerLogin(){
+  const usuario = document.getElementById('lg-usuario').value.trim().toLowerCase();
+  const senha   = document.getElementById('lg-senha').value;
+  const erro    = document.getElementById('lg-erro');
+  erro.style.display = 'none';
+  if(!usuario || !senha){ erro.textContent='Preencha usuário e senha.'; erro.style.display='block'; return; }
+  try{
+    const res = await fetch(`${SUPA_URL}/rest/v1/nf_lojas_paginas?token=eq.${encodeURIComponent(token)}&select=*`, { headers: HEADERS });
+    const rows = res.ok ? await res.json() : [];
+    const p = rows[0];
+    if(!p || !p.ativo){ erro.textContent='Página não encontrada ou desativada.'; erro.style.display='block'; return; }
+    if(p.usuario !== usuario){ erro.textContent='Usuário ou senha incorretos.'; erro.style.display='block'; return; }
+    const hash = await sha256(usuario + ':' + senha);
+    if(hash !== p.senha_hash){ erro.textContent='Usuário ou senha incorretos.'; erro.style.display='block'; return; }
+    pagina = p;
+    sessionStorage.setItem('ll_session', JSON.stringify(p));
+    entrarApp();
+  }catch(e){
+    erro.textContent = 'Erro ao entrar: ' + e.message;
+    erro.style.display = 'block';
+  }
+}
+
+function sair(){
+  sessionStorage.removeItem('ll_session');
+  location.reload();
+}
+
+async function entrarApp(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = '';
+  document.getElementById('pagina-nome').textContent = pagina.nome;
+  document.getElementById('pagina-loja').textContent = '🏬 ' + pagina.loja;
+  await carregarNegocios();
+}
+
+async function carregarNegocios(){
+  document.getElementById('cards').innerHTML = '<div class="empty">Carregando negócios...</div>';
+  try{
+    const lojaQ = `loja=eq.${encodeURIComponent(pagina.loja)}`;
+    const [r1, r2] = await Promise.all([
+      fetch(`${SUPA_URL}/rest/v1/futuros?${lojaQ}&order=data.asc`, { headers: HEADERS }),
+      fetch(`${SUPA_URL}/rest/v1/futuros_2?${lojaQ}&order=data.asc`, { headers: HEADERS })
+    ]);
+    const a = r1.ok ? await r1.json() : [];
+    const b = r2.ok ? await r2.json() : [];
+    negocios = [...a, ...b];
+    renderCards();
+  }catch(e){
+    document.getElementById('cards').innerHTML = '<div class="empty">Erro ao carregar negócios: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderCards(){
+  const busca  = (document.getElementById('f-busca').value||'').toLowerCase();
+  const status = document.getElementById('f-status').value;
+  let lista = negocios.filter(f=>{
+    if(status==='pendentes' && f.concluido) return false;
+    if(status==='concluidos' && !f.concluido) return false;
+    if(busca){
+      const alvo = `${f.cliente||''} ${f.produto||''} ${f.obs||''}`.toLowerCase();
+      if(!alvo.includes(busca)) return false;
+    }
+    return true;
+  });
+  const el = document.getElementById('cards');
+  if(!lista.length){ el.innerHTML = '<div class="empty">Nenhum negócio encontrado.</div>'; return; }
+  el.innerHTML = lista.map(f=>{
+    const d = daysUntil(f.data);
+    let cls = '';
+    if(!f.concluido && d!==null){ if(d<0) cls='overdue'; else if(d===0) cls='today'; }
+    const codigo = f.id!=null ? 'UNI-' + (Number(f.id)*73).toString(36).toUpperCase().padStart(4,'0').slice(-4) : '';
+    return `<div class="card ${cls}">
+      <div class="name">${esc(f.cliente)||'—'}</div>
+      <div class="sub">${esc(f.instagram||f.whatsapp)||'Sem contato'}</div>
+      ${f.data?`<div class="badge">${f.concluido?'✅ Concluído — ':''}${fmtDate(f.data)}</div>`:''}
+      <div class="row"><span class="lbl">Produto</span><span>${esc(f.produto)||'—'}</span></div>
+      ${f.pagamento?`<div class="row"><span class="lbl">Pagamento</span><span>${esc(f.pagamento)}</span></div>`:''}
+      ${f.canal?`<div class="row"><span class="lbl">Canal</span><span>${esc(f.canal)}</span></div>`:''}
+      ${f.tipo_atendimento?`<div class="row"><span class="lbl">Tipo</span><span>${esc(f.tipo_atendimento)}</span></div>`:''}
+      ${f.obs?`<div class="obs">${esc(f.obs)}</div>`:''}
+      ${codigo?`<div class="code"><div class="lb">🎟️ Código UNI</div><div class="cd">${codigo}</div></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// Retoma sessão se já logado nesta aba
+(function(){
+  try{
+    const saved = sessionStorage.getItem('ll_session');
+    if(saved){ pagina = JSON.parse(saved); entrarApp(); }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
