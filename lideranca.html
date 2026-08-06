@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1d38">
+<title>UniGames · Liderança</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%233b82f6'/><text y='68' x='50' font-size='54' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>U</text></svg>">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{--bg:#0e1d38;--bg2:#132549;--txt:#eaf1ff;--mut:#9db2d6;--line:#25406f}
+html:not(.dark){--bg:#f1f5f9;--bg2:#fff;--txt:#0f172a;--mut:#64748b;--line:#e2e8f0}
+html.preto{--bg:#000;--bg2:#0a0a0a;--txt:#f5f5f5;--mut:#8a8a8a;--line:#1f1f1f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;-webkit-text-size-adjust:100%}
+body{padding-bottom:60px}
+header{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line);
+  padding:calc(10px + env(safe-area-inset-top,0px)) 12px 8px}
+.hrow{display:flex;align-items:center;gap:9px}
+.logo{font-weight:900;font-size:15.5px;letter-spacing:.2px}
+.logo span{color:#60A5FA}
+.hme{margin-left:auto;display:flex;gap:6px;align-items:center}
+.hbtn{background:var(--bg2);border:1px solid var(--line);color:var(--mut);border-radius:9px;
+  padding:6px 10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit}
+.who{font-size:11px;color:var(--mut);margin-top:3px}
+main{padding:12px;max-width:820px;margin:0 auto}
+/* login */
+.lg{max-width:340px;margin:14vh auto;padding:0 16px}
+.lg-box{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:26px 22px;text-align:center}
+.lg h1{font-size:19px;margin:0 0 4px;font-weight:900}
+.lg p{font-size:12.5px;color:var(--mut);margin:0 0 20px}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:20px}
+.pin-dots i{width:14px;height:14px;border-radius:50%;background:var(--line);transition:.15s}
+.pin-dots i.on{background:#3b82f6;transform:scale(1.15)}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.key{padding:16px 0;border-radius:14px;background:var(--bg2);border:1px solid var(--line);
+  color:var(--txt);font-size:20px;font-weight:800;cursor:pointer;font-family:inherit}
+.key:active{background:#3b82f6;color:#fff}
+.key.fn{font-size:14px;color:var(--mut)}
+.lg-err{color:#f87171;font-size:12.5px;margin-top:14px;min-height:18px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="lg"><div class="lg-box">
+    <h1>UNI<span style="color:#60A5FA">GAMES</span></h1>
+    <p>Liderança Comercial<br><span style="font-size:11px">Use o mesmo PIN da Rotina</span></p>
+    <div class="pin-dots" id="dots"><i></i><i></i><i></i><i></i></div>
+    <div class="keys">
+      <button class="key" onclick="pin(1)">1</button><button class="key" onclick="pin(2)">2</button><button class="key" onclick="pin(3)">3</button>
+      <button class="key" onclick="pin(4)">4</button><button class="key" onclick="pin(5)">5</button><button class="key" onclick="pin(6)">6</button>
+      <button class="key" onclick="pin(7)">7</button><button class="key" onclick="pin(8)">8</button><button class="key" onclick="pin(9)">9</button>
+      <button class="key fn" onclick="pinTema()">◐</button><button class="key" onclick="pin(0)">0</button><button class="key fn" onclick="pinDel()">←</button>
+    </div>
+    <div class="lg-err" id="lg-err"></div>
+  </div></div>
+</div>
+
+<div id="app" style="display:none">
+  <header>
+    <div class="hrow">
+      <div><div class="logo">UNI<span>GAMES</span> · Liderança</div>
+        <div class="who" id="who">—</div></div>
+      <div class="hme">
+        <button class="hbtn" onclick="cicloTema()" id="btn-tema">◐</button>
+        <button class="hbtn" onclick="sair()">Sair</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div id="lc-topbar"></div>
+    <div id="lc-body"></div>
+  </main>
+</div>
+
+<script>
+/* ═══ SUPABASE ═══ */
+const SUPA_URL='https://ipjlmpelgikewnhnfbbt.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwamxtcGVsZ2lrZXduaG5mYmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDcyMjYsImV4cCI6MjA5MzQ4MzIyNn0.9ZF7v0tprywrEyTua_5iTKWKNPKJ5Oto2f2Q_YNx_Po';
+const HEADERS={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=representation'};
+async function dbGet(t,p){ const r=await fetch(SUPA_URL+'/rest/v1/'+t+'?order=id.desc'+(p||''),{headers:HEADERS}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function dbGetSafe(t,p){ try{ return await dbGet(t,p); }catch(e){ console.warn('dbGetSafe',t,e); return []; } }
+async function dbInsert(t,d){ const b=Object.assign({},d); delete b.id;
+  const r=await fetch(SUPA_URL+'/rest/v1/'+t,{method:'POST',headers:HEADERS,body:JSON.stringify(b)}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function dbUpdate(t,id,d){ const b=Object.assign({},d); delete b.id;
+  const r=await fetch(SUPA_URL+'/rest/v1/'+t+'?id=eq.'+id,{method:'PATCH',headers:HEADERS,body:JSON.stringify(b)}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function dbDelete(t,id){ const r=await fetch(SUPA_URL+'/rest/v1/'+t+'?id=eq.'+id,{method:'DELETE',headers:HEADERS}); if(!r.ok) throw new Error(await r.text()); }
+
+/* ═══ TEMA ═══ */
+const TEMAS=['dark','light','preto'], TEMA_IC={dark:'🌙',light:'☀️',preto:'⬛'};
+function aplicarTema(t){
+  const h=document.documentElement;
+  h.classList.remove('dark','preto');
+  if(t==='dark') h.classList.add('dark');
+  if(t==='preto'){ h.classList.add('dark'); h.classList.add('preto'); }
+  try{ localStorage.setItem('lc_tema',t); }catch(e){}
+  const b=document.getElementById('btn-tema'); if(b) b.textContent=TEMA_IC[t]||'◐';
+  const mt=document.querySelector('meta[name=theme-color]');
+  if(mt) mt.setAttribute('content', t==='preto'?'#000000':(t==='light'?'#f1f5f9':'#0e1d38'));
+}
+function temaAtual(){ try{ return localStorage.getItem('lc_tema')||'dark'; }catch(e){ return 'dark'; } }
+function cicloTema(){ const i=TEMAS.indexOf(temaAtual()); aplicarTema(TEMAS[(i+1)%TEMAS.length]); }
+function pinTema(){ cicloTema(); }
+aplicarTema(temaAtual());
+
+/* ═══ LOGIN POR PIN ═══ */
+let lcUserPin='', lcUserLoja='', lcModsPermitidos=null, lcUsuario=null;
+let buf='';
+function pin(n){ if(buf.length>=4) return; buf+=String(n); dots(); if(buf.length===4) entrar(); }
+function pinDel(){ buf=buf.slice(0,-1); dots(); }
+function dots(){
+  const els=document.querySelectorAll('#dots i');
+  for(let i=0;i<els.length;i++) els[i].className=(i<buf.length)?'on':'';
+}
+async function entrar(){
+  const err=document.getElementById('lg-err'); err.textContent='Verificando…';
+  try{
+    /* 1º procura em lc_usuarios; 2º na equipe da Rotina Comercial (rc_pessoas).
+       Assim o mesmo PIN serve para os dois apps. */
+    let u=(await dbGetSafe('lc_usuarios','&pin=eq.'+encodeURIComponent(buf))||[])[0];
+    if(u && u.ativo===false){ err.textContent='Acesso bloqueado. Fale com o gestor.'; buf=''; dots(); return; }
+    if(!u){
+      const p=(await dbGetSafe('rc_pessoas','&pin=eq.'+encodeURIComponent(buf))||[])[0];
+      if(p){
+        const g=lcPapelParaGrupo(p.papel);
+        u={ id:'rc'+p.id, nome:p.nome, pin:p.pin, grupo:g, loja:p.loja||'',
+            modulos:JSON.stringify(lcModsDoGrupo(g)), ativo:true, origem:'rc' };
+      }
+    }
+    if(!u){ err.textContent='PIN não encontrado.'; buf=''; dots(); return; }
+    lcUsuario=u; lcUserPin=u.pin; lcUserLoja=u.loja||'';
+    lcModsPermitidos=parseMods(u.modulos);
+    try{ sessionStorage.setItem('lc_sess',JSON.stringify(u)); }catch(e){}
+    abrirApp();
+  }catch(e){ err.textContent='Erro de conexão. Tente de novo.'; buf=''; dots(); }
+}
+function parseMods(v){
+  if(!v) return null;
+  if(Array.isArray(v)) return v.length?v:null;
+  try{ const p=JSON.parse(v); return (Array.isArray(p)&&p.length)?p:null; }
+  catch(e){ const a=String(v).split(',').map(s=>s.trim()).filter(Boolean); return a.length?a:null; }
+}
+const GRUPO_LBL={gestor:'Gestor',lider:'Líder',consultor:'Consultor',operacional:'Operacional'};
+function abrirApp(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='';
+  document.getElementById('who').textContent =
+    lcUsuario.nome+' · '+(GRUPO_LBL[lcUsuario.grupo]||lcUsuario.grupo)+' · '+(lcUsuario.loja||'Todas as lojas');
+  aplicarTema(temaAtual());
+  if(lcUsuario.grupo==='operacional') lcRotinaFuncao='operacional';
+  else if(lcUsuario.grupo==='consultor') lcRotinaFuncao='consultor';
+  else lcRotinaFuncao='lider';
+  lcInit();
+}
+function sair(){ try{ sessionStorage.removeItem('lc_sess'); }catch(e){} location.href=location.pathname; }
+</script>
+
+<style>/* ═══ LIDERANÇA COMERCIAL ═══ */
+#lc-topbar{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+#lc-topbar::-webkit-scrollbar{display:none}
+.lc-tab{flex:0 0 auto;padding:9px 15px;border-radius:999px;border:1px solid rgba(148,163,184,.22);
+  background:rgba(30,41,59,.5);color:#94a3b8;font-size:12.5px;font-weight:800;cursor:pointer;white-space:nowrap;transition:.15s}
+.lc-tab:hover{color:#e2e8f0;border-color:rgba(96,165,250,.4)}
+.lc-tab.on{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(59,130,246,.28)}
+html:not(.dark) .lc-tab{background:rgba(241,245,249,.9);color:#64748b;border-color:rgba(15,23,42,.1)}
+html:not(.dark) .lc-tab.on{color:#fff}
+.lc-card{background:linear-gradient(145deg,rgba(18,27,45,.95),rgba(12,18,31,.94));
+  border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:16px;margin-bottom:13px;box-shadow:0 14px 34px rgba(0,0,0,.2)}
+html:not(.dark) .lc-card{background:rgba(255,255,255,.9);border-color:rgba(15,23,42,.08)}
+.lc-h{font-size:11.5px;font-weight:950;letter-spacing:.11em;text-transform:uppercase;color:#60A5FA;margin-bottom:12px}
+.lc-grp{font-size:10.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#7d8ba4;margin:14px 0 8px}
+.lc-grp:first-child{margin-top:0}
+.lc-f{margin-bottom:11px}
+.lc-f label,.lc-lb{display:block;font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#7d8ba4;margin-bottom:5px}
+.lc-f input,.lc-f select,.lc-row input{width:100%;padding:10px 12px;border-radius:11px;
+  border:1px solid rgba(148,163,184,.22);background:rgba(15,23,42,.55);color:var(--text,#e2e8f0);font-size:14px;font-family:inherit}
+html:not(.dark) .lc-f input,html:not(.dark) .lc-f select,html:not(.dark) .lc-row input{background:#fff;border-color:rgba(15,23,42,.14);color:#0f172a}
+.lc-f input:focus,.lc-f select:focus{outline:none;border-color:#60A5FA}
+.lc-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.lc-g2{grid-template-columns:1fr}}
+.lc-btn,.lc-btn2{width:100%;padding:12px;border-radius:12px;border:none;font-weight:850;font-size:14px;cursor:pointer;font-family:inherit;transition:.15s}
+.lc-btn{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff}
+.lc-btn.ok{background:linear-gradient(135deg,#22c55e,#15a34a)}
+.lc-btn2{background:rgba(30,41,59,.6);color:var(--text,#e2e8f0);border:1px solid rgba(148,163,184,.22)}
+html:not(.dark) .lc-btn2{background:#f1f5f9;color:#0f172a;border-color:rgba(15,23,42,.12)}
+.lc-btn:active,.lc-btn2:active{transform:scale(.985)}
+.lc-btn2.mini{width:auto;padding:7px 12px;font-size:11.5px;border-radius:9px}
+.lc-mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.lc-mod{text-align:left;padding:12px;border-radius:14px;cursor:pointer;font-family:inherit;
+  background:rgba(30,41,59,.5);border:1px solid rgba(148,163,184,.18);color:var(--text,#e2e8f0);transition:.15s}
+html:not(.dark) .lc-mod{background:#f8fafc;border-color:rgba(15,23,42,.09);color:#0f172a}
+.lc-mod:hover{border-color:rgba(96,165,250,.5)}
+.lc-mod.on{border-color:#60A5FA;box-shadow:inset 0 0 0 1px #60A5FA,0 6px 18px rgba(59,130,246,.18)}
+.lc-mod .ic{display:block;font-size:19px;margin-bottom:4px}
+.lc-mod .tt{display:block;font-size:13px;font-weight:850;line-height:1.2}
+.lc-mod .sb{display:block;font-size:10.5px;font-weight:650;color:#7d8ba4;margin-top:3px}
+.lc-chips{display:flex;flex-wrap:wrap;gap:7px}
+.lc-chip{padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:800;cursor:pointer;
+  background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.2);color:#94a3b8;transition:.15s}
+html:not(.dark) .lc-chip{background:#f1f5f9;border-color:rgba(15,23,42,.1);color:#64748b}
+.lc-chip.on{background:#3b82f6;color:#fff;border-color:transparent}
+.lc-out{background:rgba(2,8,20,.7);border:1px solid rgba(148,163,184,.2);border-radius:13px;padding:14px;
+  font-family:ui-monospace,Menlo,monospace;font-size:12.8px;line-height:1.55;white-space:pre-wrap;word-break:break-word;
+  margin:0 0 11px;max-height:420px;overflow:auto;color:var(--text,#e2e8f0)}
+html:not(.dark) .lc-out{background:#f8fafc;color:#0f172a;border-color:rgba(15,23,42,.1)}
+.lc-hint{font-size:11.5px;color:#7d8ba4;line-height:1.45;margin:6px 0 0}
+.lc-calc{background:rgba(2,8,20,.55);border:1px dashed rgba(148,163,184,.28);border-radius:13px;padding:13px;margin:12px 0}
+html:not(.dark) .lc-calc{background:#f8fafc}
+.lc-crow{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:3px 0}
+.lc-crow b{font-size:15.5px}
+.lc-crow.gd,.lc-crow.gd b{color:#fb923c}
+.lc-sw{display:flex;align-items:center;gap:10px;background:rgba(30,41,59,.45);border:1px solid rgba(148,163,184,.18);
+  border-radius:12px;padding:11px 13px;margin-bottom:9px;cursor:pointer}
+html:not(.dark) .lc-sw{background:#f8fafc;border-color:rgba(15,23,42,.09)}
+.lc-sw input{width:auto;margin:0}
+.lc-sw span{font-size:13px;font-weight:750}
+.lc-row{display:flex;gap:10px;justify-content:space-between;align-items:flex-start;
+  background:rgba(30,41,59,.42);border:1px solid rgba(148,163,184,.16);border-radius:13px;padding:11px;margin-bottom:8px}
+html:not(.dark) .lc-row{background:#f8fafc;border-color:rgba(15,23,42,.08)}
+.lc-row-nm{font-weight:850;font-size:13.5px}
+.lc-row-mt{font-size:11.5px;color:#7d8ba4;margin-top:4px}
+.lc-bg{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:850;margin-right:4px}
+.lc-bg.ok{background:rgba(34,197,94,.16);color:#4ade80}
+.lc-bg.gd{background:rgba(251,146,60,.16);color:#fb923c}
+.lc-bg.mut{background:rgba(148,163,184,.14);color:#94a3b8}
+.lc-del{background:none;border:none;color:#f87171;font-size:17px;cursor:pointer;padding:0 4px;line-height:1}
+.lc-empty{text-align:center;color:#7d8ba4;font-size:13px;padding:24px 12px}
+.lc-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.lc-kpis{grid-template-columns:1fr}}
+.lc-kpi{background:rgba(30,41,59,.5);border:1px solid rgba(148,163,184,.16);border-radius:14px;padding:13px;text-align:center}
+html:not(.dark) .lc-kpi{background:#f8fafc;border-color:rgba(15,23,42,.08)}
+.lc-kpi b{display:block;font-size:21px;font-weight:950;letter-spacing:-.03em}
+.lc-kpi small{display:block;font-size:10px;color:#7d8ba4;font-weight:850;text-transform:uppercase;margin-top:4px;letter-spacing:.07em}
+.lc-kpi.gd b{color:#fb923c}
+.lc-item-box{background:rgba(30,41,59,.4);border:1px solid rgba(148,163,184,.16);border-radius:14px;padding:12px;margin-bottom:10px}
+html:not(.dark) .lc-item-box{background:#f8fafc;border-color:rgba(15,23,42,.08)}
+.lc-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:11px;
+  text-transform:uppercase;letter-spacing:.08em;color:#7d8ba4}
+.lc-miss{display:flex;gap:11px;align-items:flex-start;background:rgba(30,41,59,.42);
+  border:1px solid rgba(148,163,184,.16);border-radius:13px;padding:12px;margin-bottom:8px}
+html:not(.dark) .lc-miss{background:#f8fafc;border-color:rgba(15,23,42,.08)}
+.lc-miss.ok{opacity:.55}
+.lc-miss.ok .lc-miss-t{text-decoration:line-through}
+.lc-miss input[type=checkbox]{width:20px;height:20px;margin:0;flex-shrink:0;cursor:pointer;accent-color:#22c55e}
+.lc-miss-body{flex:1;min-width:0}
+.lc-miss-t{font-size:13.5px;font-weight:750;line-height:1.3}
+.lc-hr{font-family:ui-monospace,Menlo,monospace;font-weight:900;color:#60A5FA;font-size:12.5px}
+.lc-prog{margin-bottom:14px}
+.lc-prog-bar{height:9px;border-radius:999px;background:rgba(148,163,184,.2);overflow:hidden;margin-bottom:6px}
+.lc-prog-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#4ade80);transition:width .3s}
+.lc-prog span{font-size:11.5px;color:#7d8ba4;font-weight:800}
+.lc-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99999;
+  background:#22c55e;color:#04180f;padding:12px 22px;border-radius:999px;font-weight:850;font-size:13.5px;
+  opacity:0;pointer-events:none;transition:.22s;box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.lc-toast.err{background:#f87171;color:#2a0508}
+.lc-toast.on{opacity:1;transform:translateX(-50%) translateY(-4px)}
+/* ── metas ── */
+.lc-mbar{height:8px;border-radius:999px;background:rgba(148,163,184,.2);overflow:hidden;margin:5px 0 11px}
+.lc-mbar i{display:block;height:100%;border-radius:999px;transition:width .35s}
+.lc-mcard{background:rgba(30,41,59,.42);border:1px solid rgba(148,163,184,.16);border-radius:14px;padding:13px;margin-bottom:10px}
+html:not(.dark) .lc-mcard{background:#f8fafc;border-color:rgba(15,23,42,.08)}
+.lc-mtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px}
+.lc-mline{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#94a3b8;font-weight:700}
+html:not(.dark) .lc-mline{color:#475569}
+/* ── tema preto ── */
+html.preto{--lc-bg:#000}
+html.preto body{background:#000!important}
+html.preto .lc-card{background:#0a0a0a!important;border-color:#1f1f1f!important;box-shadow:none!important}
+html.preto .lc-mcard,html.preto .lc-row,html.preto .lc-miss,html.preto .lc-item-box,html.preto .lc-kpi{background:#111!important;border-color:#222!important}
+html.preto .lc-f input,html.preto .lc-f select,html.preto .lc-row input{background:#000!important;border-color:#262626!important;color:#f5f5f5!important}
+html.preto .lc-out,html.preto .lc-calc{background:#000!important;border-color:#222!important;color:#f5f5f5!important}
+html.preto .lc-tab{background:#111!important;border-color:#242424!important}
+html.preto .lc-chip,html.preto .lc-mod{background:#111!important;border-color:#242424!important}
+html.preto .lc-btn2{background:#141414!important;border-color:#262626!important;color:#f5f5f5!important}
+</style>
+<script>/* ═══════════════════════════════════════════════════════════════════
+   🎖️ LIDERANÇA COMERCIAL — módulo LC
+   Scripts · Captação · Indicações · Ranking · Missões · Lojas · Acessos
+   ═══════════════════════════════════════════════════════════════════ */
+let lcTab = 'metas';
+let lcLojas = [], lcIndic = [], lcMissoes = [], lcChecks = [], lcUsuarios = [];
+let lcCfg = null, lcModAtual = null, lcModMenc = {}, lcCaptItens = [];
+let lcRcPessoas = [];
+let lcMesFiltro = '';
+
+const LC_LOJAS_PADRAO = [
+  {nome:'TACARUNA', valor_indic:20}, {nome:'RIOMAR', valor_indic:25},
+  {nome:'PNWS', valor_indic:30}, {nome:'GUARARAPES', valor_indic:20},
+  {nome:'PATTEO', valor_indic:25}, {nome:'RECIFE', valor_indic:30},
+  {nome:'SITE', valor_indic:0}, {nome:'P.A LOJA', valor_indic:20},
+  {nome:'P.A QUIOSQUE', valor_indic:30}, {nome:'DEPÓSITO', valor_indic:20}
+];
+const LC_CFG_PADRAO = {
+  mencoes:[
+    {k:'estoque',    lbl:'Estoque',     txt:'@Renato Estoque Unigames'},
+    {k:'financeiro', lbl:'Financeiro 1',txt:'@Naomi Financeiro UNI'},
+    {k:'financeiro2',lbl:'Financeiro 2',txt:'@Naomi FINANCEIRO UNIGAMES'},
+    {k:'adm',        lbl:'ADM',         txt:'@Adm Unigames'},
+    {k:'logistica',  lbl:'Logística',   txt:'@Thierry Adm Uni'},
+    {k:'supervisao', lbl:'Supervisão',  txt:'@Vic Supervisora'},
+    {k:'gestao',     lbl:'Gestão',      txt:'@Guga Unigames'}
+  ],
+  faixa10:10, faixa0:0, realme:50, porta:35, aut:35, orc:10
+};
+const LC_GRUPOS = {
+  gestor:      {lbl:'Gestor — acesso total',            mods:['scripts','captacao','indicacoes','ranking','missoes','lojas','acessos']},
+  lider:       {lbl:'Líder — loja completa',            mods:['scripts','captacao','indicacoes','ranking','missoes']},
+  consultor:   {lbl:'Consultor — scripts e missões',    mods:['scripts','captacao','missoes']},
+  operacional: {lbl:'Operacional — missões e captação', mods:['captacao','missoes']}
+};
+const LC_PAPEL_GRUPO = {lider:'lider', líder:'lider', consultor:'consultor', operacional:'operacional', gestor:'gestor'};
+function lcPapelParaGrupo(p){ return LC_PAPEL_GRUPO[String(p||'').toLowerCase().trim()] || 'consultor'; }
+function lcModsDoGrupo(g){ return (LC_GRUPOS[g]||LC_GRUPOS.consultor).mods.slice(); }
+const LC_MODS_LBL = {scripts:'Scripts',captacao:'Captação',indicacoes:'Indicações',ranking:'Ranking',missoes:'Missões',lojas:'Lojas',acessos:'Acessos'};
+
+/* ── utilidades ─────────────────────────────────────────────────────── */
+function lcHoje(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function lcMes(){ return lcHoje().slice(0,7); }
+function lcDataBR(iso){ if(!iso) return ''; const p=String(iso).slice(0,10).split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:iso; }
+function lcUp(s){ return String(s==null?'':s).toUpperCase().trim(); }
+function lcNum(v){ if(v==null) return 0; const s=String(v).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'); const n=parseFloat(s); return isNaN(n)?0:n; }
+function lcBRL(n){ return 'R$ '+Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function lcEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function lcVal(id){ const e=document.getElementById(id); return e?e.value.trim():''; }
+function lcNomesLojas(){ return (lcLojas.length?lcLojas:LC_LOJAS_PADRAO).map(l=>l.nome); }
+function lcOptsLoja(sel,semSite){
+  return lcNomesLojas().filter(n=>!(semSite&&(n==='SITE'||n==='DEPÓSITO')))
+    .map(n=>'<option'+(n===sel?' selected':'')+'>'+lcEsc(n)+'</option>').join('');
+}
+function lcToast(msg,tipo){
+  let t=document.getElementById('lc-toast');
+  if(!t){ t=document.createElement('div'); t.id='lc-toast'; document.body.appendChild(t); }
+  t.className='lc-toast'+(tipo==='err'?' err':'')+' on'; t.textContent=msg;
+  clearTimeout(t._x); t._x=setTimeout(()=>{ t.classList.remove('on'); },2000);
+}
+function lcCopiar(id){
+  const el=document.getElementById(id); if(!el) return;
+  const txt=el.textContent||el.value||'';
+  const done=()=>lcToast('Copiado ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,()=>lcCopiaFallback(txt));
+  else lcCopiaFallback(txt);
+}
+function lcCopiaFallback(txt){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); lcToast('Copiado ✓'); }catch(e){ lcToast('Copie manualmente','err'); }
+  document.body.removeChild(ta);
+}
+function lcMenc(k){ const a=(lcCfg&&lcCfg.mencoes)||[]; for(let i=0;i<a.length;i++) if(a[i].k===k) return a[i].txt; return ''; }
+
+/* ── carga de dados ─────────────────────────────────────────────────── */
+async function lcInit(){
+  if(!lcMesFiltro) lcMesFiltro = lcMes();
+  const body=document.getElementById('lc-body');
+  if(body && !body.innerHTML) body.innerHTML='<div class="lc-empty">Carregando módulo de liderança…</div>';
+  try{ lcLojas = await dbGetSafe('lc_lojas','&order=nome.asc'); }catch(e){ lcLojas=[]; }
+  if(!Array.isArray(lcLojas)) lcLojas=[];
+  try{
+    const rows = await dbGetSafe('lc_config','&chave=eq.geral');
+    lcCfg = (rows&&rows[0]&&rows[0].valor) ? (typeof rows[0].valor==='string'?JSON.parse(rows[0].valor):rows[0].valor) : null;
+    lcCfg = Object.assign({}, LC_CFG_PADRAO, lcCfg||{});
+    if(!Array.isArray(lcCfg.mencoes)||!lcCfg.mencoes.length) lcCfg.mencoes=LC_CFG_PADRAO.mencoes.slice();
+  }catch(e){ lcCfg=JSON.parse(JSON.stringify(LC_CFG_PADRAO)); }
+  await lcCarregarIndic();
+  await lcCarregarMissoes();
+  await lcCarregarMetas();
+  await lcCarregarRotina();
+  try{ lcUsuarios = await dbGetSafe('lc_usuarios','&order=nome.asc'); }catch(e){ lcUsuarios=[]; }
+  if(!Array.isArray(lcUsuarios)) lcUsuarios=[];
+  try{ lcRcPessoas = await dbGetSafe('rc_pessoas'); }catch(e){ lcRcPessoas=[]; }
+  if(!Array.isArray(lcRcPessoas)) lcRcPessoas=[];
+  lcRender();
+}
+async function lcCarregarIndic(){
+  const ini=lcMesFiltro+'-01';
+  const [a,m]=lcMesFiltro.split('-').map(Number);
+  const fim=new Date(a,m,0);
+  const fimISO=lcMesFiltro+'-'+String(fim.getDate()).padStart(2,'0');
+  try{ lcIndic = await dbGetSafe('lc_indicacoes','&data=gte.'+ini+'&data=lte.'+fimISO); }catch(e){ lcIndic=[]; }
+  if(!Array.isArray(lcIndic)) lcIndic=[];
+}
+async function lcCarregarMissoes(){
+  try{ lcMissoes = await dbGetSafe('lc_missoes','&ativo=is.true'); }catch(e){ lcMissoes=[]; }
+  if(!Array.isArray(lcMissoes)) lcMissoes=[];
+  try{ lcChecks = await dbGetSafe('lc_missao_checks','&data=eq.'+lcHoje()); }catch(e){ lcChecks=[]; }
+  if(!Array.isArray(lcChecks)) lcChecks=[];
+}
+async function lcSalvarCfg(){
+  try{
+    const rows = await dbGetSafe('lc_config','&chave=eq.geral');
+    if(rows&&rows[0]) await dbUpdate('lc_config',rows[0].id,{valor:JSON.stringify(lcCfg)});
+    else await dbInsert('lc_config',{chave:'geral',valor:JSON.stringify(lcCfg)});
+    lcToast('Configuração salva ✓');
+  }catch(e){ lcToast('Erro ao salvar config','err'); }
+}
+
+/* ── navegação interna ──────────────────────────────────────────────── */
+function lcGo(t){ lcTab=t; lcRender(); const b=document.getElementById('lc-body'); if(b) b.scrollIntoView({behavior:'smooth',block:'start'}); }
+function lcRender(){
+  const bar=document.getElementById('lc-topbar'); const body=document.getElementById('lc-body');
+  if(!bar||!body) return;
+  const abas=[['metas','📊','Metas'],['rotina','🔁','Rotina'],['scripts','🧾','Scripts'],['captacao','📦','Captação'],
+              ['indicacoes','🎁','Indicações'],['ranking','🏆','Ranking'],['missoes','🎯','Missões'],
+              ['lojas','🏬','Lojas'],['acessos','🔐','Acessos']];
+  const perm = (typeof lcModsPermitidos!=='undefined' && lcModsPermitidos) ? lcModsPermitidos : null;
+  const vis = abas.filter(a=>!perm || perm.indexOf(a[0])>=0);
+  if(vis.length && !vis.some(a=>a[0]===lcTab)) lcTab=vis[0][0];
+  bar.innerHTML = vis.map(a=>'<button class="lc-tab'+(lcTab===a[0]?' on':'')+'" onclick="lcGo(\''+a[0]+'\')">'+a[1]+' '+a[2]+'</button>').join('');
+  if(lcTab==='metas')      lcRenderMetas();
+  else if(lcTab==='rotina') lcRenderRotina();
+  else if(lcTab==='scripts')    lcRenderScripts();
+  else if(lcTab==='captacao')   lcRenderCaptacao();
+  else if(lcTab==='indicacoes') lcRenderIndic();
+  else if(lcTab==='ranking')    lcRenderRank();
+  else if(lcTab==='missoes')    lcRenderMissoes();
+  else if(lcTab==='lojas')      lcRenderLojas();
+  else if(lcTab==='acessos')    lcRenderAcessos();
+}
+
+/* ═══ 1. GERADOR DE SCRIPTS ════════════════════════════════════════════ */
+const LC_MOD = [
+ {g:'Estoque', id:'saida', ic:'📤', t:'Saída', sub:'baixa de produto',
+  f:[{k:'qtd',l:'Qtd',v:'01',w:'half'},{k:'produto',l:'Produto',w:'half'},{k:'loja',l:'Loja',tp:'loja'},
+     {k:'motivo',l:'Motivo',sug:['CORTE ERRADO NA MÁQUINA','USO LOJA','PRODUTO COM DEFEITO','GARANTIA DO ID - ','CORTESIA NA VENDA DE ID ','COMPOR KIT','NÃO SEGURA A CARGA']}],
+  m:['estoque'],
+  gen:(d,me)=>['SAÍDA', d.qtd+' - '+d.produto, 'LOJA: '+d.loja, 'MOTIVO: '+d.motivo].concat(me)},
+
+ {g:'Estoque', id:'entrada', ic:'📥', t:'Entrada', sub:'subida de produto',
+  f:[{k:'qtd',l:'Qtd',v:'01',w:'half'},{k:'produto',l:'Produto',w:'half'},{k:'loja',l:'Loja',tp:'loja'},
+     {k:'motivo',l:'Motivo',sug:['CORREÇÃO DE ESTOQUE','VENDIDO','CAPTADO E FEITO PREVENTIVA EM LOJA.','CLIENTE FEZ RESERVA PRA HOJE.']},
+     {k:'obs',l:'OBS (opcional)',op:1}],
+  m:['estoque'], mx:['financeiro'],
+  gen:(d,me)=>{ const a=['ENTRADA', d.qtd+' - '+d.produto, 'LOJA: '+d.loja, 'MOTIVO: '+d.motivo]; if(d.obs) a.push('OBS: '+d.obs); return a.concat(me); }},
+
+ {g:'Estoque', id:'transf', ic:'🔁', t:'Transferência', sub:'entre lojas',
+  f:[{k:'qtd',l:'Qtd',v:'01',w:'half'},{k:'produto',l:'Produto',w:'half'},{k:'origem',l:'Origem',tp:'loja',w:'half'},
+     {k:'destino',l:'Destino',tp:'loja',w:'half'},
+     {k:'motivo',l:'Motivo',sug:['VENDIDO','SINAL PAGO','VENDIDO // LOGÍSTICA UBER FLASH','VENDIDO // LOG. MOTO AMANHÃ','VENDIDO // CLIENTE IRÁ RETIRAR NA LOJA']}],
+  m:['estoque'],
+  gen:(d,me)=>['TRANSFERÊNCIA', d.qtd+' - '+d.produto, d.origem+' >>> '+d.destino, 'MOTIVO: '+d.motivo].concat(me)},
+
+ {g:'Logística', id:'log', ic:'🛵', t:'Transferência c/ prazo', sub:'cobrança de logística',
+  f:[{k:'qtd',l:'Qtd',v:'01',w:'half'},{k:'produto',l:'Produto',w:'half'},{k:'origem',l:'Origem',tp:'loja',w:'half'},
+     {k:'destino',l:'Destino',tp:'loja',w:'half'},{k:'motivo',l:'Motivo',v:'VENDIDO',sug:['VENDIDO','SINAL PAGO','CLIENTE AGUARDANDO EM LOJA']},
+     {k:'prazo',l:'Prazo',sug:['CONSEGUIMOS PRA HOJE?','CONSEGUIMOS ATÉ AS 15:00?','CONSEGUIMOS ATÉ AS 19:00?','CONSEGUIMOS ATÉ AS 20HRS?','CONSEGUIMOS EM 1 HORA? 🚨','CONSEGUIMOS EM QUANTO TEMPO?']}],
+  m:['logistica'], mx:['supervisao'],
+  gen:(d,me)=>['TRANSFERÊNCIA', d.qtd+' - '+d.produto, d.origem+' >>>> '+d.destino, 'MOTIVO: '+d.motivo, d.prazo].concat(me)},
+
+ {g:'Financeiro', id:'uber', ic:'🚗', t:'Reembolso Uber', sub:'logística paga',
+  f:[{k:'nome',l:'Nome'},{k:'pix',l:'Chave PIX'},{k:'valor',l:'Valor',w:'half'},{k:'id',l:'ID',w:'half'},
+     {k:'origem',l:'Origem',tp:'loja',w:'half'},{k:'destino',l:'Destino',tp:'loja',w:'half'},
+     {k:'produto',l:'Produto'},{k:'loja',l:'Loja da gordura',tp:'loja'}],
+  m:['financeiro2','financeiro','adm'],
+  gen:(d,me)=>['REEMBOLSO UBER','NOME: '+lcUp(d.nome),'PIX: '+d.pix,'VALOR: R$ '+d.valor,'ID: '+d.id,
+               d.origem+' >>>> '+d.destino,'PRODUTO: 01 - '+d.produto,'OBS: ADICIONAR NA PLANILHA DE GORDURA DA LOJA '+d.loja].concat(me)},
+
+ {g:'Financeiro', id:'estorno', ic:'↩️', t:'Estorno', sub:'devolução ao cliente',
+  f:[{k:'loja',l:'Loja',tp:'loja'},{k:'nome',l:'Nome do cliente'},{k:'id',l:'ID',w:'half'},{k:'valor',l:'Valor',w:'half'},
+     {k:'pix',l:'Chave PIX',w:'half'},{k:'banco',l:'Banco',w:'half'},
+     {k:'motivo',l:'Motivo',sug:['PRODUTO COM DEFEITO','DESISTÊNCIA DA COMPRA','COBRANÇA EM DUPLICIDADE','CANCELAMENTO DE VENDA']}],
+  m:['financeiro','financeiro2'],
+  gen:(d,me)=>['ESTORNO','LOJA: '+d.loja,'NOME: '+lcUp(d.nome),'ID: '+d.id,'PIX: '+d.pix,'BANCO: '+lcUp(d.banco),'VALOR: R$ '+d.valor,'MOTIVO: '+d.motivo].concat(me)},
+
+ {g:'Financeiro', id:'gordura', ic:'💰', t:'Uso de Gordura', sub:'GD negativa',
+  f:[{k:'loja',l:'Loja',tp:'loja'},{k:'valor',l:'Valor',w:'half'},{k:'data',l:'Data',tp:'dataBR',w:'half'},
+     {k:'motivo',l:'Referente a',sug:['CORTESIA ID: ','DESCONTO CONCEDIDO ID: ','BONIFICAÇÃO AO CLIENTE ID: ','INDICAÇÃO ID: ']},
+     {k:'ciente',l:'Quem está ciente (opcional)',op:1}],
+  m:['financeiro2','financeiro','adm'],
+  gen:(d,me)=>{ let l3='ADICIONAR '+d.valor+' NEGATIVO NA PLANILHA DE GORDURA REFERENTE A '+d.motivo;
+    if(d.ciente) l3+=' '+lcUp(d.ciente)+' CIENTE.';
+    return ['USO DE GORDURA','LOJA: '+d.loja,l3,'Data: '+d.data].concat(me); }},
+
+ {g:'Grupo da Loja', id:'cancel', ic:'🚫', t:'Cancelamento de venda', sub:'',
+  f:[{k:'id',l:'ID da venda'},{k:'motivo',l:'Motivo',sug:['PRODUTO COM DEFEITO','DESISTÊNCIA DO CLIENTE','VENDA LANÇADA EM DUPLICIDADE','ERRO DE LANÇAMENTO']},
+     {k:'ciente',l:'Quem está ciente (opcional)',op:1}],
+  m:['estoque'],
+  gen:(d,me)=>{ let mo=d.motivo; if(d.ciente) mo+='. '+lcUp(d.ciente)+' CIENTE'; return ['SOLICITAÇÃO DE CANCELAMENTO DE VENDA','ID: '+d.id,'MOTIVO: '+mo].concat(me); }},
+
+ {g:'Grupo da Loja', id:'nf', ic:'🧾', t:'Solicitação de NF', sub:'conforme imagem',
+  f:[{k:'id',l:'ID da venda'},{k:'motivo',l:'Motivo',v:'GERAR CONFORME IMAGEM',sug:['GERAR CONFORME IMAGEM','GERAR NF CHEIA','GERAR NF COM AJUSTE DE VALOR']}],
+  m:['estoque'],
+  gen:(d,me)=>['SOLICITAÇÃO DE NF','ID '+d.id,'MOTIVO: '+d.motivo].concat(me)},
+
+ {g:'Grupo da Loja', id:'danfe', ic:'📄', t:'Solicitação de DANFE', sub:'',
+  f:[{k:'id',l:'ID da venda'},{k:'obs',l:'OBS da DANFE',sug:['REFERENTE À SERVIÇO DE MONTAGEM E INSTALAÇÃO DE SOFTWARE']}],
+  m:['estoque'],
+  gen:(d,me)=>['SOLICITAÇÃO DE DANFE','ID: '+d.id,'OBS: COLOCAR OBS NA DANFE "'+d.obs+'"'].concat(me)},
+
+ {g:'Grupo da Loja', id:'altvend', ic:'👤', t:'Alteração de vendedor', sub:'troca ou inclusão',
+  f:[{k:'id',l:'ID da venda'},{k:'de',l:'Vendedor atual (vazio = sem vendedor)',op:1},{k:'para',l:'Vendedor correto'}],
+  m:['financeiro'],
+  gen:(d,me)=>{ const a=['SOLICITAÇÃO DE ALTERAÇÃO DE VENDA','ID: '+d.id];
+    if(d.de) a.push('MOTIVO: VENDEDOR INCORRETO', lcUp(d.de)+' >>> '+lcUp(d.para));
+    else a.push('MOTIVO: SEM VENDEDOR,','ADICIONAR '+lcUp(d.para)+'.');
+    return a.concat(me); }},
+
+ {g:'Grupo da Loja', id:'altval', ic:'🏷️', t:'Alteração de valor', sub:'correção de venda',
+  f:[{k:'id',l:'ID da venda'},{k:'produto',l:'Produto'},{k:'de',l:'Valor lançado',w:'half'},{k:'para',l:'Valor correto',w:'half'},
+     {k:'motivo',l:'Observação',op:1,sug:['ERRO DE LANÇAMENTO','DESCONTO AUTORIZADO','VALOR DIVERGENTE DA TABELA']}],
+  m:['financeiro'],
+  gen:(d,me)=>{ const a=['SOLICITAÇÃO DE ALTERAÇÃO DE VENDA','ID: '+d.id,'MOTIVO: VALOR DO PRODUTO INCORRETO','PRODUTO: '+d.produto,'R$ '+d.de+' >>> R$ '+d.para];
+    if(d.motivo) a.push('OBS: '+d.motivo); return a.concat(me); }}
+];
+
+function lcRenderScripts(){
+  const body=document.getElementById('lc-body');
+  let cards='', g='';
+  LC_MOD.forEach(m=>{
+    if(m.g!==g){ if(g) cards+='</div>'; cards+='<div class="lc-grp">'+lcEsc(m.g)+'</div><div class="lc-mods">'; g=m.g; }
+    cards+='<button class="lc-mod'+(lcModAtual&&lcModAtual.id===m.id?' on':'')+'" onclick="lcPickMod(\''+m.id+'\')">'
+         + '<span class="ic">'+m.ic+'</span><span class="tt">'+lcEsc(m.t)+'</span>'
+         + (m.sub?'<span class="sb">'+lcEsc(m.sub)+'</span>':'')+'</button>';
+  });
+  cards+='</div>';
+  body.innerHTML =
+    '<div class="lc-card"><div class="lc-h">Modelo de script</div>'+cards+'</div>'
+  + '<div id="lc-form-wrap"></div>';
+  if(lcModAtual) lcRenderFormScript();
+}
+function lcPickMod(id){
+  lcModAtual = LC_MOD.find(m=>m.id===id) || null;
+  lcModMenc = {};
+  (lcModAtual.m||[]).forEach(k=>{ lcModMenc[k]=true; });
+  lcRenderScripts();
+  setTimeout(()=>{ const w=document.getElementById('lc-form-wrap'); if(w) w.scrollIntoView({behavior:'smooth',block:'start'}); },60);
+}
+function lcRenderFormScript(){
+  const m=lcModAtual; if(!m) return;
+  let h='<div class="lc-card"><div class="lc-h">'+m.ic+' '+lcEsc(m.t)+'</div>', pend='';
+  m.f.forEach(f=>{
+    let fh='';
+    if(f.tp==='loja'){
+      fh='<div class="lc-f"><label>'+lcEsc(f.l)+'</label><select id="lcx_'+f.k+'">'+lcOptsLoja(f.v||lcNomesLojas()[0])+'</select></div>';
+    } else if(f.tp==='dataBR'){
+      const h2=lcDataBR(lcHoje()); const curta=h2.slice(0,6)+h2.slice(8);
+      fh='<div class="lc-f"><label>'+lcEsc(f.l)+'</label><input id="lcx_'+f.k+'" value="'+curta+'"></div>';
+    } else {
+      let dl='', dlid='';
+      if(f.sug){ dlid='lcdl_'+m.id+'_'+f.k; dl='<datalist id="'+dlid+'">'+f.sug.map(s=>'<option value="'+lcEsc(s)+'">').join('')+'</datalist>'; }
+      fh='<div class="lc-f"><label>'+lcEsc(f.l)+'</label><input id="lcx_'+f.k+'" '+(dlid?'list="'+dlid+'"':'')+' value="'+lcEsc(f.v||'')+'" oninput="lcPreview()">'+dl+'</div>';
+    }
+    if(f.w==='half'){ if(pend){ h+='<div class="lc-g2">'+pend+fh+'</div>'; pend=''; } else pend=fh; }
+    else { if(pend){ h+=pend; pend=''; } h+=fh; }
+  });
+  if(pend) h+=pend;
+  const lista=(lcCfg&&lcCfg.mencoes)||[];
+  if(lista.length){
+    const dflt=(m.m||[]).concat(m.mx||[]);
+    const ord=lista.slice().sort((a,b)=>{ let pa=dflt.indexOf(a.k), pb=dflt.indexOf(b.k); if(pa<0)pa=99; if(pb<0)pb=99; return pa-pb; });
+    h+='<label class="lc-lb">Menções</label><div class="lc-chips">'
+     + ord.map(x=>'<span class="lc-chip'+(lcModMenc[x.k]?' on':'')+'" onclick="lcTglMenc(\''+x.k+'\')">'+lcEsc(x.txt)+'</span>').join('')
+     + '</div><p class="lc-hint">Toque para ligar/desligar. Cadastre novas pessoas na aba 🏬 Lojas › Menções.</p>';
+  }
+  h+='<button class="lc-btn" onclick="lcPreview(1)">⚡ Gerar script</button></div>'
+   + '<div class="lc-card" id="lc-out-card" style="display:none"><div class="lc-h">Pronto para enviar</div>'
+   + '<pre class="lc-out" id="lc-out"></pre>'
+   + '<div class="lc-g2"><button class="lc-btn ok" onclick="lcCopiar(\'lc-out\')">📋 Copiar</button>'
+   + '<button class="lc-btn2" onclick="lcRenderScripts()">🧹 Limpar</button></div></div>';
+  document.getElementById('lc-form-wrap').innerHTML=h;
+  lcPreview();
+}
+function lcTglMenc(k){ lcModMenc[k]=!lcModMenc[k]; lcRenderFormScript(); }
+function lcMencAtivas(){
+  const out=[]; ((lcCfg&&lcCfg.mencoes)||[]).forEach(x=>{ if(lcModMenc[x.k]&&x.txt) out.push(x.txt); });
+  return out;
+}
+function lcPreview(forcar){
+  const m=lcModAtual; if(!m) return;
+  const card=document.getElementById('lc-out-card'); if(!card) return;
+  const d={}; let falta=false;
+  m.f.forEach(f=>{
+    let v=lcVal('lcx_'+f.k);
+    if(f.tp!=='dataBR' && f.k!=='pix') v=lcUp(v);
+    d[f.k]=v; if(!f.op && !v) falta=true;
+  });
+  if(falta && !forcar){ card.style.display='none'; return; }
+  if(falta && forcar) lcToast('Preencha os campos obrigatórios','err');
+  document.getElementById('lc-out').textContent = m.gen(d, lcMencAtivas()).join('\n');
+  card.style.display='';
+  if(forcar) setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'center'}),60);
+}
+
+/* ═══ 2. CAPTAÇÃO ══════════════════════════════════════════════════════ */
+function lcRenderCaptacao(){
+  if(!lcCaptItens.length) lcCaptItens=[{qtd:'01',prod:'',sn:'',df:''}];
+  const body=document.getElementById('lc-body');
+  body.innerHTML =
+   '<div class="lc-card"><div class="lc-h">📦 Captação — dados da loja</div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Loja</label><select id="lcc_loja">'+lcOptsLoja(lcNomesLojas()[0],true)+'</select></div>'
+  +'<div class="lc-f"><label>Destino do script</label><select id="lcc_modo" onchange="lcCaptRenderPag()">'
+  +'<option value="grupo">Grupo da loja (sem pagamento)</option><option value="fin">Financeiro (solicitar PIX)</option></select></div>'
+  +'</div>'
+  +'<div class="lc-f"><label>Status (opcional)</label><input id="lcc_status" list="lcdl_status" placeholder="ex.: AGUARDANDO SEPARAÇÃO 🔁" oninput="lcCaptPreview()">'
+  +'<datalist id="lcdl_status"><option value="AGUARDANDO SEPARAÇÃO 🔁"><option value="AGUARDANDO PREVENTIVA"><option value="PRONTO PARA VENDA"></datalist></div>'
+  +'</div>'
+  +'<div class="lc-card"><div class="lc-h">Itens captados</div><div id="lcc-itens"></div>'
+  +'<button class="lc-btn2" onclick="lcCaptAddItem()">+ Adicionar item</button></div>'
+  +'<div id="lcc-pag"></div>'
+  +'<div class="lc-card"><button class="lc-btn" onclick="lcCaptPreview(1)">⚡ Gerar script de captação</button>'
+  +'<pre class="lc-out" id="lcc-out" style="display:none;margin-top:12px"></pre>'
+  +'<div class="lc-g2" id="lcc-acts" style="display:none;margin-top:8px">'
+  +'<button class="lc-btn ok" onclick="lcCopiar(\'lcc-out\')">📋 Copiar</button>'
+  +'<button class="lc-btn2" onclick="lcCaptLimpar()">🧹 Nova captação</button></div></div>';
+  lcCaptRenderItens(); lcCaptRenderPag();
+}
+function lcCaptRenderItens(){
+  const el=document.getElementById('lcc-itens'); if(!el) return;
+  el.innerHTML = lcCaptItens.map((it,i)=>
+    '<div class="lc-item-box"><div class="lc-item-top"><b>Item '+(i+1)+'</b>'
+   + (lcCaptItens.length>1?'<button class="lc-del" onclick="lcCaptDelItem('+i+')">✕</button>':'')+'</div>'
+   + '<div class="lc-g2">'
+   + '<div class="lc-f"><label>Qtd</label><input value="'+lcEsc(it.qtd)+'" oninput="lcCaptSet('+i+',\'qtd\',this.value)"></div>'
+   + '<div class="lc-f"><label>SN / Serial</label><input value="'+lcEsc(it.sn)+'" placeholder="vazio = SEM SERIAL" oninput="lcCaptSet('+i+',\'sn\',this.value)"></div>'
+   + '</div>'
+   + '<div class="lc-f"><label>Produto</label><input value="'+lcEsc(it.prod)+'" placeholder="PLAYSTATION 5 SLIM DIGITAL 825GB" oninput="lcCaptSet('+i+',\'prod\',this.value)"></div>'
+   + '<div class="lc-f"><label>DF · Defeito</label><input value="'+lcEsc(it.df)+'" list="lcdl_df" placeholder="descreva livremente" oninput="lcCaptSet('+i+',\'df\',this.value)">'
+   + '<datalist id="lcdl_df"><option value="SEM DEFEITO, NOVO"><option value="SEM DEFEITOS"><option value="MANUTENÇÃO PREVENTIVA"></datalist></div>'
+   + '</div>').join('');
+}
+function lcCaptSet(i,k,v){ if(lcCaptItens[i]){ lcCaptItens[i][k]=v; lcCaptPreview(); } }
+function lcCaptAddItem(){ lcCaptItens.push({qtd:'01',prod:'',sn:'',df:''}); lcCaptRenderItens(); }
+function lcCaptDelItem(i){ lcCaptItens.splice(i,1); lcCaptRenderItens(); lcCaptPreview(); }
+function lcCaptLimpar(){ lcCaptItens=[{qtd:'01',prod:'',sn:'',df:''}]; lcRenderCaptacao(); }
+function lcCaptRenderPag(){
+  const el=document.getElementById('lcc-pag'); if(!el) return;
+  const fin = lcVal('lcc_modo')==='fin';
+  el.innerHTML = fin ?
+   ('<div class="lc-card"><div class="lc-h">Dados do vendedor · pagamento</div>'
+   +'<div class="lc-f"><label>Nome completo</label><input id="lcc_nome" oninput="lcCaptPreview()"></div>'
+   +'<div class="lc-g2">'
+   +'<div class="lc-f"><label>CPF (opcional)</label><input id="lcc_cpf" oninput="lcCaptPreview()"></div>'
+   +'<div class="lc-f"><label>Número</label><input id="lcc_num" oninput="lcCaptPreview()"></div>'
+   +'</div><div class="lc-g2">'
+   +'<div class="lc-f"><label>Chave PIX</label><input id="lcc_pix" oninput="lcCaptPreview()"></div>'
+   +'<div class="lc-f"><label>Banco</label><input id="lcc_banco" oninput="lcCaptPreview()"></div>'
+   +'</div>'
+   +'<div class="lc-f"><label>Valor</label><input id="lcc_valor" inputmode="decimal" placeholder="1200,00" oninput="lcCaptPreview()"></div></div>') : '';
+  lcCaptPreview();
+}
+function lcCaptScript(){
+  const loja=lcVal('lcc_loja'), fin=lcVal('lcc_modo')==='fin';
+  const lin=['CAPTAÇÃO '+lcUp(loja)];
+  lcCaptItens.forEach(it=>{
+    if(!it.prod) return;
+    lin.push(lcUp(it.qtd||'01')+' - '+lcUp(it.prod));
+    lin.push('SN: '+(it.sn?lcUp(it.sn):'SEM SERIAL'));
+    if(it.df) lin.push('DF: '+lcUp(it.df));
+  });
+  const st=lcVal('lcc_status'); if(st) lin.push(lcUp(st));
+  let me;
+  if(fin){
+    const nome=lcVal('lcc_nome'), cpf=lcVal('lcc_cpf'), n=lcVal('lcc_num'),
+          pix=lcVal('lcc_pix'), bco=lcVal('lcc_banco'), val=lcVal('lcc_valor');
+    lin.push('NOME: '+lcUp(nome));
+    if(cpf) lin.push('CPF: '+cpf);
+    lin.push('NÚMERO: '+n);
+    lin.push('CHAVE PIX: '+pix);
+    lin.push('BANCO: '+lcUp(bco));
+    lin.push('VALOR: '+lcBRL(lcNum(val)));
+    me=[lcMenc('financeiro'),lcMenc('financeiro2'),lcMenc('adm')];
+  } else {
+    me=[lcMenc('supervisao'),lcMenc('gestao'),lcMenc('estoque')];
+  }
+  return lin.concat(me.filter(Boolean)).join('\n');
+}
+function lcCaptPreview(forcar){
+  const out=document.getElementById('lcc-out'), acts=document.getElementById('lcc-acts');
+  if(!out) return;
+  const temItem = lcCaptItens.some(it=>it.prod);
+  if(!temItem){ if(forcar) lcToast('Informe ao menos um produto','err'); out.style.display='none'; acts.style.display='none'; return; }
+  out.textContent=lcCaptScript(); out.style.display=''; acts.style.display='';
+  if(forcar) setTimeout(()=>out.scrollIntoView({behavior:'smooth',block:'center'}),60);
+}
+/* ═══ 3. INDICAÇÕES ════════════════════════════════════════════════════ */
+const LC_TIPOS = {padrao:'Padrão',realme:'Realme/Xiaomi',porta:'Na Porta',assist_aut:'Autorizada',assist_orc:'Orçamento'};
+
+function lcValorLoja(nome){
+  const l=(lcLojas.length?lcLojas:LC_LOJAS_PADRAO).find(x=>x.nome===nome);
+  return l?Number(l.valor_indic)||0:20;
+}
+function lcRegraValor(loja,vprod,tipo){
+  if(tipo==='realme')     return Number(lcCfg.realme)||50;
+  if(tipo==='porta')      return Number(lcCfg.porta)||35;
+  if(tipo==='assist_aut') return Number(lcCfg.aut)||35;
+  if(tipo==='assist_orc') return Number(lcCfg.orc)||10;
+  if(vprod>=1000) return lcValorLoja(loja)||20;
+  if(vprod>=200)  return Number(lcCfg.faixa10)||10;
+  return Number(lcCfg.faixa0)||0;
+}
+function lcExplicar(loja,vprod,tipo,base,isSite){
+  if(tipo==='realme')     return 'Campanha Realme/Xiaomi — '+lcBRL(base)+' fixo.';
+  if(tipo==='porta')      return 'Campanha Trazer na Porta — '+lcBRL(base)+' pelo item convertido.';
+  if(tipo==='assist_aut') return 'Assistência autorizada — '+lcBRL(base)+'.';
+  if(tipo==='assist_orc') return 'Assistência orçamento — '+lcBRL(base)+'.';
+  if(vprod>=1000) return loja+' · venda ≥ R$1.000 = '+lcBRL(base)+'.'+(isSite?' (regra da loja de conversão)':'');
+  if(vprod>=200)  return 'Venda entre R$200 e R$999 = '+lcBRL(base)+'.';
+  return 'Venda abaixo de R$200 — sem comissão padrão (conta para a campanha Itens).';
+}
+function lcRenderIndic(){
+  const body=document.getElementById('lc-body');
+  body.innerHTML =
+   '<div class="lc-card"><div class="lc-h">🎁 Nova indicação</div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>ID da venda</label><input id="lci_id" inputmode="numeric" placeholder="323761"></div>'
+  +'<div class="lc-f"><label>Data</label><input id="lci_data" type="date" value="'+lcHoje()+'"></div>'
+  +'</div>'
+  +'<div class="lc-f"><label>Loja</label><select id="lci_loja" onchange="lcIndicToggleConv();lcIndicCalc()">'+lcOptsLoja(lcNomesLojas()[0])+'</select></div>'
+  +'<div class="lc-f" id="lci_convbox" style="display:none"><label>Loja de conversão da venda</label>'
+  +'<select id="lci_conv" onchange="lcIndicCalc()">'+lcOptsLoja('',true)+'</select>'
+  +'<p class="lc-hint">Venda do Site: a comissão segue a regra da loja que converteu.</p></div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Indicador</label><input id="lci_nome" list="lcdl_ind" placeholder="Nome" oninput="lcAutoPix(\'lci_nome\',\'lci_pix\')">'
+  +'<datalist id="lcdl_ind">'+lcIndicadoresConhecidos().map(n=>'<option value="'+lcEsc(n)+'">').join('')+'</datalist></div>'
+  +'<div class="lc-f"><label>Chave PIX</label><input id="lci_pix" placeholder="CPF, telefone ou e-mail"></div>'
+  +'</div>'
+  +'<div class="lc-f"><label>Tipo de indicação</label><select id="lci_tipo" onchange="lcIndicCalc()">'
+  +'<option value="padrao">Padrão (por valor da venda)</option>'
+  +'<option value="realme">Realme / Xiaomi — R$50</option>'
+  +'<option value="porta">Trazer na Porta — R$35</option>'
+  +'<option value="assist_aut">Assistência · Autorizada — R$35</option>'
+  +'<option value="assist_orc">Assistência · Orçamento — R$10</option></select></div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Valor do produto</label><input id="lci_vprod" inputmode="decimal" placeholder="2499,99" oninput="lcIndicCalc()"></div>'
+  +'<div class="lc-f"><label>Valor a pagar</label><input id="lci_vpago" inputmode="decimal" placeholder="auto" oninput="lcIndicCalc()"></div>'
+  +'</div>'
+  +'<div class="lc-calc">'
+  +'<div class="lc-crow"><span>Comissão da regra</span><b id="lci_cregra">R$ 0,00</b></div>'
+  +'<div class="lc-crow"><span>Valor a pagar</span><b id="lci_cpago">R$ 0,00</b></div>'
+  +'<div class="lc-crow gd"><span>Sai da Gordura (GD)</span><b id="lci_cgd">R$ 0,00</b></div>'
+  +'<p class="lc-hint" id="lci_cexp">—</p></div>'
+  +'<label class="lc-sw"><input type="checkbox" id="lci_item"><span>Adicionar item indicação na venda</span></label>'
+  +'<label class="lc-sw"><input type="checkbox" id="lci_dupla" onchange="lcIndicToggleDupla()"><span>Indicação dupla (2º indicador no mesmo ID)</span></label>'
+  +'<div id="lci_duplabox" style="display:none">'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>2º indicador</label><input id="lci_nome2" list="lcdl_ind" oninput="lcAutoPix(\'lci_nome2\',\'lci_pix2\')"></div>'
+  +'<div class="lc-f"><label>Chave PIX</label><input id="lci_pix2"></div>'
+  +'</div><div class="lc-f"><label>Valor do 2º</label><input id="lci_vpago2" inputmode="decimal" placeholder="25,00" oninput="lcIndicCalc()"></div>'
+  +'<p class="lc-hint">O 2º indicador sai 100% da gordura da loja.</p></div>'
+  +'<div class="lc-f"><label>OBS extra (opcional)</label><input id="lci_obs" placeholder="ex.: campanha semanal"></div>'
+  +'<button class="lc-btn ok" onclick="lcIndicSalvar()">💾 Salvar + gerar script do PIX</button></div>'
+  +'<div class="lc-card" id="lci-outcard" style="display:none"><div class="lc-h">Script do PIX</div>'
+  +'<pre class="lc-out" id="lci-out"></pre>'
+  +'<div class="lc-g2"><button class="lc-btn ok" onclick="lcCopiar(\'lci-out\')">📋 Copiar</button>'
+  +'<button class="lc-btn2" onclick="document.getElementById(\'lci-outcard\').style.display=\'none\'">Fechar</button></div></div>'
+  +'<div class="lc-card"><div class="lc-h">Lançamentos do mês</div>'
+  +'<div class="lc-g2"><div class="lc-f"><label>Mês</label><input type="month" id="lci_mes" value="'+lcMesFiltro+'" onchange="lcTrocarMes(this.value)"></div>'
+  +'<div class="lc-f"><label>&nbsp;</label><button class="lc-btn2" onclick="lcExportCSV()">⬇️ Exportar CSV</button></div></div>'
+  +'<div id="lci-lista"></div></div>';
+  lcIndicToggleConv(); lcIndicCalc(); lcIndicLista();
+}
+function lcIndicadoresConhecidos(){
+  const s={}; lcIndic.forEach(r=>{ if(r.nome) s[r.nome]=1; });
+  return Object.keys(s).sort();
+}
+function lcAutoPix(idNome,idPix){
+  const n=lcVal(idNome).toLowerCase();
+  const r=lcIndic.find(x=>String(x.nome||'').toLowerCase()===n);
+  if(r&&r.pix){ const e=document.getElementById(idPix); if(e&&!e.value) e.value=r.pix; }
+}
+async function lcTrocarMes(v){ lcMesFiltro=v||lcMes(); await lcCarregarIndic(); lcRender(); }
+function lcIndicToggleConv(){
+  const isSite=lcVal('lci_loja')==='SITE';
+  const b=document.getElementById('lci_convbox'); if(b) b.style.display=isSite?'':'none';
+}
+function lcIndicToggleDupla(){
+  const c=document.getElementById('lci_dupla');
+  const b=document.getElementById('lci_duplabox'); if(b) b.style.display=c&&c.checked?'':'none';
+  lcIndicCalc();
+}
+function lcIndicLojaRegra(){
+  const l=lcVal('lci_loja');
+  if(l==='SITE'){ const cv=lcVal('lci_conv'); if(cv) return cv; }
+  return l;
+}
+function lcIndicCalc(){
+  if(!document.getElementById('lci_loja')) return null;
+  const lojaReal=lcVal('lci_loja'), loja=lcIndicLojaRegra(), tipo=lcVal('lci_tipo');
+  const vprod=lcNum(lcVal('lci_vprod'));
+  const base=lcRegraValor(loja,vprod,tipo);
+  const pagoEl=document.getElementById('lci_vpago');
+  const pago = pagoEl.value.trim()==='' ? base : lcNum(pagoEl.value);
+  pagoEl.placeholder=String(base).replace('.',',');
+  const gd=Math.max(0,pago-base);
+  const dup=document.getElementById('lci_dupla');
+  const dupla=(dup&&dup.checked)?lcNum(lcVal('lci_vpago2')):0;
+  document.getElementById('lci_cregra').textContent=lcBRL(base);
+  document.getElementById('lci_cpago').textContent=lcBRL(pago+dupla);
+  document.getElementById('lci_cgd').textContent=lcBRL(gd+dupla);
+  let exp=lcExplicar(loja,vprod,tipo,base,lojaReal==='SITE');
+  if(dupla>0) exp+=' 2º indicador ('+lcBRL(dupla)+') sai 100% da gordura.';
+  document.getElementById('lci_cexp').textContent=exp;
+  return {base,pago,gd,dupla,tipo,vprod,loja:lojaReal,conv:(lojaReal==='SITE'?lcVal('lci_conv'):'')};
+}
+function lcScriptPix(r){
+  const a=['INDICAÇÃO','ID: '+r.id_venda,'LOJA: '+r.loja];
+  if(r.conv) a.push('CONVERSÃO: '+r.conv);
+  a.push('NOME: '+lcUp(r.nome),'PIX: '+r.pix,'VALOR: '+lcBRL(r.pago));
+  const obs=[];
+  if(Number(r.gd)>0) obs.push('ADICIONAR '+lcBRL(r.gd).replace('R$ ','R$')+' A PLANILHA DE GD');
+  if(r.item) obs.push('ADICIONAR ITEM INDICAÇÃO NA VENDA');
+  if(r.obs) obs.push(lcUp(r.obs));
+  obs.forEach((o,i)=>{ a.push((obs.length>1?('OBS'+(i+1)):'OBS')+': '+o+(o.slice(-1)==='.'?'':'.')); });
+  return a.join('\n');
+}
+async function lcIndicSalvar(){
+  const id=lcVal('lci_id'), nome=lcVal('lci_nome'), pix=lcVal('lci_pix');
+  if(!id||!nome||!pix){ lcToast('Informe ID, indicador e PIX','err'); return; }
+  const c=lcIndicCalc();
+  const data=lcVal('lci_data')||lcHoje();
+  const reg={ id_venda:id, data, loja:c.loja, conv:c.conv||null, nome, pix, tipo:c.tipo,
+              vprod:c.vprod, pago:c.pago, base:c.base, gd:c.gd,
+              item:!!document.getElementById('lci_item').checked, obs:lcVal('lci_obs')||null, status:'PAGO' };
+  let txt='';
+  try{
+    const ins=await dbInsert('lc_indicacoes',reg);
+    const saved=(Array.isArray(ins)?ins[0]:ins)||reg;
+    lcIndic.unshift(saved); txt=lcScriptPix(saved);
+    const dup=document.getElementById('lci_dupla');
+    if(dup&&dup.checked){
+      const n2=lcVal('lci_nome2'), p2=lcVal('lci_pix2'), v2=lcNum(lcVal('lci_vpago2'));
+      if(n2&&p2&&v2>0){
+        const r2={ id_venda:id, data, loja:c.loja, conv:c.conv||null, nome:n2, pix:p2, tipo:c.tipo,
+                   vprod:c.vprod, pago:v2, base:0, gd:v2, item:false, obs:'INDICAÇÃO DUPLA', status:'PAGO' };
+        const i2=await dbInsert('lc_indicacoes',r2);
+        const s2=(Array.isArray(i2)?i2[0]:i2)||r2;
+        lcIndic.unshift(s2); txt+='\n\n'+lcScriptPix(s2);
+      }
+    }
+    lcToast('Indicação salva ✓');
+  }catch(e){ lcToast('Erro ao salvar: '+e.message,'err'); return; }
+  document.getElementById('lci-out').textContent=txt;
+  document.getElementById('lci-outcard').style.display='';
+  ['lci_id','lci_nome','lci_pix','lci_vprod','lci_vpago','lci_obs','lci_nome2','lci_pix2','lci_vpago2']
+    .forEach(k=>{ const e=document.getElementById(k); if(e) e.value=''; });
+  document.getElementById('lci_item').checked=false;
+  document.getElementById('lci_dupla').checked=false; lcIndicToggleDupla();
+  lcIndicLista();
+  setTimeout(()=>document.getElementById('lci-outcard').scrollIntoView({behavior:'smooth',block:'center'}),80);
+}
+function lcIndicLista(){
+  const el=document.getElementById('lci-lista'); if(!el) return;
+  if(!lcIndic.length){ el.innerHTML='<div class="lc-empty">Nenhuma indicação neste mês.</div>'; return; }
+  const ord=lcIndic.slice().sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+  el.innerHTML = ord.map(r=>
+    '<div class="lc-row"><div><div class="lc-row-nm">'+lcEsc(r.nome)+'</div>'
+   +'<div class="lc-row-mt">ID '+lcEsc(r.id_venda)+' · '+lcEsc(r.loja)+(r.conv?' › '+lcEsc(r.conv):'')+' · '+lcDataBR(r.data)+'</div>'
+   +'<div class="lc-row-mt"><span class="lc-bg ok">'+lcBRL(r.pago)+'</span> '
+   +(Number(r.gd)>0?'<span class="lc-bg gd">GD '+lcBRL(r.gd)+'</span> ':'')
+   +(r.tipo&&r.tipo!=='padrao'?'<span class="lc-bg mut">'+(LC_TIPOS[r.tipo]||r.tipo)+'</span>':'')+'</div></div>'
+   +'<button class="lc-del" onclick="lcIndicDel('+r.id+')">✕</button></div>').join('');
+}
+async function lcIndicDel(id){
+  if(!confirm('Excluir este lançamento de indicação?')) return;
+  try{ await dbDelete('lc_indicacoes',id); }catch(e){ lcToast('Erro ao excluir','err'); return; }
+  lcIndic=lcIndic.filter(r=>String(r.id)!==String(id));
+  lcIndicLista(); lcToast('Excluído');
+}
+function lcExportCSV(){
+  if(!lcIndic.length){ lcToast('Nada para exportar','err'); return; }
+  const head=['ID DE VENDA','DATA','VALOR DE INDICAÇÃO','TIPO','VALOR DO PRODUTO','INDICADOR','CHAVE PIX','STATUS','REALME','LOJA','CONVERSÃO','GORDURA','OBS'];
+  const ord=lcIndic.slice().sort((a,b)=>String(a.data).localeCompare(String(b.data)));
+  const linhas=[head.join(';')].concat(ord.map(r=>[
+    r.id_venda, lcDataBR(r.data), lcBRL(r.pago), (LC_TIPOS[r.tipo]||r.tipo), lcBRL(r.vprod),
+    lcUp(r.nome), r.pix, r.status||'PAGO', (r.tipo==='realme'?'1':''), r.loja, r.conv||'',
+    (Number(r.gd)>0?lcBRL(r.gd):''), r.obs||''
+  ].join(';')));
+  const blob=new Blob(['\ufeff'+linhas.join('\n')],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='indicacoes_'+lcMesFiltro+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  lcToast('CSV gerado ✓');
+}
+
+/* ═══ 4. RANKING ═══════════════════════════════════════════════════════ */
+const LC_SEM=['01 a 07','08 a 14','15 a 21','22 ao fim'];
+function lcSemana(iso){ const d=parseInt(String(iso).slice(8,10),10); return d<=7?0:(d<=14?1:(d<=21?2:3)); }
+function lcTabRank(mapa,campo){
+  const arr=Object.keys(mapa).map(k=>({n:k,v:mapa[k]})).sort((a,b)=>b.v-a.v);
+  if(!arr.length) return '<div class="lc-empty">Sem dados.</div>';
+  return '<div class="table-wrap"><table><thead><tr><th style="width:52px">#</th><th>Indicador</th><th style="text-align:right">'+campo+'</th></tr></thead><tbody>'
+   + arr.map((x,i)=>'<tr><td>'+(i===0?'<b style="color:#fbbf24">1º 🥇</b>':(i+1)+'º')+'</td><td>'+lcEsc(x.n)+'</td><td style="text-align:right"><b>'+x.v+'</b></td></tr>').join('')
+   + '</tbody></table></div>';
+}
+function lcRenderRank(){
+  const body=document.getElementById('lc-body');
+  let qtd=lcIndic.length, pago=0, gd=0;
+  lcIndic.forEach(r=>{ pago+=Number(r.pago)||0; gd+=Number(r.gd)||0; });
+  const sem=[{},{},{},{}], semR=[{},{},{},{}], itens={}, mensal={}, lojas={};
+  lcIndic.forEach(r=>{
+    const s=lcSemana(r.data), n=r.nome||'—';
+    sem[s][n]=(sem[s][n]||0)+1;
+    if(r.tipo==='realme') semR[s][n]=(semR[s][n]||0)+1;
+    const vp=Number(r.vprod)||0;
+    if(vp>0&&vp<200) itens[n]=(itens[n]||0)+1;
+    if(!mensal[n]) mensal[n]={q:0,v:0};
+    mensal[n].q++; mensal[n].v+=Number(r.pago)||0;
+    const lj=r.conv?(r.loja+' › '+r.conv):r.loja;
+    if(!lojas[lj]) lojas[lj]={q:0,v:0,gd:0};
+    lojas[lj].q++; lojas[lj].v+=Number(r.pago)||0; lojas[lj].gd+=Number(r.gd)||0;
+  });
+  const ma=Object.keys(mensal).map(k=>({n:k,q:mensal[k].q,v:mensal[k].v})).sort((a,b)=>b.q-a.q||b.v-a.v);
+  const la=Object.keys(lojas).map(k=>({n:k,q:lojas[k].q,v:lojas[k].v,gd:lojas[k].gd})).sort((a,b)=>b.v-a.v);
+  let tq=0,tv=0,tg=0; la.forEach(x=>{ tq+=x.q; tv+=x.v; tg+=x.gd; });
+  body.innerHTML =
+   '<div class="lc-card"><div class="lc-g2"><div class="lc-f"><label>Mês</label>'
+  +'<input type="month" value="'+lcMesFiltro+'" onchange="lcTrocarMes(this.value)"></div><div></div></div>'
+  +'<div class="lc-kpis"><div class="lc-kpi"><b>'+qtd+'</b><small>Indicações</small></div>'
+  +'<div class="lc-kpi"><b>'+lcBRL(pago)+'</b><small>Pago em PIX</small></div>'
+  +'<div class="lc-kpi gd"><b>'+lcBRL(gd)+'</b><small>Gordura usada</small></div></div></div>'
+  +'<div class="lc-card"><div class="lc-h">🏆 Campanha Indica — semanal (R$100)</div>'
+  + LC_SEM.map((s,i)=>'<div class="lc-grp">'+s+'</div>'+lcTabRank(sem[i],'Pontos')).join('')+'</div>'
+  +'<div class="lc-card"><div class="lc-h">🔥 Campanha Realme/Xiaomi — semanal (R$100)</div>'
+  + LC_SEM.map((s,i)=>'<div class="lc-grp">'+s+'</div>'+lcTabRank(semR[i],'Realmes')).join('')+'</div>'
+  +'<div class="lc-card"><div class="lc-h">⭐ Campanha Itens — mensal (R$50)</div>'
+  +'<p class="lc-hint">Produtos abaixo de R$200,00.</p>'+lcTabRank(itens,'Itens')+'</div>'
+  +'<div class="lc-card"><div class="lc-h">📊 Consolidado mensal</div>'
+  +(ma.length?('<div class="table-wrap"><table><thead><tr><th style="width:52px">#</th><th>Indicador</th><th style="text-align:center">Ind.</th><th style="text-align:right">Recebido</th></tr></thead><tbody>'
+  + ma.map((x,i)=>'<tr><td>'+(i===0?'<b style="color:#fbbf24">1º</b>':(i+1)+'º')+'</td><td>'+lcEsc(x.n)+'</td><td style="text-align:center">'+x.q+'</td><td style="text-align:right"><b>'+lcBRL(x.v)+'</b></td></tr>').join('')
+  +'</tbody></table></div>'):'<div class="lc-empty">Sem dados.</div>')+'</div>'
+  +'<div class="lc-card"><div class="lc-h">🏬 Fechamento por loja</div>'
+  +(la.length?('<div class="table-wrap"><table><thead><tr><th>Loja</th><th style="text-align:center">Qtd</th><th style="text-align:right">Total</th><th style="text-align:right">GD</th></tr></thead><tbody>'
+  + la.map(x=>'<tr><td>'+lcEsc(x.n)+'</td><td style="text-align:center">'+x.q+'</td><td style="text-align:right">'+lcBRL(x.v)+'</td><td style="text-align:right;color:#fb923c">'+lcBRL(x.gd)+'</td></tr>').join('')
+  +'<tr><td><b>TOTAL</b></td><td style="text-align:center"><b>'+tq+'</b></td><td style="text-align:right"><b>'+lcBRL(tv)+'</b></td><td style="text-align:right;color:#fb923c"><b>'+lcBRL(tg)+'</b></td></tr>'
+  +'</tbody></table></div>'):'<div class="lc-empty">Sem dados.</div>')+'</div>';
+}
+
+/* ═══ 5. MISSÕES ═══════════════════════════════════════════════════════ */
+const LC_PRIOS={alta:{lbl:'ALTA',cor:'#f87171'},media:{lbl:'MÉDIA',cor:'#fbbf24'},baixa:{lbl:'BAIXA',cor:'#60a5fa'}};
+const LC_REPS={nao:'Não repetir',diaria:'Diária',semanal:'Semanal',mensal:'Mensal'};
+
+function lcMissaoDoDia(m,iso){
+  const rep=m.repeticao||'nao';
+  if(rep==='nao') return String(m.data||'').slice(0,10)===iso;
+  const base=new Date(String(m.data||m.criado_em||iso).slice(0,10)+'T12:00:00');
+  const alvo=new Date(iso+'T12:00:00');
+  if(alvo<base) return false;
+  if(rep==='diaria')  return true;
+  if(rep==='semanal') return base.getDay()===alvo.getDay();
+  if(rep==='mensal')  return base.getDate()===alvo.getDate();
+  return false;
+}
+function lcCheckDe(missaoId){ return lcChecks.find(c=>String(c.missao_id)===String(missaoId)&&c.data===lcHoje()); }
+function lcRenderMissoes(){
+  const body=document.getElementById('lc-body');
+  const hoje=lcHoje();
+  const doDia=lcMissoes.filter(m=>lcMissaoDoDia(m,hoje))
+    .sort((a,b)=>String(a.horario||'99:99').localeCompare(String(b.horario||'99:99')));
+  const feitas=doDia.filter(m=>{ const c=lcCheckDe(m.id); return c&&c.feito; }).length;
+  const pct=doDia.length?Math.round(feitas/doDia.length*100):0;
+  const resp={}; doDia.forEach(m=>{ const r=m.responsavel||'Geral'; (resp[r]=resp[r]||[]).push(m); });
+  let listas='';
+  Object.keys(resp).sort().forEach(r=>{
+    listas+='<div class="lc-grp">'+lcEsc(r)+'</div>'+resp[r].map(m=>{
+      const c=lcCheckDe(m.id), ok=c&&c.feito;
+      const p=LC_PRIOS[m.prioridade||'media']||LC_PRIOS.media;
+      return '<div class="lc-miss'+(ok?' ok':'')+'">'
+       +'<input type="checkbox" '+(ok?'checked':'')+' onchange="lcMissaoToggle('+m.id+')">'
+       +'<div class="lc-miss-body"><div class="lc-miss-t">'+(m.horario?'<span class="lc-hr">'+lcEsc(m.horario)+'</span> ':'')+lcEsc(m.titulo)+'</div>'
+       +'<div class="lc-row-mt"><span class="lc-bg" style="background:'+p.cor+'22;color:'+p.cor+'">'+p.lbl+'</span> '
+       +(m.repeticao&&m.repeticao!=='nao'?'<span class="lc-bg mut">↻ '+LC_REPS[m.repeticao]+'</span> ':'')
+       +(m.loja?'<span class="lc-bg mut">'+lcEsc(m.loja)+'</span>':'')+'</div></div>'
+       +'<button class="lc-del" onclick="lcMissaoDel('+m.id+')">✕</button></div>';
+    }).join('');
+  });
+  body.innerHTML =
+   '<div class="lc-card"><div class="lc-h">🎯 Missões de hoje — '+lcDataBR(hoje)+'</div>'
+  +'<div class="lc-prog"><div class="lc-prog-bar"><i style="width:'+pct+'%"></i></div>'
+  +'<span>'+feitas+' de '+doDia.length+' concluídas · '+pct+'%</span></div>'
+  +(doDia.length?listas:'<div class="lc-empty">Nenhuma missão para hoje.</div>')
+  +'<button class="lc-btn2" style="margin-top:10px" onclick="lcMissoesScript()">📋 Gerar lista para o grupo</button>'
+  +'<pre class="lc-out" id="lcm-out" style="display:none;margin-top:10px"></pre></div>'
+  +'<div class="lc-card"><div class="lc-h">+ Nova missão</div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Horário (opcional)</label><input id="lcm_hora" type="time"></div>'
+  +'<div class="lc-f"><label>Prioridade</label><select id="lcm_prio"><option value="alta">ALTA</option><option value="media" selected>MÉDIA</option><option value="baixa">BAIXA</option></select></div>'
+  +'</div>'
+  +'<div class="lc-f"><label>Atividade</label><input id="lcm_tit" placeholder="Ex.: Conferir divergências da loja Recife"></div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Repetição</label><select id="lcm_rep">'
+  + Object.keys(LC_REPS).map(k=>'<option value="'+k+'">'+LC_REPS[k]+'</option>').join('')+'</select></div>'
+  +'<div class="lc-f"><label>Loja</label><select id="lcm_loja"><option value="">Todas</option>'+lcOptsLoja('')+'</select></div>'
+  +'</div>'
+  +'<div class="lc-f"><label>Responsável</label><input id="lcm_resp" list="lcdl_resp" placeholder="Vazio = minha agenda">'
+  +'<datalist id="lcdl_resp">'+lcUsuarios.map(u=>'<option value="'+lcEsc(u.nome)+'">').join('')+'</datalist></div>'
+  +'<button class="lc-btn" onclick="lcMissaoSalvar()">+ Adicionar missão</button></div>'
+  +'<div class="lc-card"><div class="lc-h">Todas as missões cadastradas</div>'
+  +(lcMissoes.length?('<div class="table-wrap"><table><thead><tr><th>Atividade</th><th>Prior.</th><th>Repet.</th><th>Resp.</th><th></th></tr></thead><tbody>'
+  + lcMissoes.map(m=>'<tr><td>'+(m.horario?'<b>'+lcEsc(m.horario)+'</b> ':'')+lcEsc(m.titulo)+'</td>'
+  +'<td>'+((LC_PRIOS[m.prioridade||'media']||LC_PRIOS.media).lbl)+'</td><td>'+(LC_REPS[m.repeticao||'nao'])+'</td>'
+  +'<td>'+lcEsc(m.responsavel||'—')+'</td><td><button class="lc-del" onclick="lcMissaoDel('+m.id+')">✕</button></td></tr>').join('')
+  +'</tbody></table></div>'):'<div class="lc-empty">Nenhuma missão cadastrada.</div>')+'</div>';
+}
+async function lcMissaoSalvar(){
+  const tit=lcVal('lcm_tit');
+  if(!tit){ lcToast('Informe a atividade','err'); return; }
+  const reg={ titulo:lcUp(tit), horario:lcVal('lcm_hora')||null, prioridade:lcVal('lcm_prio')||'media',
+              repeticao:lcVal('lcm_rep')||'nao', loja:lcVal('lcm_loja')||null,
+              responsavel:lcVal('lcm_resp')||null, data:lcHoje(), ativo:true };
+  try{
+    const ins=await dbInsert('lc_missoes',reg);
+    const saved=(Array.isArray(ins)?ins[0]:ins)||reg;
+    lcMissoes.unshift(saved); lcToast('Missão criada ✓'); lcRenderMissoes();
+  }catch(e){ lcToast('Erro ao salvar missão','err'); }
+}
+async function lcMissaoToggle(id){
+  const c=lcCheckDe(id);
+  try{
+    if(c){ const novo=!c.feito; await dbUpdate('lc_missao_checks',c.id,{feito:novo}); c.feito=novo; }
+    else{
+      const reg={missao_id:id,data:lcHoje(),feito:true};
+      const ins=await dbInsert('lc_missao_checks',reg);
+      lcChecks.push((Array.isArray(ins)?ins[0]:ins)||reg);
+    }
+  }catch(e){
+    if(c) c.feito=!c.feito; else lcChecks.push({id:'tmp'+Date.now(),missao_id:id,data:lcHoje(),feito:true});
+  }
+  lcRenderMissoes();
+}
+async function lcMissaoDel(id){
+  if(!confirm('Remover esta missão?')) return;
+  try{ await dbUpdate('lc_missoes',id,{ativo:false}); }catch(e){ lcToast('Erro ao remover','err'); return; }
+  lcMissoes=lcMissoes.filter(m=>String(m.id)!==String(id));
+  lcRenderMissoes(); lcToast('Removida');
+}
+function lcMissoesScript(){
+  const hoje=lcHoje();
+  const doDia=lcMissoes.filter(m=>lcMissaoDoDia(m,hoje))
+    .sort((a,b)=>String(a.horario||'99:99').localeCompare(String(b.horario||'99:99')));
+  if(!doDia.length){ lcToast('Nenhuma missão hoje','err'); return; }
+  const lin=['MISSÕES — '+lcDataBR(hoje),''];
+  doDia.forEach(m=>{
+    const c=lcCheckDe(m.id), ok=c&&c.feito;
+    const p=(LC_PRIOS[m.prioridade||'media']||LC_PRIOS.media).lbl;
+    lin.push((ok?'✅ ':'⬜ ')+(m.horario?m.horario+' · ':'')+lcUp(m.titulo)+' ['+p+']');
+  });
+  const el=document.getElementById('lcm-out');
+  el.textContent=lin.join('\n'); el.style.display='';
+  lcCopiar('lcm-out');
+}
+
+/* ═══ 6. LOJAS + MENÇÕES + REGRAS ══════════════════════════════════════ */
+function lcRenderLojas(){
+  const body=document.getElementById('lc-body');
+  const lojas=lcLojas.length?lcLojas:[];
+  body.innerHTML =
+   '<div class="lc-card"><div class="lc-h">🏬 Cadastro de lojas</div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Nome da loja</label><input id="lcl_nome" placeholder="UNIGAMES NORTH WAY"></div>'
+  +'<div class="lc-f"><label>Valor de indicação (≥ R$1.000)</label><input id="lcl_val" inputmode="decimal" placeholder="25"></div>'
+  +'</div><button class="lc-btn" onclick="lcLojaAdd()">+ Adicionar loja</button>'
+  +(!lojas.length?'<button class="lc-btn2" style="margin-top:8px" onclick="lcLojasPadrao()">⚡ Cadastrar as lojas padrão</button>':'')
+  +'<div style="margin-top:12px">'
+  +(lojas.length?('<div class="table-wrap"><table><thead><tr><th>Loja</th><th style="width:150px">Indicação</th><th style="width:60px"></th></tr></thead><tbody>'
+  + lojas.map(l=>'<tr><td><b>'+lcEsc(l.nome)+'</b></td>'
+  +'<td>'+(l.nome==='SITE'?'<span class="lc-bg mut">loja de conversão</span>':'<input value="'+(Number(l.valor_indic)||0)+'" inputmode="decimal" onchange="lcLojaVal('+l.id+',this.value)" style="max-width:110px">')+'</td>'
+  +'<td><button class="lc-del" onclick="lcLojaDel('+l.id+')">✕</button></td></tr>').join('')
+  +'</tbody></table></div>'):'<div class="lc-empty">Nenhuma loja cadastrada — usando a lista padrão.</div>')
+  +'</div></div>'
+  +'<div class="lc-card"><div class="lc-h">💬 Menções do WhatsApp</div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Apelido</label><input id="lcn_lbl" placeholder="Estoque 2"></div>'
+  +'<div class="lc-f"><label>Menção</label><input id="lcn_txt" placeholder="@Fulano Estoque Uni"></div>'
+  +'</div><button class="lc-btn2" onclick="lcMencAdd()">+ Adicionar pessoa</button>'
+  +'<div style="margin-top:12px">'+((lcCfg.mencoes||[]).map((x,i)=>
+     '<div class="lc-row"><div style="flex:1">'
+    +'<input value="'+lcEsc(x.lbl||'')+'" placeholder="Apelido" style="font-size:12px;margin-bottom:5px" onchange="lcMencSet('+i+',\'lbl\',this.value)">'
+    +'<input value="'+lcEsc(x.txt||'')+'" placeholder="@Menção" onchange="lcMencSet('+i+',\'txt\',this.value)"></div>'
+    +'<button class="lc-del" onclick="lcMencDel('+i+')">✕</button></div>').join('')||'<div class="lc-empty">Nenhuma menção.</div>')+'</div>'
+  +'<p class="lc-hint">Escreva exatamente como aparece no WhatsApp, com o @. Todas viram chip em qualquer modelo de script.</p></div>'
+  +'<div class="lc-card"><div class="lc-h">💰 Regras de comissão</div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>De R$200 a R$999</label><input id="lcr_f10" value="'+(lcCfg.faixa10)+'" inputmode="decimal"></div>'
+  +'<div class="lc-f"><label>Abaixo de R$200</label><input id="lcr_f0" value="'+(lcCfg.faixa0)+'" inputmode="decimal"></div>'
+  +'</div><div class="lc-g2">'
+  +'<div class="lc-f"><label>Realme / Xiaomi</label><input id="lcr_realme" value="'+(lcCfg.realme)+'" inputmode="decimal"></div>'
+  +'<div class="lc-f"><label>Trazer na Porta</label><input id="lcr_porta" value="'+(lcCfg.porta)+'" inputmode="decimal"></div>'
+  +'</div><div class="lc-g2">'
+  +'<div class="lc-f"><label>Assistência autorizada</label><input id="lcr_aut" value="'+(lcCfg.aut)+'" inputmode="decimal"></div>'
+  +'<div class="lc-f"><label>Assistência orçamento</label><input id="lcr_orc" value="'+(lcCfg.orc)+'" inputmode="decimal"></div>'
+  +'</div><button class="lc-btn" onclick="lcRegrasSalvar()">💾 Salvar regras</button></div>';
+}
+async function lcLojaAdd(){
+  const nome=lcUp(lcVal('lcl_nome')); if(!nome){ lcToast('Informe o nome','err'); return; }
+  try{
+    const ins=await dbInsert('lc_lojas',{nome, valor_indic:lcNum(lcVal('lcl_val')), ativo:true});
+    lcLojas.push((Array.isArray(ins)?ins[0]:ins)||{nome,valor_indic:0});
+    lcLojas.sort((a,b)=>String(a.nome).localeCompare(String(b.nome)));
+    lcToast('Loja cadastrada ✓'); lcRenderLojas();
+  }catch(e){ lcToast('Erro ao cadastrar loja','err'); }
+}
+async function lcLojasPadrao(){
+  try{
+    for(const l of LC_LOJAS_PADRAO){
+      const ins=await dbInsert('lc_lojas',{nome:l.nome, valor_indic:l.valor_indic, ativo:true});
+      lcLojas.push((Array.isArray(ins)?ins[0]:ins)||l);
+    }
+    lcLojas.sort((a,b)=>String(a.nome).localeCompare(String(b.nome)));
+    lcToast('Lojas padrão cadastradas ✓'); lcRenderLojas();
+  }catch(e){ lcToast('Erro ao cadastrar','err'); }
+}
+async function lcLojaVal(id,v){
+  try{ await dbUpdate('lc_lojas',id,{valor_indic:lcNum(v)}); }catch(e){ lcToast('Erro ao salvar','err'); return; }
+  const l=lcLojas.find(x=>String(x.id)===String(id)); if(l) l.valor_indic=lcNum(v);
+  lcToast('Valor atualizado ✓');
+}
+async function lcLojaDel(id){
+  if(!confirm('Remover esta loja?')) return;
+  try{ await dbDelete('lc_lojas',id); }catch(e){ lcToast('Erro ao remover','err'); return; }
+  lcLojas=lcLojas.filter(x=>String(x.id)!==String(id)); lcRenderLojas(); lcToast('Removida');
+}
+function lcMencAdd(){
+  let t=lcVal('lcn_txt'); if(!t){ lcToast('Informe a menção','err'); return; }
+  if(t.charAt(0)!=='@') t='@'+t;
+  lcCfg.mencoes.push({k:'m'+Date.now(), lbl:lcVal('lcn_lbl')||t.replace('@',''), txt:t});
+  lcSalvarCfg(); lcRenderLojas();
+}
+function lcMencSet(i,campo,v){ if(lcCfg.mencoes[i]){ lcCfg.mencoes[i][campo]=v.trim(); lcSalvarCfg(); } }
+function lcMencDel(i){
+  if(!confirm('Remover "'+(lcCfg.mencoes[i].txt||'')+'"?')) return;
+  lcCfg.mencoes.splice(i,1); lcSalvarCfg(); lcRenderLojas();
+}
+function lcRegrasSalvar(){
+  lcCfg.faixa10=lcNum(lcVal('lcr_f10')); lcCfg.faixa0=lcNum(lcVal('lcr_f0'));
+  lcCfg.realme=lcNum(lcVal('lcr_realme')); lcCfg.porta=lcNum(lcVal('lcr_porta'));
+  lcCfg.aut=lcNum(lcVal('lcr_aut'));       lcCfg.orc=lcNum(lcVal('lcr_orc'));
+  lcSalvarCfg();
+}
+
+/* ═══ 7. ACESSOS ═══════════════════════════════════════════════════════ */
+function lcRenderAcessos(){
+  const body=document.getElementById('lc-body');
+  body.innerHTML =
+   '<div class="lc-card"><div class="lc-h">🔐 Novo acesso</div>'
+  +'<p class="lc-hint" style="margin-top:0">O PIN é a senha do app externo. Depois de criar, use <b>🔗 Copiar link</b> para enviar o acesso pronto pelo WhatsApp.</p>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Nome da pessoa</label><input id="lcu_nome" placeholder="Davy"></div>'
+  +'<div class="lc-f"><label>PIN (4 dígitos)</label><input id="lcu_pin" inputmode="numeric" maxlength="4" placeholder="0000"></div>'
+  +'</div>'
+  +'<div class="lc-g2">'
+  +'<div class="lc-f"><label>Grupo de acesso</label><select id="lcu_grupo" onchange="lcAcessoMods()">'
+  + Object.keys(LC_GRUPOS).map(k=>'<option value="'+k+'">'+LC_GRUPOS[k].lbl+'</option>').join('')+'</select></div>'
+  +'<div class="lc-f"><label>Loja vinculada</label><select id="lcu_loja"><option value="">Todas as lojas</option>'+lcOptsLoja('')+'</select></div>'
+  +'</div>'
+  +'<label class="lc-lb">Módulos liberados</label><div class="lc-chips" id="lcu-mods"></div>'
+  +'<button class="lc-btn" style="margin-top:12px" onclick="lcAcessoSalvar()">+ Criar acesso</button></div>'
+  +'<div class="lc-card"><div class="lc-h">Contas cadastradas</div>'
+  +(lcUsuarios.length?lcUsuarios.map(u=>{
+      const mods=lcParseMods(u.modulos);
+      return '<div class="lc-row"><div><div class="lc-row-nm">'+lcEsc(u.nome)+' '
+      +(u.ativo===false?'<span class="lc-bg mut">BLOQUEADO</span>':'<span class="lc-bg ok">ATIVO</span>')+'</div>'
+      +'<div class="lc-row-mt">PIN '+lcEsc(String(u.pin||'').replace(/\d/g,'•'))+' · '+lcEsc((LC_GRUPOS[u.grupo]||{lbl:u.grupo}).lbl.split(' —')[0])
+      +' · '+lcEsc(u.loja||'Todas as lojas')+'</div>'
+      +'<div class="lc-row-mt">'+mods.map(m=>'<span class="lc-bg mut">'+(LC_MODS_LBL[m]||m)+'</span>').join(' ')+'</div>'
+      +'<div class="lc-chips" style="margin-top:8px">'
+      +'<span class="lc-chip" onclick="lcCopiarLink('+u.id+')">🔗 Copiar link</span>'
+      +'<span class="lc-chip" onclick="lcAbrirLink('+u.id+')">↗️ Abrir</span>'
+      +'<span class="lc-chip" onclick="lcScriptAcesso('+u.id+')">📋 Enviar acesso</span>'
+      +'</div></div>'
+      +'<div style="display:flex;gap:6px;align-items:flex-start">'
+      +'<button class="lc-btn2 mini" onclick="lcAcessoToggle('+u.id+')">'+(u.ativo===false?'Liberar':'Bloquear')+'</button>'
+      +'<button class="lc-del" onclick="lcAcessoDel('+u.id+')">✕</button></div></div>';
+    }).join(''):'<div class="lc-empty">Nenhum acesso criado.</div>')+'</div>'
+  + lcRenderEquipeRC();
+  lcAcessoMods();
+}
+function lcParseMods(v){
+  if(!v) return [];
+  if(Array.isArray(v)) return v;
+  try{ const p=JSON.parse(v); return Array.isArray(p)?p:[]; }catch(e){ return String(v).split(',').map(s=>s.trim()).filter(Boolean); }
+}
+function lcAcessoMods(){
+  const g=lcVal('lcu_grupo')||'lider';
+  const ativos=(LC_GRUPOS[g]||LC_GRUPOS.lider).mods;
+  const el=document.getElementById('lcu-mods'); if(!el) return;
+  el.innerHTML=Object.keys(LC_MODS_LBL).map(m=>
+    '<span class="lc-chip'+(ativos.indexOf(m)>=0?' on':'')+'" data-mod="'+m+'" onclick="this.classList.toggle(\'on\')">'+LC_MODS_LBL[m]+'</span>').join('');
+}
+async function lcAcessoSalvar(){
+  const nome=lcVal('lcu_nome'), pin=lcVal('lcu_pin');
+  if(!nome||!/^\d{4}$/.test(pin)){ lcToast('Informe nome e PIN de 4 dígitos','err'); return; }
+  if(lcUsuarios.some(u=>String(u.pin)===pin)){ lcToast('Este PIN já está em uso','err'); return; }
+  const mods=[].slice.call(document.querySelectorAll('#lcu-mods .lc-chip.on')).map(c=>c.getAttribute('data-mod'));
+  const reg={ nome, pin, grupo:lcVal('lcu_grupo')||'lider', loja:lcVal('lcu_loja')||null,
+              modulos:JSON.stringify(mods), ativo:true };
+  try{
+    const ins=await dbInsert('lc_usuarios',reg);
+    lcUsuarios.push((Array.isArray(ins)?ins[0]:ins)||reg);
+    lcToast('Acesso criado ✓'); lcRenderAcessos();
+  }catch(e){ lcToast('Erro ao criar acesso','err'); }
+}
+async function lcAcessoToggle(id){
+  const u=lcUsuarios.find(x=>String(x.id)===String(id)); if(!u) return;
+  const novo=u.ativo===false;
+  try{ await dbUpdate('lc_usuarios',id,{ativo:novo}); u.ativo=novo; lcRenderAcessos(); lcToast(novo?'Liberado':'Bloqueado'); }
+  catch(e){ lcToast('Erro ao atualizar','err'); }
+}
+async function lcAcessoDel(id){
+  if(!confirm('Excluir este acesso?')) return;
+  try{ await dbDelete('lc_usuarios',id); }catch(e){ lcToast('Erro ao excluir','err'); return; }
+  lcUsuarios=lcUsuarios.filter(u=>String(u.id)!==String(id)); lcRenderAcessos(); lcToast('Excluído');
+}
+
+/* ═══ 8. METAS — dados da planilha Gráficos Gerais ═════════════════════ */
+const LC_GG_SHEET='1Pgsj3e9B4UVcqtIIVXXGPptGiYW_9VLLhWz54--rwtg';
+const LC_GG_GIDS={lojas:'1637953054', vendedores:'1756092591', nbpc:'1891368776'};
+let lcGG={lojas:[],vend:[],cob:[],fds:[],ts:0,erro:''};
+let lcMetas=[];
+
+function lcGGUrl(gid){ return 'https://docs.google.com/spreadsheets/d/'+LC_GG_SHEET+'/export?format=csv&gid='+gid; }
+function lcCsvRows(csv){
+  const rows=[]; let row=[],cur='',q=false;
+  for(let i=0;i<csv.length;i++){
+    const c=csv[i],n=csv[i+1];
+    if(c==='"'&&q&&n==='"'){cur+='"';i++;continue;}
+    if(c==='"'){q=!q;continue;}
+    if(c===','&&!q){row.push(cur);cur='';continue;}
+    if((c==='\n'||c==='\r')&&!q){ if(c==='\r'&&n==='\n')i++; row.push(cur);
+      if(row.some(x=>String(x).trim()!=='')) rows.push(row); row=[];cur=''; continue;}
+    cur+=c;
+  }
+  row.push(cur); if(row.some(x=>String(x).trim()!=='')) rows.push(row);
+  return rows;
+}
+function lcNH(t){ return String(t||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' '); }
+function lcMoney(v){ if(v==null) return 0; const s=String(v).replace(/R\$/g,'').replace(/\s/g,'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''); return parseFloat(s)||0; }
+function lcPctBR(v){ if(v==null) return 0; const s=String(v).replace('%','').replace(/\s/g,'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''); return parseFloat(s)||0; }
+function lcNumBR(v){ if(v==null) return 0; const s=String(v).replace(/\s/g,'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''); return parseFloat(s)||0; }
+function lcRowsObj(rows,hi,si){
+  const hs=(rows[hi]||[]).map(lcNH);
+  return rows.slice(si).map(r=>{const o={}; hs.forEach((h,i)=>{ if(h) o[h]=String(r[i]||'').trim(); }); return o;})
+    .filter(o=>Object.values(o).some(v=>String(v).trim()!==''));
+}
+function lcRowsAuto(rows,req){
+  const rq=(req||[]).map(lcNH); let best=0,sc=-1;
+  rows.slice(0,8).forEach((row,idx)=>{
+    const h=row.map(lcNH).join(' | ');
+    const s=rq.reduce((a,r)=>a+(h.indexOf(r)>=0?1:0),0);
+    if(s>sc){sc=s;best=idx;}
+  });
+  return lcRowsObj(rows,best,best+1);
+}
+function lcFld(obj,aliases,opts){
+  opts=opts||{};
+  const na=[].concat(aliases).map(lcNH);
+  for(const a of na){ if(Object.prototype.hasOwnProperty.call(obj,a)) return obj[a]; }
+  for(const k of Object.keys(obj||{})){
+    const nk=lcNH(k);
+    const ok=na.some(a=>opts.contains?nk.indexOf(a)>=0:(nk===a||nk.indexOf(a+' ')===0||nk.indexOf(' '+a+' ')>=0));
+    if(ok){
+      if(opts.exclude&&[].concat(opts.exclude).map(lcNH).some(ex=>nk.indexOf(ex)>=0)) continue;
+      return obj[k];
+    }
+  }
+  return '';
+}
+async function lcGGFetch(gid){
+  const r=await fetch(lcGGUrl(gid),{cache:'no-store'});
+  if(!r.ok) throw new Error('CSV '+gid);
+  return lcCsvRows(await r.text());
+}
+async function lcCarregarMetas(force){
+  try{ lcMetas=await dbGetSafe('lc_metas','&mes=eq.'+lcMesFiltro); }catch(e){ lcMetas=[]; }
+  if(!Array.isArray(lcMetas)) lcMetas=[];
+  if(!force && lcGG.ts && (Date.now()-lcGG.ts)<300000) return;
+  try{
+    const [rl,rv,rn]=await Promise.all([lcGGFetch(LC_GG_GIDS.lojas),lcGGFetch(LC_GG_GIDS.vendedores),lcGGFetch(LC_GG_GIDS.nbpc)]);
+    lcGG.lojas=lcGGParseLojas(rl);
+    lcGG.fds=lcGGParseFDS(rl);
+    lcGG.vend=lcGGParseVend(rv);
+    lcGG.cob=lcGGParseNBPC(rn);
+    lcGG.ts=Date.now(); lcGG.erro='';
+  }catch(e){ lcGG.erro='Não foi possível ler a planilha. Verifique a conexão.'; }
+}
+function lcGGParseLojas(rows){
+  const raw=lcRowsAuto(rows,['LOJAS','META']);
+  const seg=raw.findIndex((r,i)=>i>0 && lcNH(lcFld(r,['LOJAS','LOJA']))==='LOJAS');
+  const main=seg>-1?raw.slice(0,seg):raw;
+  let atual='';
+  return main.map(r=>{
+    const lc=lcFld(r,['LOJAS','LOJA']); if(lc) atual=lc.trim();
+    const fat=lcMoney(lcFld(r,['JUNHO','FATURAMENTO','JULHO','AGOSTO'],{contains:true,exclude:['META','PERCENTUAL','%']}));
+    const meta=lcMoney(lcFld(r,['META REAL','META'],{contains:true,exclude:['ITENS','GAR']}));
+    return { loja:atual||'', fat, meta,
+      pct:lcPctBR(lcFld(r,['PERCENTUAL','%']))||((fat/meta)*100||0),
+      itens:lcNumBR(lcFld(r,['ITENS VENDIDOS','ITENS FEITO','VENDIDOS'],{contains:true,exclude:['META']})),
+      metaItens:lcNumBR(lcFld(r,['META ITENS','META DE ITENS'],{contains:true})),
+      gar:lcMoney(lcFld(r,['GARANTIA ESTENDIDA','GAR ESTENDIDA','G.A.R FEITO','GAR FEITO'],{contains:true,exclude:['META','%','QT']})),
+      metaGar:lcMoney(lcFld(r,['META GAR','META G.A.R','META GARANTIA'],{contains:true})) };
+  }).filter(l=>l.loja && (l.fat>0||l.meta>0||l.itens>0));
+}
+function lcGGParseFDS(rows){
+  /* A 2ª tabela da mesma aba (META DO FIM DE SEMANA) recomeça com um cabeçalho
+     próprio cuja 1ª coluna volta a ser "LOJAS" — por isso é lida das linhas cruas. */
+  const hits=[];
+  for(let i=0;i<rows.length;i++){ if(lcNH(rows[i][0])==='LOJAS') hits.push(i); }
+  if(hits.length<2) return [];
+  const hi=hits[1];
+  const hs=(rows[hi]||[]).map(lcNH);
+  let cMeta=-1,cFat=-1;
+  hs.forEach((h,i)=>{
+    if(!h||i===0) return;
+    if(cMeta<0 && h.indexOf('META')>=0 && h.indexOf('ITENS')<0 && h.indexOf('GAR')<0) cMeta=i;
+    else if(cFat<0 && h.indexOf('%')<0 && h.indexOf('PERCENT')<0 && h.indexOf('META')<0) cFat=i;
+  });
+  if(cMeta<0) cMeta=2;
+  if(cFat<0)  cFat=1;
+  const out=[]; let atual='';
+  for(let i=hi+1;i<rows.length;i++){
+    const r=rows[i]; const nome=String(r[0]||'').trim();
+    if(nome) atual=nome;
+    if(!atual||/^TOTAL/i.test(atual)) continue;
+    const meta=lcMoney(r[cMeta]), fat=lcMoney(r[cFat]);
+    if(meta>0||fat>0) out.push({loja:atual, meta, fat});
+  }
+  return out;
+}
+function lcGGParseVend(rows){
+  const raw=lcRowsAuto(rows,['LOJAS','VENDEDOR','FATURADO','META']);
+  let atual='';
+  return raw.map(r=>{
+    const lc=lcFld(r,['LOJAS','LOJA']); if(lc) atual=lc.trim();
+    const fat=lcMoney(lcFld(r,'FATURADO')), meta=lcMoney(lcFld(r,'META'));
+    return { loja:atual||'', vendedor:lcFld(r,'VENDEDOR')||'',
+      fat, meta, pct:lcPctBR(lcFld(r,['PERCENTUAL','%']))||((fat/meta)*100||0),
+      metaRealme:lcNumBR(lcFld(r,['META REALMES','META REALME'],{contains:true})),
+      realme:lcNumBR(lcFld(r,['REALMES FEITO','REALME FEITO','REALMES','REALME'],{contains:true,exclude:['META']})),
+      metaItens:lcNumBR(lcFld(r,'META ITENS')),
+      superItens:lcNumBR(lcFld(r,'SUPER ITENS')),
+      itens:lcNumBR(lcFld(r,'ITENS FEITO')),
+      metaGar:lcMoney(lcFld(r,['META G.A.R','META GAR'],{contains:true})),
+      gar:lcMoney(lcFld(r,['GAR FEITO','G.A.R FEITO','G.A.R','GAR'],{contains:true,exclude:['META','QT']})),
+      qtVendas:lcNumBR(lcFld(r,['QT - VENDAS','QT VENDAS'])) };
+  }).filter(v=>v.vendedor && !/^TOTAL/i.test(v.vendedor));
+}
+function lcGGParseNBPC(rows){
+  const out=[]; let head=false, cN=-1,cQnb=-1,cQg=-1,cP=-1;
+  for(const row of rows){
+    const j=row.map(c=>(c||'').toUpperCase()).join('|');
+    if(!head && (j.indexOf('QTD NB')>=0 || j.indexOf('VENDIDO')>=0 || j.indexOf('VENDEDOR')>=0)){
+      row.forEach((cell,i)=>{
+        const k=(cell||'').trim().toUpperCase().replace(/\s+/g,' ');
+        if((k.indexOf('LOJA')>=0||k.indexOf('VENDEDOR')>=0)&&cN<0) cN=i;
+        if(k.indexOf('QTD NB')>=0&&cQnb<0) cQnb=i;
+        if(k.indexOf('QTD GAR')>=0&&cQg<0) cQg=i;
+        if((k.indexOf('% GAR')>=0||k.indexOf('PERCENT')>=0||k.indexOf('GAR S/')>=0)&&cP<0) cP=i;
+      });
+      if(cN<0)cN=0; if(cQnb<0)cQnb=1; if(cQg<0)cQg=3; if(cP<0)cP=5;
+      head=true; continue;
+    }
+    if(!head) continue;
+    if(j.indexOf('RANKING')>=0||j.indexOf('POSIÇÃO')>=0||j.indexOf('POSICAO')>=0) break;
+    const nome=String(row[cN]||'').trim();
+    if(!nome||/^TOTAL/i.test(nome)) continue;
+    const nb=lcNumBR(row[cQnb]), g=lcNumBR(row[cQg]);
+    if(nb<=0&&g<=0) continue;
+    out.push({nome, nb, gar:g, pct:lcPctBR(row[cP])||(nb>0?(g/nb*100):0)});
+  }
+  return out;
+}
+function lcCobDe(nome){
+  const n=lcNH(nome);
+  return lcGG.cob.find(c=>lcNH(c.nome)===n) || lcGG.cob.find(c=>lcNH(c.nome).indexOf(n)>=0||n.indexOf(lcNH(c.nome))>=0) || null;
+}
+function lcGGLoja(nome){
+  const n=lcNH(nome);
+  return lcGG.lojas.find(l=>lcNH(l.loja)===n) || lcGG.lojas.find(l=>lcNH(l.loja).indexOf(n)>=0||n.indexOf(lcNH(l.loja))>=0) || null;
+}
+function lcGGFdsLoja(nome){
+  const n=lcNH(nome);
+  return lcGG.fds.find(l=>lcNH(l.loja)===n) || lcGG.fds.find(l=>lcNH(l.loja).indexOf(n)>=0||n.indexOf(lcNH(l.loja))>=0) || null;
+}
+function lcGGVendLoja(nome){
+  const n=lcNH(nome);
+  return lcGG.vend.filter(v=>lcNH(v.loja)===n || lcNH(v.loja).indexOf(n)>=0 || n.indexOf(lcNH(v.loja))>=0);
+}
+function lcMetaFdsManual(loja){
+  const m=lcMetas.find(x=>x.loja===loja && !x.pessoa);
+  return m?Number(m.meta_fds)||0:0;
+}
+function lcOntem(){ const d=new Date(); d.setDate(d.getDate()-1);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function lcDiasMes(mes){ const [a,m]=mes.split('-').map(Number); return new Date(a,m,0).getDate(); }
+function lcDiasRestantes(mes){
+  const hoje=lcHoje();
+  if(mes<hoje.slice(0,7)) return 0;
+  if(mes>hoje.slice(0,7)) return lcDiasMes(mes);
+  return lcDiasMes(mes)-Number(hoje.slice(8,10))+1;
+}
+function lcFDSRestantes(mes){
+  const [a,m]=mes.split('-').map(Number), tot=lcDiasMes(mes);
+  const hoje=lcHoje(); const ini=(mes===hoje.slice(0,7))?Number(hoje.slice(8,10)):1;
+  let n=0; for(let d=ini;d<=tot;d++){ const w=new Date(a,m-1,d).getDay(); if(w===0||w===6) n++; }
+  return n;
+}
+function lcPct(feito,meta){ meta=Number(meta)||0; return meta>0?Math.min(999,Math.round((Number(feito)||0)/meta*100)):0; }
+function lcBarra(pct,cor){
+  const c=cor||(pct>=100?'#22c55e':(pct>=70?'#60A5FA':(pct>=40?'#fbbf24':'#f87171')));
+  return '<div class="lc-mbar"><i style="width:'+Math.min(100,pct)+'%;background:'+c+'"></i></div>';
+}
+function lcLojaFoco(){
+  const s=document.getElementById('lcmt_loja');
+  if(s&&s.value) return s.value;
+  if(typeof lcUserLoja!=='undefined' && lcUserLoja) return lcUserLoja;
+  const l=lcGG.lojas[0]; return l?l.loja:lcNomesLojas()[0];
+}
+function lcOptsLojaGG(sel){
+  let nomes=lcGG.lojas.map(l=>l.loja);
+  if(!nomes.length) nomes=lcNomesLojas();
+  if(typeof lcUserLoja!=='undefined' && lcUserLoja){
+    const f=nomes.filter(n=>lcNH(n)===lcNH(lcUserLoja)||lcNH(n).indexOf(lcNH(lcUserLoja))>=0);
+    if(f.length) nomes=f;
+  }
+  return nomes.map(n=>'<option'+(n===sel?' selected':'')+'>'+lcEsc(n)+'</option>').join('');
+}
+function lcRenderMetas(){
+  const body=document.getElementById('lc-body');
+  const loja=lcLojaFoco();
+  const L=lcGGLoja(loja), F=lcGGFdsLoja(loja), vends=lcGGVendLoja(loja);
+  const alvo=L?L.meta:0, feito=L?L.fat:0;
+  const falta=Math.max(0,alvo-feito), pct=lcPct(feito,alvo);
+  const dias=lcDiasRestantes(lcMesFiltro), fdsN=lcFDSRestantes(lcMesFiltro);
+  const diaria=dias>0?falta/dias:0;
+  const metaFds=lcMetaFdsManual(loja) || (F?F.meta:0);
+  const fdsFeito=F?F.fat:0;
+
+  let h='<div class="lc-card"><div class="lc-g2">'
+   +'<div class="lc-f"><label>Loja</label><select id="lcmt_loja" onchange="lcRenderMetas()">'+lcOptsLojaGG(loja)+'</select></div>'
+   +'<div class="lc-f"><label>&nbsp;</label><button class="lc-btn2" onclick="lcMetasAtualizar()">↻ Atualizar dados</button></div>'
+   +'</div><p class="lc-hint" style="margin-top:0">📅 Números da planilha comercial — consolidados até <b>'+lcDataBR(lcOntem())+'</b>.'
+   +(lcGG.erro?' <span style="color:#f87171">'+lcEsc(lcGG.erro)+'</span>':'')+'</p></div>';
+
+  if(!L && !lcGG.erro) h+='<div class="lc-card"><div class="lc-empty">Sem dados para esta loja na planilha.</div></div>';
+
+  h+='<div class="lc-card" id="lc-meta-print"><div class="lc-h">🎯 '+lcEsc(loja)+' · '+lcDataBR(lcOntem())+'</div>'
+   +'<div class="lc-kpis">'
+   +'<div class="lc-kpi"><b>'+lcBRL(alvo)+'</b><small>Meta do mês</small></div>'
+   +'<div class="lc-kpi"><b style="color:#4ade80">'+lcBRL(feito)+'</b><small>Realizado · '+pct+'%</small></div>'
+   +'<div class="lc-kpi gd"><b>'+lcBRL(falta)+'</b><small>Falta</small></div>'
+   +'</div>'+lcBarra(pct)
+   +'<div class="lc-kpis" style="margin-top:12px">'
+   +'<div class="lc-kpi"><b>'+lcBRL(diaria)+'</b><small>Meta diária · '+dias+' dias</small></div>'
+   +'<div class="lc-kpi"><b>'+lcBRL(metaFds)+'</b><small>Meta fim de semana</small></div>'
+   +'<div class="lc-kpi"><b>'+fdsN+'</b><small>Dias de FDS restantes</small></div>'
+   +'</div>'
+   +(fdsFeito>0?(lcBarra(lcPct(fdsFeito,metaFds))+'<div class="lc-mline"><span>Fim de semana realizado</span><span>'+lcBRL(fdsFeito)+' / '+lcBRL(metaFds)+'</span></div>'):'');
+
+  if(L){
+    h+='<div class="lc-grp">Indicadores da loja</div>'
+     +'<div class="lc-mline"><span>Itens vendidos</span><span>'+L.itens+' / '+L.metaItens+'</span></div>'+lcBarra(lcPct(L.itens,L.metaItens))
+     +'<div class="lc-mline"><span>Garantia estendida</span><span>'+lcBRL(L.gar)+' / '+lcBRL(L.metaGar)+'</span></div>'+lcBarra(lcPct(L.gar,L.metaGar));
+  }
+
+  if(vends.length){
+    h+='<div class="lc-grp">Consultores</div>';
+    vends.forEach(v=>{
+      const cb=lcCobDe(v.vendedor);
+      h+='<div class="lc-mcard"><div class="lc-mtop"><b>'+lcEsc(v.vendedor)+'</b>'
+        +'<span class="lc-bg '+(v.pct>=100?'ok':'mut')+'">'+Math.round(v.pct)+'%</span></div>'
+        +'<div class="lc-mline"><span>Faturamento</span><span>'+lcBRL(v.fat)+' / '+lcBRL(v.meta)+'</span></div>'+lcBarra(lcPct(v.fat,v.meta))
+        +'<div class="lc-mline"><span>Super Itens</span><span>'+v.superItens+(v.metaItens?' / '+v.metaItens:'')+'</span></div>'+lcBarra(lcPct(v.superItens,v.metaItens))
+        +'<div class="lc-mline"><span>Realme</span><span>'+v.realme+' / '+v.metaRealme+'</span></div>'+lcBarra(lcPct(v.realme,v.metaRealme))
+        +'<div class="lc-mline"><span>Garantia estendida</span><span>'+lcBRL(v.gar)+' / '+lcBRL(v.metaGar)+'</span></div>'+lcBarra(lcPct(v.gar,v.metaGar))
+        +'<div class="lc-mline"><span>Cobertura NB/PC</span><span>'+(cb?Math.round(cb.pct)+'% <small style="color:#7d8ba4">('+cb.gar+' de '+cb.nb+')</small>':'—')+'</span></div>'
+        +(cb?lcBarra(Math.round(cb.pct)):'')
+        +'</div>';
+    });
+  } else h+='<div class="lc-empty">Nenhum consultor encontrado para esta loja.</div>';
+  h+='</div>';
+
+  h+='<div class="lc-card"><div class="lc-g2">'
+   +'<button class="lc-btn" onclick="lcMetaScript()">📋 Script de acompanhamento</button>'
+   +'<button class="lc-btn2" onclick="lcMetaImagem()">🖼️ Gerar imagem</button></div>'
+   +'<pre class="lc-out" id="lcmt-out" style="display:none;margin-top:11px"></pre></div>'
+   +'<div class="lc-card"><div class="lc-h">⚙️ Meta de fim de semana</div>'
+   +'<p class="lc-hint" style="margin-top:0">Sugerida pelo líder. Se preenchida, substitui a da planilha.</p>'
+   +'<div class="lc-g2"><div class="lc-f"><label>Valor</label><input id="lcmt_fds" inputmode="decimal" value="'+(lcMetaFdsManual(loja)||'')+'" placeholder="18000,00"></div>'
+   +'<div class="lc-f"><label>&nbsp;</label><button class="lc-btn" onclick="lcMetaFdsSalvar()">💾 Salvar</button></div></div></div>';
+  body.innerHTML=h;
+}
+async function lcMetasAtualizar(){ lcToast('Atualizando…'); await lcCarregarMetas(true); lcRenderMetas(); lcToast('Atualizado ✓'); }
+async function lcTrocarMesMetas(v){ lcMesFiltro=v||lcMes(); await lcCarregarMetas(true); lcRenderMetas(); }
+async function lcMetaFdsSalvar(){
+  const loja=lcLojaFoco(), val=lcNum(lcVal('lcmt_fds'));
+  const ex=lcMetas.find(m=>m.loja===loja && !m.pessoa);
+  try{
+    if(ex){ await dbUpdate('lc_metas',ex.id,{meta_fds:val}); ex.meta_fds=val; }
+    else{
+      const reg={mes:lcMesFiltro,loja,pessoa:null,meta_fds:val,faturamento:0};
+      const ins=await dbInsert('lc_metas',reg);
+      lcMetas.push((Array.isArray(ins)?ins[0]:ins)||reg);
+    }
+    lcToast('Meta de FDS salva ✓'); lcRenderMetas();
+  }catch(e){ lcToast('Erro ao salvar','err'); }
+}
+function lcMetaTexto(){
+  const loja=lcLojaFoco(), L=lcGGLoja(loja), F=lcGGFdsLoja(loja), vends=lcGGVendLoja(loja);
+  const alvo=L?L.meta:0, feito=L?L.fat:0, falta=Math.max(0,alvo-feito);
+  const dias=lcDiasRestantes(lcMesFiltro), pct=lcPct(feito,alvo);
+  const metaFds=lcMetaFdsManual(loja)||(F?F.meta:0);
+  const lin=['📊 ACOMPANHAMENTO '+lcUp(loja),'Base: '+lcDataBR(lcOntem()),'',
+    'META DO MÊS: '+lcBRL(alvo),
+    'REALIZADO: '+lcBRL(feito)+' ('+pct+'%)',
+    'FALTA: '+lcBRL(falta),
+    'META DIÁRIA: '+lcBRL(dias>0?falta/dias:0)+' ('+dias+' dias restantes)'];
+  if(metaFds>0) lin.push('META FIM DE SEMANA: '+lcBRL(metaFds)+(F&&F.fat>0?' · feito '+lcBRL(F.fat):''));
+  if(L){
+    lin.push('','🏬 LOJA');
+    lin.push('ITENS: '+L.itens+'/'+L.metaItens);
+    lin.push('GARANTIA: '+lcBRL(L.gar)+' / '+lcBRL(L.metaGar));
+  }
+  if(vends.length){
+    lin.push('','👥 CONSULTORES');
+    vends.forEach(v=>{
+      const cb=lcCobDe(v.vendedor);
+      lin.push(lcUp(v.vendedor)+' — '+Math.round(v.pct)+'%');
+      lin.push('  FAT: '+lcBRL(v.fat)+' / '+lcBRL(v.meta));
+      lin.push('  SUPER ITENS: '+v.superItens+(v.metaItens?'/'+v.metaItens:'')+' · REALME: '+v.realme+'/'+v.metaRealme);
+      lin.push('  GARANTIA: '+lcBRL(v.gar)+' / '+lcBRL(v.metaGar));
+      lin.push('  COBERTURA NB/PC: '+(cb?Math.round(cb.pct)+'% ('+cb.gar+' de '+cb.nb+')':'—'));
+    });
+  }
+  return lin.join('\n');
+}
+function lcMetaScript(){
+  const el=document.getElementById('lcmt-out');
+  el.textContent=lcMetaTexto(); el.style.display=''; lcCopiar('lcmt-out');
+}
+function lcMetaImagem(){
+  const alvo=document.getElementById('lc-meta-print');
+  if(!alvo){ lcToast('Nada para capturar','err'); return; }
+  if(typeof html2canvas==='undefined'){ lcToast('Gerador de imagem indisponível','err'); return; }
+  lcToast('Gerando imagem…');
+  const preto=document.documentElement.classList.contains('preto');
+  const dark=document.documentElement.classList.contains('dark');
+  const bg=preto?'#000000':(dark?'#0e1d38':'#ffffff');
+  html2canvas(alvo,{backgroundColor:bg,scale:2,useCORS:true,logging:false}).then(cv=>{
+    cv.toBlob(b=>{
+      const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+      a.download='metas_'+lcLojaFoco().replace(/\W+/g,'_')+'_'+lcOntem()+'.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      lcToast('Imagem salva ✓');
+    });
+  }).catch(()=>lcToast('Falha ao gerar imagem','err'));
+}
+
+/* ═══ 9. ROTINA POR FUNÇÃO ═════════════════════════════════════════════ */
+const LC_DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const LC_ROTINA = {
+  lider:{ lbl:'Líder', itens:[
+    {g:'Abertura', t:'Conferir agendamentos do dia em Negócios Futuros'},
+    {g:'Abertura', t:'Confirmar transferências pendentes de ontem'},
+    {g:'Abertura', t:'Alinhar meta do dia com a equipe'},
+    {g:'Salão',    t:'Presença no salão e apoio na conversão'},
+    {g:'Salão',    t:'Acompanhar abordagem e negociação dos consultores'},
+    {g:'Salão',    t:'Cobrar oferta de garantia estendida em NB/PC'},
+    {g:'Solicitações', t:'Solicitações de estoque e transferências'},
+    {g:'Solicitações', t:'Correções de venda, NF e DANFE'},
+    {g:'Solicitações', t:'PIX dos indicadores lançados'},
+    {g:'Fechamento', t:'Lançar realizado do dia no painel de metas'},
+    {g:'Fechamento', t:'Enviar acompanhamento de metas no grupo'},
+    {g:'Fechamento', t:'Conferir GD do dia e pendências para amanhã'}
+  ]},
+  consultor:{ lbl:'Consultor', itens:[
+    {g:'Abertura', t:'Conferir agenda e clientes do dia'},
+    {g:'Abertura', t:'Revisar vitrine e produtos do seu setor'},
+    {g:'Atendimento', t:'Abordagem ativa no salão'},
+    {g:'Atendimento', t:'Ofertar garantia estendida em todo NB/PC'},
+    {g:'Atendimento', t:'Ofertar Realme/Xiaomi na negociação'},
+    {g:'Atendimento', t:'Oferecer super itens em toda venda'},
+    {g:'Relacionamento', t:'Pedir indicação ao cliente atendido'},
+    {g:'Relacionamento', t:'Retornar clientes interessados pendentes'},
+    {g:'Relacionamento', t:'Pós-venda dos clientes da semana'},
+    {g:'Fechamento', t:'Reportar números do dia ao líder'}
+  ]},
+  operacional:{ lbl:'Operacional', porDia:true, itens:{
+    1:{loja:'RECIFE', itens:[
+      'MENSAGEM GRUPO INDICAÇÃO',
+      'RELATÓRIO 41 (SÁBADO E DOMINGO)',
+      'REPOSIÇÃO PRODUTOS VENDIDOS',
+      'REVISÃO E ENVIO MATERIAIS DE INSUMOS',
+      'ANEXAR CERTIFICADOS DE VENDAS DO FINAL DE SEMANA',
+      'ORGANIZAÇÃO COMPLETA PRODUTOS ESTOCADOS (MEZANINO / GAVETEIRO / RANHURADO)',
+      'LIGAR PARA O.S PENDENTES DE AUTORIZAÇÃO',
+      'ATUALIZAÇÃO PLANILHA DE GORDURA ASSISTÊNCIA']},
+    2:{loja:'RIOMAR', itens:[
+      'MENSAGEM NO GRUPO DE INDICAÇÃO',
+      'RELATÓRIO 41',
+      'IMPRESSÃO DOCUMENTOS IMPORTANTES',
+      'REVISÃO CELULARES / TABLET\u2019S ABERTOS',
+      'LISTAGEM FÍSICO E SISTEMA DE CELULARES, NOTEBOOK\u2019S E PC',
+      'VERIFICAR NECESSIDADE PREENCHIMENTO TINTA IMPRESSORA',
+      'POR ETIQUETA NOMENCLATURA EM CELULARES',
+      'ATUALIZAÇÃO PLANILHA DE GORDURA ASSISTÊNCIA',
+      'REVISÃO DO GRUPO + ENVIO DE NF',
+      'ANEXO DE CERTIFICADOS DO DIA ANTERIOR']},
+    3:{loja:'PNWS', itens:[
+      'MENSAGEM NO GRUPO DE INDICAÇÃO',
+      'RELATÓRIO 41',
+      'REVISÃO CAIXAS ACUMULADAS NO MEZANINO',
+      'POR CERTIFICADOS COM NOMENCLATURA E SERIAL NOTEBOOK\u2019S, PC E VIDEOGAMES',
+      'VERIFICAR NOMENCLATURAS EM PC E NOTEBOOK',
+      'ATUALIZAÇÃO DA PLANILHA DE GORDURA DA ASSISTÊNCIA',
+      'REVISÃO DE GRUPO + ENVIO DE NF']},
+    4:{loja:'GUARARAPES', itens:[
+      'MENSAGEM NO GRUPO DE INDICAÇÃO',
+      'RELATÓRIO 41',
+      'SOLICITAR NF DE SERVIÇO',
+      'RETESTE DE TODAS O.S DISPONÍVEL EM LOJA',
+      'LISTAGEM DE O.S QUE PRECISAM DE ATENÇÃO',
+      'REAVISO A TODOS OS CLIENTES DA DISPONIBILIDADE DE RETIRADA EM LOJA',
+      'RESPOSTA DO RETORNO DA LISTA DE DIVERGÊNCIA',
+      'ATUALIZAÇÃO PLANILHA DE GORDURA ASSISTÊNCIA']},
+    5:{loja:'GUARARAPES', itens:[
+      'MENSAGEM NO GRUPO DE INDICAÇÃO',
+      'ATUALIZAÇÃO DO KANBAN',
+      'RELATÓRIO 41',
+      'ENVIO DA LISTA DE DIVERGÊNCIAS',
+      'REVISAR, IMPRIMIR RELATÓRIO E ENCAMINHAR PRODUTOS COM DEFEITO',
+      'RETESTE COMPLETO DE PRODUTOS SEMI-NOVOS',
+      'ENVIO RELATÓRIO 41 DA SEMANA / REVISÃO COMPLETA DE ITENS NECESSÁRIOS',
+      'REVISÃO DA SEMANA SE TODOS OS PRODUTOS ESTOCADOS ESTÃO EXPOSTOS',
+      'ATUALIZAR PLANILHA DE GORDURA DA ASSISTÊNCIA',
+      'REVISÃO DO GRUPO + ENVIO DE NF']},
+    6:{loja:'', itens:['MENSAGEM NO GRUPO DE INDICAÇÃO','REPOSIÇÃO PRODUTOS VENDIDOS','ORGANIZAÇÃO DO SALÃO']},
+    0:{loja:'', itens:['MENSAGEM NO GRUPO DE INDICAÇÃO','REPOSIÇÃO PRODUTOS VENDIDOS']}
+  }}
+};
+function lcRotinaItens(){
+  const f=LC_ROTINA[lcRotinaFuncao];
+  if(!f) return [];
+  if(!f.porDia) return f.itens.map((x,i)=>({key:lcRotinaFuncao+'_'+i, g:x.g, t:x.t}));
+  const dia = (lcRotinaDia==null) ? new Date(lcHoje()+'T12:00:00').getDay() : lcRotinaDia;
+  const bloco=f.itens[dia]||{loja:'',itens:[]};
+  return bloco.itens.map((t,i)=>({key:'op_'+dia+'_'+i, g:bloco.loja||LC_DIAS[dia], t}));
+}
+function lcRotinaChk(key){ return lcRotinaChecks.find(c=>c.item_key===key && c.data===lcHoje() && String(c.pin||'')===String(lcPinAtual()||'')); }
+function lcPinAtual(){ return (typeof lcUserPin!=='undefined' && lcUserPin) ? lcUserPin : 'painel'; }
+async function lcCarregarRotina(){
+  try{ lcRotinaChecks = await dbGetSafe('lc_rotina_checks','&data=eq.'+lcHoje()); }catch(e){ lcRotinaChecks=[]; }
+  if(!Array.isArray(lcRotinaChecks)) lcRotinaChecks=[];
+}
+function lcRenderRotina(){
+  const body=document.getElementById('lc-body');
+  const dia=(lcRotinaDia==null)?new Date(lcHoje()+'T12:00:00').getDay():lcRotinaDia;
+  const itens=lcRotinaItens();
+  const feitos=itens.filter(i=>{ const c=lcRotinaChk(i.key); return c&&c.feito; }).length;
+  const pct=itens.length?Math.round(feitos/itens.length*100):0;
+  let listas='', g='';
+  itens.forEach(it=>{
+    if(it.g!==g){ listas+='<div class="lc-grp">'+lcEsc(it.g)+'</div>'; g=it.g; }
+    const c=lcRotinaChk(it.key), ok=c&&c.feito;
+    listas+='<label class="lc-miss'+(ok?' ok':'')+'"><input type="checkbox" '+(ok?'checked':'')
+      +' onchange="lcRotinaToggle(\''+it.key+'\')"><div class="lc-miss-body"><div class="lc-miss-t">'+lcEsc(it.t)+'</div></div></label>';
+  });
+  body.innerHTML =
+   '<div class="lc-card"><div class="lc-h">🔁 Rotina do dia</div>'
+  +'<div class="lc-chips">'+Object.keys(LC_ROTINA).map(f=>
+      '<span class="lc-chip'+(lcRotinaFuncao===f?' on':'')+'" onclick="lcRotinaSetFuncao(\''+f+'\')">'+LC_ROTINA[f].lbl+'</span>').join('')+'</div>'
+  +(LC_ROTINA[lcRotinaFuncao].porDia?('<div class="lc-f" style="margin-top:11px"><label>Dia da semana</label>'
+      +'<select onchange="lcRotinaSetDia(this.value)">'
+      +[1,2,3,4,5,6,0].map(d=>'<option value="'+d+'"'+(d===dia?' selected':'')+'>'+LC_DIAS[d]
+      +(LC_ROTINA.operacional.itens[d]&&LC_ROTINA.operacional.itens[d].loja?' · '+LC_ROTINA.operacional.itens[d].loja:'')+'</option>').join('')
+      +'</select></div>'):'')
+  +'<div class="lc-prog" style="margin-top:12px"><div class="lc-prog-bar"><i style="width:'+pct+'%"></i></div>'
+  +'<span>'+feitos+' de '+itens.length+' concluídas · '+pct+'%</span></div>'
+  +(itens.length?listas:'<div class="lc-empty">Sem itens para este dia.</div>')
+  +'<button class="lc-btn2" style="margin-top:11px" onclick="lcRotinaScript()">📋 Gerar script da rotina</button>'
+  +'<pre class="lc-out" id="lcrt-out" style="display:none;margin-top:11px"></pre></div>';
+}
+function lcRotinaSetFuncao(f){ lcRotinaFuncao=f; lcRotinaDia=null; lcRenderRotina(); }
+function lcRotinaSetDia(d){ lcRotinaDia=Number(d); lcRenderRotina(); }
+async function lcRotinaToggle(key){
+  const c=lcRotinaChk(key);
+  try{
+    if(c){ const novo=!c.feito; await dbUpdate('lc_rotina_checks',c.id,{feito:novo}); c.feito=novo; }
+    else{
+      const reg={pin:String(lcPinAtual()),data:lcHoje(),item_key:key,feito:true,funcao:lcRotinaFuncao};
+      const ins=await dbInsert('lc_rotina_checks',reg);
+      lcRotinaChecks.push((Array.isArray(ins)?ins[0]:ins)||reg);
+    }
+  }catch(e){
+    if(c) c.feito=!c.feito;
+    else lcRotinaChecks.push({id:'tmp'+Date.now(),pin:String(lcPinAtual()),data:lcHoje(),item_key:key,feito:true});
+  }
+  lcRenderRotina();
+}
+function lcRotinaScript(){
+  const dia=(lcRotinaDia==null)?new Date(lcHoje()+'T12:00:00').getDay():lcRotinaDia;
+  const itens=lcRotinaItens();
+  if(!itens.length){ lcToast('Sem itens','err'); return; }
+  let cab;
+  if(lcRotinaFuncao==='operacional'){
+    const loja=(LC_ROTINA.operacional.itens[dia]||{}).loja||'';
+    cab='*ROTINA OPERACIONAL'+(loja?' - '+loja:'')+' ✅*';
+  } else cab='*ROTINA '+lcUp(LC_ROTINA[lcRotinaFuncao].lbl)+' — '+lcDataBR(lcHoje())+' ✅*';
+  const lin=[cab,''];
+  itens.forEach(it=>{ const c=lcRotinaChk(it.key); lin.push((c&&c.feito?'✅':'•')+' '+lcUp(it.t)); });
+  const sup=lcMenc('supervisao'); if(sup){ lin.push(''); lin.push(sup); }
+  const el=document.getElementById('lcrt-out');
+  el.textContent=lin.join('\n'); el.style.display=''; lcCopiar('lcrt-out');
+}
+
+/* ═══ 10. LINKS EXTERNOS ═══════════════════════════════════════════════ */
+function lcBaseURL(){
+  try{
+    const u=location.href.split('#')[0].split('?')[0];
+    return u.replace(/[^/]*$/,'')+'lideranca.html';
+  }catch(e){ return 'lideranca.html'; }
+}
+function lcLinkDe(u){ return lcBaseURL()+'?pin='+encodeURIComponent(u.pin); }
+function lcCopiarLink(id){
+  const u=lcUsuarios.find(x=>String(x.id)===String(id)); if(!u) return;
+  lcCopiaFallback(lcLinkDe(u));
+}
+function lcAbrirLink(id){
+  const u=lcUsuarios.find(x=>String(x.id)===String(id)); if(!u) return;
+  window.open(lcLinkDe(u),'_blank');
+}
+function lcScriptAcesso(id){
+  const u=lcUsuarios.find(x=>String(x.id)===String(id)); if(!u) return;
+  const mods=lcParseMods(u.modulos).map(m=>LC_MODS_LBL[m]||m).join(', ');
+  const txt=['🔐 ACESSO UNIGAMES — '+lcUp(u.nome),'',
+    'LINK: '+lcLinkDe(u),
+    'PIN: '+u.pin,
+    'PERFIL: '+((LC_GRUPOS[u.grupo]||{lbl:u.grupo}).lbl.split(' —')[0]),
+    'LOJA: '+(u.loja||'Todas as lojas'),
+    'MÓDULOS: '+mods,'',
+    'Salve o link na tela de início do celular.'].join('\n');
+  lcCopiaFallback(txt);
+}
+
+/* ── equipe da Rotina Comercial (rc_pessoas) — login unificado ─────────── */
+function lcPinsLC(){ const s={}; lcUsuarios.forEach(u=>{ s[String(u.pin)]=u.nome; }); return s; }
+function lcRenderEquipeRC(){
+  if(!lcRcPessoas.length) return '';
+  const usados=lcPinsLC();
+  const linhas=lcRcPessoas.map(p=>{
+    const pin=String(p.pin||'');
+    const colide=pin && usados[pin] && lcNH(usados[pin])!==lcNH(p.nome||'');
+    const g=lcPapelParaGrupo(p.papel);
+    return '<div class="lc-row"><div><div class="lc-row-nm">'+lcEsc(p.nome)
+     +' <span class="lc-bg mut">'+lcEsc((LC_GRUPOS[g]||{lbl:g}).lbl.split(" —")[0])+'</span></div>'
+     +'<div class="lc-row-mt">PIN '+lcEsc(pin.replace(/\d/g,"•"))+' · '+lcEsc(p.loja||'Sem loja')
+     +' · '+(pin?'entra pelo PIN da Rotina':'sem PIN')+'</div>'
+     +(colide?'<div class="lc-row-mt" style="color:#f87171">⚠ PIN igual ao de '+lcEsc(usados[pin])+' — troque um dos dois</div>':'')
+     +(pin?('<div class="lc-chips" style="margin-top:8px">'
+       +'<span class="lc-chip" onclick="lcRcLink(\''+p.id+'\')">🔗 Copiar link</span>'
+       +'<span class="lc-chip" onclick="lcRcAbrir(\''+p.id+'\')">↗️ Abrir</span>'
+       +'<span class="lc-chip" onclick="lcRcScript(\''+p.id+'\')">📋 Enviar acesso</span>'
+       +'</div>'):'')
+     +'</div></div>';
+  }).join('');
+  return '<div class="lc-card"><div class="lc-h">👥 Equipe da Rotina Comercial</div>'
+   +'<p class="lc-hint" style="margin-top:0">Estas pessoas já entram no app com o mesmo PIN da Rotina — não precisa recadastrar. '
+   +'O perfil vem do papel cadastrado lá.</p>'+linhas+'</div>';
+}
+function lcRcAcha(id){ return lcRcPessoas.find(p=>String(p.id)===String(id)); }
+function lcRcLink(id){ const p=lcRcAcha(id); if(p) lcCopiaFallback(lcBaseURL()+'?pin='+encodeURIComponent(p.pin)); }
+function lcRcAbrir(id){ const p=lcRcAcha(id); if(p) window.open(lcBaseURL()+'?pin='+encodeURIComponent(p.pin),'_blank'); }
+function lcRcScript(id){
+  const p=lcRcAcha(id); if(!p) return;
+  const g=lcPapelParaGrupo(p.papel);
+  const mods=lcModsDoGrupo(g).map(m=>LC_MODS_LBL[m]||m).join(', ');
+  lcCopiaFallback(['🔐 ACESSO UNIGAMES — '+lcUp(p.nome),'',
+    'LINK: '+lcBaseURL()+'?pin='+p.pin,
+    'PIN: '+p.pin,
+    'PERFIL: '+((LC_GRUPOS[g]||{lbl:g}).lbl.split(' —')[0]),
+    'LOJA: '+(p.loja||'Todas as lojas'),
+    'MÓDULOS: '+mods,'',
+    'Salve o link na tela de início do celular.'].join('\n'));
+}
+</script>
+
+<script>
+/* ═══ BOOT ═══ */
+(function(){
+  try{
+    const s=sessionStorage.getItem('lc_sess');
+    if(s){ const u=JSON.parse(s); lcUsuario=u; lcUserPin=u.pin; lcUserLoja=u.loja||'';
+           lcModsPermitidos=parseMods(u.modulos); abrirApp(); return; }
+  }catch(e){}
+  const p=new URLSearchParams(location.search).get('pin');
+  if(p&&/^\d{4}$/.test(p)){ buf=p; dots(); setTimeout(entrar,150); }
+})();
+/* loja vinculada limita os seletores */
+const _optsOrig=lcOptsLoja;
+lcOptsLoja=function(sel,semSite){
+  if(lcUserLoja){
+    const nomes=lcNomesLojas().filter(n=>n===lcUserLoja||(!semSite&&n==='SITE'));
+    if(nomes.length) return nomes.map(n=>'<option'+(n===(sel||lcUserLoja)?' selected':'')+'>'+lcEsc(n)+'</option>').join('');
+  }
+  return _optsOrig(sel,semSite);
+};
+</script>
+</body>
+</html>
