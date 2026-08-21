@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1d38">
+<title>UniGames · Estamos te esperando</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#0b1730;--card:#122443;--line:#1f3a66;--txt:#eef4ff;--mut:#93a9cf;--ac:#3b82f6;--ac2:#8b5cf6;--ok:#22c55e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:16px;-webkit-text-size-adjust:100%}
+body{padding-bottom:110px}
+.wrap{max-width:560px;margin:0 auto;padding:0 15px}
+.hero{background:linear-gradient(150deg,#1e3a8a,#4c1d95);padding:calc(26px + env(safe-area-inset-top,0px)) 18px 24px;
+  border-radius:0 0 26px 26px;text-align:center;margin-bottom:18px}
+.hero h1{margin:0;font-size:25px;font-weight:900;letter-spacing:-.02em}
+.hero p{margin:8px 0 0;font-size:14px;color:#c9d9f7;line-height:1.45}
+.hero .chip{display:inline-block;margin-top:12px;background:rgba(255,255,255,.16);
+  padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:800}
+.hero .promo{display:block;margin:16px auto 0;max-width:330px;background:linear-gradient(135deg,#facc15,#f97316);
+  color:#3b1d00;padding:13px 16px;border-radius:16px;font-size:19px;font-weight:900;
+  letter-spacing:-.01em;box-shadow:0 8px 22px rgba(249,115,22,.35);animation:pulsa 2.2s ease-in-out infinite}
+.hero .promo small{display:block;font-size:11.5px;font-weight:800;opacity:.78;margin-top:2px;letter-spacing:.04em}
+@keyframes pulsa{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+.sec{margin-bottom:22px}
+.sec h2{font-size:12px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--mut);margin:0 0 11px}
+.fotos{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fotos img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;border:1px solid var(--line);display:block}
+.video{width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid var(--line);background:#000;display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px}
+.num{aspect-ratio:1;border-radius:15px;background:var(--card);border:2px solid var(--line);
+  color:var(--txt);font-family:inherit;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;padding:6px;transition:.14s}
+.num b{font-size:31px;font-weight:900;line-height:1}
+.num span{font-size:10px;color:var(--mut);font-weight:700;text-align:center;line-height:1.2;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.num.on{border-color:var(--ac);background:#17305c;box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+.num.on b{color:#7dd3fc}
+.prods{display:flex;flex-wrap:wrap;gap:8px}
+.prod{padding:11px 15px;border-radius:999px;background:var(--card);border:2px solid var(--line);
+  color:var(--txt);font-size:14px;font-weight:750;cursor:pointer;font-family:inherit;transition:.14s}
+.prod.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.cores{display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:9px}
+.cor{cursor:pointer;text-align:center;border:none;background:none;padding:0;font-family:inherit}
+.cor i{display:block;width:100%;aspect-ratio:1;border-radius:14px;border:3px solid var(--line);transition:.14s}
+.cor span{display:block;font-size:10px;color:var(--mut);font-weight:700;margin-top:5px}
+.cor.on i{border-color:#fff;transform:scale(1.06);box-shadow:0 0 0 3px rgba(59,130,246,.35)}
+.cor.on span{color:var(--txt)}
+textarea{width:100%;padding:13px;border-radius:14px;border:1px solid var(--line);
+  background:var(--card);color:var(--txt);font-family:inherit;font-size:16px;resize:vertical}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 15px calc(12px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(to top,var(--bg) 72%,rgba(11,23,48,0));z-index:20}
+.bar .in{max-width:560px;margin:0 auto}
+.go{width:100%;padding:17px;border-radius:16px;border:none;font-family:inherit;
+  font-size:17px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--ac),var(--ac2));cursor:pointer}
+.go:disabled{opacity:.45}
+.go:active{transform:scale(.985)}
+.hint{font-size:12px;color:var(--mut);text-align:center;margin:9px 0 0;line-height:1.4}
+.done{text-align:center;padding:20vh 22px}
+.done .ic{font-size:66px}
+.done h2{font-size:25px;font-weight:900;margin:14px 0 8px}
+.done p{color:var(--mut);font-size:15px;line-height:1.55;margin:0 0 22px}
+.done .card{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:18px;text-align:left;font-size:14px;line-height:1.7}
+.done .card b{color:#7dd3fc}
+.wa{display:block;margin-top:16px;padding:15px;border-radius:14px;background:var(--ok);
+  color:#04180f;font-weight:900;text-decoration:none;text-align:center;font-size:15px}
+.err{background:#7f1d1d;color:#fecaca;padding:13px;border-radius:12px;font-size:14px;
+  margin-top:12px;font-weight:700;text-align:center}
+.load{text-align:center;padding:24vh 20px;color:var(--mut);font-size:15px}
+</style>
+</head>
+<body>
+
+<div id="load" class="load">Carregando…</div>
+<div id="app" style="display:none">
+  <div class="hero">
+    <h1 id="h-tit">UniGames</h1>
+    <p id="h-sub"></p>
+    <div class="chip" id="h-como" style="display:none"></div>
+    <div class="promo" id="h-promo" style="display:none"></div>
+  </div>
+  <div class="wrap">
+    <div class="sec" id="s-fotos" style="display:none"><h2>📸 Nossa loja</h2><div class="fotos" id="fotos"></div></div>
+    <div class="sec" id="s-video" style="display:none"><h2>🎬 Como chegar até nós</h2><div id="video"></div></div>
+    <div class="sec"><h2>🔢 Número da sua reserva</h2><div class="grid" id="nums"></div>
+      <p class="hint" style="text-align:left">Toque no número que o parceiro te passou.</p></div>
+    <div class="sec"><h2>🛒 O que você procura?</h2><div class="prods" id="prods"></div></div>
+    <div class="sec"><h2>👕 Qual a cor da sua roupa?</h2>
+      <div class="cores" id="cores"></div>
+      <p class="hint" style="text-align:left">Assim nosso time te encontra rapidinho na loja.</p></div>
+    <div class="sec"><h2>💬 Quer contar mais? (opcional)</h2>
+      <textarea id="obs" rows="3" placeholder="Ex.: procuro um notebook até R$ 3.000"></textarea></div>
+    <div id="erro"></div>
+  </div>
+  <div class="bar"><div class="in">
+    <button class="go" id="go" onclick="enviar()">Avisar que estou indo 🙋</button>
+    <p class="hint" id="dica">Toque no número de quem te indicou para continuar</p>
+  </div></div>
+</div>
+
+<div id="done" style="display:none"><div class="wrap done">
+  <div class="ic">🎉</div>
+  <h2>Tudo certo!</h2>
+  <p>Já avisamos nosso time — quando você chegar, é só falar o número da sua reserva.</p>
+  <div class="card" id="resumo"></div>
+  <a id="wa" class="wa" style="display:none" target="_blank">Falar com a loja no WhatsApp</a>
+</div></div>
+
+<script>
+const SUPA_URL='https://ipjlmpelgikewnhnfbbt.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwamxtcGVsZ2lrZXduaG5mYmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDcyMjYsImV4cCI6MjA5MzQ4MzIyNn0.9ZF7v0tprywrEyTua_5iTKWKNPKJ5Oto2f2Q_YNx_Po';
+const H={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=representation'};
+
+const CORES=[
+  {h:'#111827',n:'Preto'},{h:'#ffffff',n:'Branco'},{h:'#9ca3af',n:'Cinza'},
+  {h:'#1d4ed8',n:'Azul'},{h:'#38bdf8',n:'Azul claro'},{h:'#dc2626',n:'Vermelho'},
+  {h:'#f97316',n:'Laranja'},{h:'#facc15',n:'Amarelo'},{h:'#16a34a',n:'Verde'},
+  {h:'#ec4899',n:'Rosa'},{h:'#7c3aed',n:'Roxo'},{h:'#78350f',n:'Marrom'},
+  {h:'#f5e6c8',n:'Bege'},{h:'#065f46',n:'Verde escuro'},{h:'#0f766e',n:'Verde água'},
+  {h:'#be123c',n:'Vinho'}
+];
+let pag=null, selInd=null, selProds=[], selCor=null, enviando=false;
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function jsonArr(v,d){ if(!v) return d; if(Array.isArray(v)) return v;
+  try{ const p=JSON.parse(v); return Array.isArray(p)?p:d; }catch(e){ return d; } }
+function slugAtual(){
+  const p=new URLSearchParams(location.search);
+  return (p.get('loja')||p.get('p')||'').toLowerCase().trim();
+}
+function embedVideo(u){
+  if(!u) return '';
+  const url=String(u).trim();
+  let m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+  if(m) return '<iframe class="video" src="https://www.youtube.com/embed/'+m[1]+'" frameborder="0" allowfullscreen></iframe>';
+  m=url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if(m) return '<iframe class="video" src="https://drive.google.com/file/d/'+m[1]+'/preview" frameborder="0" allow="autoplay" allowfullscreen></iframe>';
+  if(/\.(mp4|webm|mov)(\?|$)/i.test(url)) return '<video class="video" src="'+esc(url)+'" controls playsinline preload="metadata"></video>';
+  return '<a class="wa" href="'+esc(url)+'" target="_blank" style="background:#3b82f6;color:#fff">▶️ Ver o vídeo do caminho</a>';
+}
+async function carregar(){
+  const slug=slugAtual();
+  if(!slug){ document.getElementById('load').textContent='Link inválido.'; return; }
+  try{
+    const r=await fetch(SUPA_URL+'/rest/v1/lc_ind_paginas?slug=eq.'+encodeURIComponent(slug)+'&select=*',{headers:H});
+    const rows=r.ok?await r.json():[];
+    pag=rows[0];
+    if(!pag||pag.ativo===false){ document.getElementById('load').textContent='Página não encontrada.'; return; }
+    montar();
+  }catch(e){ document.getElementById('load').textContent='Não foi possível carregar. Verifique sua conexão.'; }
+}
+function montar(){
+  document.getElementById('load').style.display='none';
+  document.getElementById('app').style.display='';
+  document.title=pag.titulo||'UniGames';
+  document.getElementById('h-tit').textContent=pag.titulo||'UniGames';
+  document.getElementById('h-sub').textContent=pag.subtitulo||'Conte pra gente o que você procura.';
+  if(pag.como_chegar){
+    const c=document.getElementById('h-como');
+    c.textContent='📍 '+pag.como_chegar; c.style.display='';
+  }
+  const promo=(pag.destaque!==undefined && pag.destaque!==null && String(pag.destaque).trim()!=='')
+    ? String(pag.destaque).trim() : 'Descontos de até 10%';
+  if(promo && promo.toLowerCase()!=='off'){
+    const pe=document.getElementById('h-promo');
+    pe.innerHTML='🔥 '+esc(promo)+'<small>SÓ PARA QUEM CHEGA PELA RESERVA</small>';
+    pe.style.display='';
+  }
+  const fotos=jsonArr(pag.fotos,[]).filter(Boolean);
+  if(fotos.length){
+    document.getElementById('s-fotos').style.display='';
+    document.getElementById('fotos').innerHTML=fotos.slice(0,4).map(f=>'<img src="'+esc(f)+'" alt="Foto da loja" loading="lazy">').join('');
+  }
+  const v=embedVideo(pag.video);
+  if(v){ document.getElementById('s-video').style.display=''; document.getElementById('video').innerHTML=v; }
+
+  const inds=jsonArr(pag.indicadores,[]);
+  document.getElementById('nums').innerHTML = inds.length
+    ? inds.map((x,i)=>'<button class="num" id="n'+i+'" onclick="pickInd('+i+')"><b>'+esc(x.num)+'</b></button>').join('')
+    : '<p class="hint" style="grid-column:1/-1">Nenhum indicador cadastrado ainda.</p>';
+
+  const prods=jsonArr(pag.produtos,[]);
+  document.getElementById('prods').innerHTML=prods.map((p,i)=>
+    '<button class="prod" id="p'+i+'" onclick="pickProd('+i+',this)">'+esc(p)+'</button>').join('');
+
+  document.getElementById('cores').innerHTML=CORES.map((c,i)=>
+    '<button class="cor" id="c'+i+'" onclick="pickCor('+i+')"><i style="background:'+c.h+'"></i><span>'+c.n+'</span></button>').join('');
+  atualizar();
+}
+function pickInd(i){
+  const inds=jsonArr(pag.indicadores,[]);
+  document.querySelectorAll('.num').forEach(e=>e.classList.remove('on'));
+  document.getElementById('n'+i).classList.add('on');
+  selInd=inds[i]; atualizar();
+}
+function pickProd(i,el){
+  const prods=jsonArr(pag.produtos,[]);
+  const p=prods[i], k=selProds.indexOf(p);
+  if(k>=0){ selProds.splice(k,1); el.classList.remove('on'); }
+  else{ selProds.push(p); el.classList.add('on'); }
+  atualizar();
+}
+function pickCor(i){
+  document.querySelectorAll('.cor').forEach(e=>e.classList.remove('on'));
+  document.getElementById('c'+i).classList.add('on');
+  selCor=CORES[i]; atualizar();
+}
+function atualizar(){
+  const ok=!!selInd;
+  document.getElementById('go').disabled=!ok||enviando;
+  document.getElementById('dica').textContent = !selInd
+    ? 'Toque no número da sua reserva para continuar'
+    : (!selProds.length ? 'Se quiser, marque o que você procura' : 'Pronto! É só tocar no botão acima');
+}
+async function enviar(){
+  if(!selInd||enviando) return;
+  enviando=true;
+  const btn=document.getElementById('go');
+  btn.disabled=true; btn.textContent='Enviando…';
+  const reg={
+    loja:pag.loja, slug:pag.slug,
+    indicador_num:selInd.num, indicador_nome:selInd.nome,
+    produtos:JSON.stringify(selProds),
+    cor:selCor?selCor.h:null, cor_nome:selCor?selCor.n:null,
+    obs:(document.getElementById('obs').value||'').trim()||null,
+    status:'novo'
+  };
+  try{
+    const r=await fetch(SUPA_URL+'/rest/v1/lc_ind_registros',{method:'POST',headers:H,body:JSON.stringify(reg)});
+    if(!r.ok) throw new Error('falha');
+    concluir();
+  }catch(e){
+    enviando=false; btn.disabled=false; btn.textContent='Avisar que estou indo 🙋';
+    document.getElementById('erro').innerHTML='<div class="err">Não conseguimos enviar. Verifique a internet e tente de novo.</div>';
+  }
+}
+function msgWhats(){
+  const obs=(document.getElementById('obs').value||'').trim();
+  const l=['Oi! Estou indo até a loja.','Reserva: '+selInd.num];
+  if(selProds.length) l.push('Quero verificar: '+selProds.join(', '));
+  if(obs) l.push('Obs: '+obs);
+  return l.join('\n');
+}
+function concluir(){
+  const obs=(document.getElementById('obs').value||'').trim();
+  document.getElementById('app').style.display='none';
+  document.getElementById('done').style.display='';
+  document.getElementById('resumo').innerHTML=
+     '<div>Reserva: <b>'+esc(selInd.num)+'</b></div>'
+    +(selProds.length?'<div>Procurando: <b>'+esc(selProds.join(', '))+'</b></div>':'')
+    +(selCor?'<div>Sua roupa: <b>'+esc(selCor.n)+'</b></div>':'')
+    +(obs?'<div>Observação: <b>'+esc(obs)+'</b></div>':'');
+  if(pag.whatsapp){
+    const a=document.getElementById('wa');
+    a.href='https://wa.me/'+String(pag.whatsapp).replace(/\D/g,'')+'?text='+encodeURIComponent(msgWhats());
+    a.style.display='';
+  }
+  window.scrollTo(0,0);
+}
+carregar();
+</script>
+</body>
+</html>
